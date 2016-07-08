@@ -46,7 +46,7 @@ middleware.isAdmin = function (req, res, next) {
 
 
 middleware.userData = function (req, res, next) {
-
+console.log('middleware loaded');
 };
 
 

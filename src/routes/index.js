@@ -14,6 +14,7 @@ var nconf = require('nconf'),
     mainRoutes = require('./main'),
     dashboardRoutes = require('./dashboard'),
     authenticationRoutes = require('./authentication');
+    apiRoutes = require('./api');
 
 var setupPageRoute = helper.setupPageRoute;
 
@@ -23,6 +24,7 @@ module.exports = function(app, middleware) {
   mainRoutes(router, middleware, controllers);
   authenticationRoutes(router, middleware, controllers);
   dashboardRoutes(router, middleware, controllers.dashboard);
+  apiRoutes(router, middleware, controllers.api);
 
   app.use('/', router);
 

@@ -1,17 +1,8 @@
     </main>
-    <script src="/javascripts/app.js"></script>
+    <script src="javascripts/main.js"></script>
     <script>
-      app.init({
-        basePath: window.location.origin + '/js',
-        modules:  [
-          'events',
-          'templates',
-          'notifications',
-          'dom',
-          'socketio'
-        ]
-      }, function() {
-        console.log('app is loaded')
+      document.addEventListener("DOMContentLoaded", function(event) {
+        app.init();
       });
     </script>
   </body>

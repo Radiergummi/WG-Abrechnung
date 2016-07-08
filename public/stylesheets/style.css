@@ -2230,7 +2230,7 @@ table {
   height: 60px;
   background: #03a9f4;
   color: #fff;
-  border-bottom: 5px solid rgba(0, 0, 0, 0.1); }
+  box-shadow: 0 0 0 5px #1e88e5; }
   .site-header::after {
     display: block;
     content: '';
@@ -2254,7 +2254,77 @@ table {
       .site-header .main-navigation a:hover {
         background: rgba(0, 0, 0, 0.075); }
   .site-header .current-user {
-    float: right; }
+    position: relative;
+    float: right;
+    padding: 0 10px; }
+    .site-header .current-user .username,
+    .site-header .current-user .logout {
+      line-height: 60px; }
+    .site-header .current-user .username {
+      padding: 0 20px 0 10px; }
+    .site-header .current-user .profile-picture {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      overflow: hidden;
+      vertical-align: middle;
+      box-shadow: 0 0 0 4px transparent;
+      transition: all .125s;
+      cursor: pointer; }
+      .site-header .current-user .profile-picture img {
+        width: 100%;
+        height: auto; }
+      .site-header .current-user .profile-picture:hover, .site-header .current-user .profile-picture.upload-visible {
+        box-shadow: 0 0 0 4px #fff, 0 0 2px 4px rgba(0, 0, 0, 0.15); }
+    .site-header .current-user .upload-modal {
+      position: absolute;
+      top: 55px;
+      right: 50%;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      z-index: 10;
+      cursor: auto;
+      color: rgba(0, 0, 0, 0.87); }
+      .site-header .current-user .upload-modal::before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: -40px;
+        left: calc(50% - 25px);
+        border: 20px solid transparent;
+        border-bottom-color: #fff;
+        pointer-events: none; }
+      .site-header .current-user .upload-modal header,
+      .site-header .current-user .upload-modal article {
+        width: 100%;
+        max-width: initial;
+        margin: 0; }
+      .site-header .current-user .upload-modal header {
+        padding: 10px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        text-align: center; }
+        .site-header .current-user .upload-modal header h2 {
+          font-size: 20px;
+          font-weight: 400; }
+      .site-header .current-user .upload-modal .upload-controls {
+        padding: 10px;
+        text-align: center;
+        border-top: 1px solid rgba(0, 0, 0, 0.1); }
+        .site-header .current-user .upload-modal .upload-controls .save-picture {
+          margin: 20px; }
+      .site-header .current-user .upload-modal .current-picture {
+        margin: 20px auto;
+        padding: 0;
+        overflow: hidden;
+        width: 100px;
+        height: 100px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50px; }
+        .site-header .current-user .upload-modal .current-picture img {
+          max-width: 100%;
+          height: auto; }
 
 .introduction {
   padding: 20px; }
@@ -2417,5 +2487,17 @@ article {
   article p {
     font-size: 16px;
     line-height: 2.2; }
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9; }
+  #overlay.darken {
+    background: rgba(0, 0, 0, 0.5); }
+  #overlay.disabled {
+    display: none; }
 
 /*# sourceMappingURL=style.css.map */

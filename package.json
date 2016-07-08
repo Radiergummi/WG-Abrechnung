@@ -25,6 +25,7 @@
     "mongo-utils": "^0.5.0",
     "mongoose": "^4.5.2",
     "morgan": "^1.6.1",
+    "multer": "^1.1.0",
     "nconf": "^0.8.4",
     "node-calendar": "^0.1.4",
     "node-compass": "0.2.3",

@@ -4,7 +4,9 @@
  global module,
  require
  */
+
 var Event   = require('../event'),
+    file    = require('../meta/file'),
 
     helpers = module.exports = {};
 
@@ -30,8 +32,10 @@ helpers.userData = function(req) {
   if (loggedIn) {
     user = JSON.parse(JSON.stringify(req.user));
     user.loggedIn = true;
+    user.id = req.user.id;
     user.name = req.user.firstName + ' ' + req.user.lastName;
     user.isAdmin = (req.user.admin);
+    user.hasProfilePicture = file.existsSync('public/images/users/' + req.user.id + '.jpg');
   }
 
   return user;

@@ -48,6 +48,7 @@ Sockets.initialize = function(server) {
 
 function requireModules () {
   var modules = [
+    'app',
     'user',
     'dashboard'
   ];

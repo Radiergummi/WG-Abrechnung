@@ -58,3 +58,10 @@ So far, there are view routes implemented. I'll try to describe the existing her
 
 ### Balance
 - `/balance` - Shows the current balance page with the users balance
+
+### Admin
+- `/admin` - Shows the admin panel
+- `/admin/users` - Shows the user management
+- `/admin/invoices` - Shows the invoice management
+- `/admin/tags` - Shows the tag management
+- `/admin/config` - Shows the general configuration page
