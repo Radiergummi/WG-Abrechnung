@@ -1,0 +1,75 @@
+@import "reset";
+@import "font-awesome/font-awesome";
+@import "navigation";
+
+@import "dashboard";
+
+body {
+  font: 14px "Roboto", "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00b7ff;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"] {
+  width: 100%;
+  margin: 5px 0;
+  padding: 6px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  font-size: 16px;
+  color: #000;
+  background: white;
+  line-height: 16px;
+  cursor: pointer;
+  transition: all .12s;
+
+  &:focus {
+    border: 1px solid #03a9f4;
+    outline: 0;
+  }
+}
+
+button,
+input[type="button"],
+.button {
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid rgba(0, 0, 0, 0);
+  border-radius: 4px;
+  font-size: 16px;
+  color: #fff;
+  background: #03a9f4;
+  line-height: 16px;
+  cursor: pointer;
+  transition: all .12s;
+
+  &:hover {
+    background: #0277bd;
+  }
+
+  &:focus {
+    background: #0277bd;
+    outline: 0;
+  }
+}
+
+article {
+  max-width: 80%;
+  margin: 50px auto;
+
+  color: rgba(0,0,0,.87);
+
+  h1 {
+    font-size: 26px;
+    color: #0389c7;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 2.2;
+  }
+}

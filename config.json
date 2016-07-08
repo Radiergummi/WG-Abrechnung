@@ -1,0 +1,36 @@
+{
+  "version": "0.0.1",
+  "url": "http://localhost",
+  "port": 3000,
+  "environment": "development",
+  "secret": "FJFuh24if8Y9",
+
+
+  "database": {
+    "name": "wgdb",
+    "host": "127.0.0.1",
+    "port": "27017"
+  },
+
+  "views": {
+    "templates": {
+      "path": "public/templates",
+      "engine": "tpl"
+    },
+
+    "path": "src/views"
+  },
+
+  "assets": {
+    "css": "public/css",
+    "sass": "public/scss",
+    "js": "public/js",
+    "img": "public/img",
+
+    "options": {
+      "skipCSSMinification": false,
+      "skipJSMinification": true,
+      "mainJSFile": "main.js"
+    }
+  }
+}

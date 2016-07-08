@@ -1,0 +1,46 @@
+.site-header {
+  width: 100%;
+  height: 60px;
+  background: #03a9f4;
+  color: #fff;
+  border-bottom: 5px solid rgba(0,0,0,.1);
+
+
+  &::after {
+    display: block;
+    content: '';
+    clear: both;
+  }
+
+  .main-navigation,
+  .current-user {
+    height: 60px;
+  }
+
+  .main-navigation {
+    float: left;
+
+    li {
+      display: inline-block;
+    }
+
+    a {
+      display: block;
+      padding: 0 20px;
+      color: #fff;
+      text-shadow: 1px 1px rgba(0,0,0,.25);
+      text-decoration: none;
+      line-height: 60px;
+      font-size: 25px;
+      transition: all .125s;
+
+      &:hover {
+        background: rgba(0,0,0,.075);
+      }
+    }
+  }
+
+  .current-user {
+    float: right
+  }
+}

@@ -1,0 +1,172 @@
+.introduction {
+  padding: 20px;
+
+  p,
+  h1 {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+}
+
+.current-month {
+  padding: 20px;
+
+  .open-invoices {
+
+    table {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
+      border-collapse: separate;
+
+      thead {
+        text-align: left;
+
+        tr {
+        }
+
+        th {
+          padding: 20px 0;
+          font-weight: 500;
+          font-size: 20px;
+          vertical-align: middle;
+          border-bottom: 5px solid #e5e5e5;
+        }
+      }
+
+      tbody {
+        tr:nth-child(2n+1) {
+          background: rgba(0, 0, 0, .05);
+        }
+
+        td {
+          vertical-align: middle;
+        }
+      }
+    }
+
+    .invoice-sum,
+    .invoice-date,
+    .invoice-tags {
+      width: 20%;
+    }
+
+    .invoice-state {
+      width: 10%;
+      text-align: center;
+
+      span {
+        font-size: 20px;
+
+        &.fa-times {
+          color: #ff815c;
+        }
+
+        &.fa-check {
+          color: #0ccc71;
+        }
+      }
+    }
+
+    .invoice-image {
+      max-width: 30%;
+      padding: 10px 0;
+      text-align: center;
+
+      img {
+        max-width: 80%;
+        height: auto;
+        border-radius: 3px;
+      }
+    }
+
+    .invoice-sum input {
+      width: 120px;
+    }
+
+    .invoice-tags {
+      .tag {
+        display: inline-block;
+        float: left;
+        margin: 2px;
+        padding: 4px 10px;
+        border: 1px solid rgba(0, 0, 0, .1);
+        border-radius: 4px;
+        background: #b3e5fc;
+        color: rgba(0, 0, 0, .5);
+        cursor: default;
+
+        &.tag-red {
+          background: #f44336;
+          color: #fff;
+          text-shadow: 1px 1px rgba(0, 0, 0, .25);
+        }
+
+        &.tag-green {
+          background: #8bc34a;
+          color: #fff;
+          text-shadow: 1px 1px rgba(0, 0, 0, .25);
+        }
+
+        &.tag-blue {
+          background: #2196f3;
+        }
+
+        &.tag-pink {
+          background: #e91e63;
+          color: #fff;
+        }
+
+        &.tag-yellow {
+          background: #ffeb3b;
+        }
+
+        &.tag-orange {
+          background: #ff9800;
+        }
+
+        &.tag-brown {
+          background: #795548;
+        }
+
+        &.tag-black {
+          background: #000;
+          color: #fff;
+        }
+
+        .remove-tag {
+          position: relative;
+          right: -4px;
+          cursor: pointer;
+          transition: all .12s;
+
+          &:hover {
+             opacity: .75;
+          }
+        }
+      }
+
+
+      .add-new {
+        background: white;
+        height: 26px;
+
+        span {
+          line-height: 16px;
+          pointer-events: none;
+        }
+
+        &:focus {
+          outline: 0;
+          border: 1px solid #03a9f4;
+
+          span {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
