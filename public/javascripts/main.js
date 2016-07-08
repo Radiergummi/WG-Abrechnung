@@ -41,7 +41,13 @@ if (!app) {
           fetch(new Request('/api/user/picture/upload', {
             method:  'post',
             body:    data
-          })).then(e => console.log(e), d => console.log(d));
+          })).then(function(data) {
+            var pictures = app.elements.profilePicture.querySelectorAll('img')
+
+            pictures[ 0 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
+            pictures[ 1 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
+
+          }, function(error) { console.error('An error occurred while trying to save the image.', error); });
         } else {
           console.error('wrong file type: ' + file.type);
         }

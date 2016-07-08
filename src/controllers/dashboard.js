@@ -7,6 +7,7 @@ var dashboard = module.exports = {};
 
 dashboard.dash = function(req, res, next) {
   var vars = {};
+  vars.cacheBuster = req.cacheBuster;
   vars.user = helper.userData(req);
 
   Invoice.getAll(function(error, data) {

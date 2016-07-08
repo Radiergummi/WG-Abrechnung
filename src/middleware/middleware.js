@@ -25,6 +25,13 @@ middleware.checkAuth = function (req, res, next) {
 };
 
 
+middleware.cacheBuster = function (req, res, next) {
+  req.cacheBuster = Date.now();
+
+  return next(null);
+}
+
+
 /**
  * Checks if a user is an admin
  *
