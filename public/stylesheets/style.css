@@ -2292,7 +2292,7 @@ table {
         display: block;
         position: absolute;
         top: -40px;
-        left: calc(50% - 25px);
+        left: calc(50% - 15px);
         border: 20px solid transparent;
         border-bottom-color: #fff;
         pointer-events: none; }
