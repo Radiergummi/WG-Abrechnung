@@ -1,9 +1,17 @@
 'use strict';
-
+var fs = require('fs'),
+    nconf = require('nconf');
 var helper  = require('./helpers');
 
 var api = module.exports = {};
 
 api.saveProfilePicture = function(req, res, next) {
-  return res.send(200);
+  console.log(req);
+  fs.writeFile(nconf.get('path') + '/public/images/users/' + req.body.user + '.jpg', req.file.buffer,function(error) {
+    if (error) {
+      return next(error);
+    }
+
+    return res.status(200);
+  });
 };

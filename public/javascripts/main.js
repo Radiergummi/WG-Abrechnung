@@ -36,8 +36,8 @@ if (!app) {
         if (file.type.match('image\/jp(e)?g')) {
           var data = new FormData();
           data.append('profilePicture', file);
-          data.append('DEBUG', 'test');
-console.log('fetrching now', file)
+          data.append('user', app.config.user.id);
+
           fetch(new Request('/api/user/picture/upload', {
             method:  'post',
             body:    data

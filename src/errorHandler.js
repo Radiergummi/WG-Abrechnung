@@ -20,6 +20,11 @@ var nconf = require('nconf');
  * @param next
  */
 module.exports = function(error, req, res, next) {
+  if (typeof error === 'string') {
+    res.status(500).send(error);
+    return console.error(error);
+  }
+
   var path = nconf.get('path'),
       stack = error.stack.toString().split(path).join(''),
       origin,
