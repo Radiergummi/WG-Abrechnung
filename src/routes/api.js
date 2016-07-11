@@ -23,7 +23,6 @@ var nconf  = require('nconf'),
     upload = multer({
       storage: storage,
       fileFilter: function(req, file, callback) {
-        console.log('fileFilter');
         if (file.mimetype.match('image\/jp(e)?g')) {
           return callback(null, true);
         }

@@ -2273,8 +2273,12 @@ table {
       transition: all .125s;
       cursor: pointer; }
       .site-header .current-user .profile-picture img {
-        width: 100%;
-        height: auto; }
+        min-width: 100%;
+        height: 100%;
+        width: auto;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%); }
       .site-header .current-user .profile-picture:hover, .site-header .current-user .profile-picture.upload-visible {
         box-shadow: 0 0 0 4px #fff, 0 0 2px 4px rgba(0, 0, 0, 0.15); }
     .site-header .current-user .upload-modal {
@@ -2323,8 +2327,12 @@ table {
         border: 1px solid rgba(0, 0, 0, 0.1);
         border-radius: 50px; }
         .site-header .current-user .upload-modal .current-picture img {
-          max-width: 100%;
-          height: auto; }
+          min-width: 100%;
+          height: 100%;
+          width: auto;
+          position: relative;
+          left: 50%;
+          transform: translateX(-50%); }
 
 .introduction {
   padding: 20px; }

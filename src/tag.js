@@ -65,7 +65,6 @@ Tag.getAll = function(callback) {
 Tag.createNew = function(data, callback) {
   this.getByName(data.tagName, function(error, tag) {
     if (error) {
-      console.log(error);
       return callback(error);
     }
 

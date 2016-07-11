@@ -95,7 +95,7 @@ function exceptionHandler(error) {
 
   var file = origin[ 0 ].split(path).join('') + (origin[ 0 ].indexOf('(') !== - 1 ? ')' : ''),
       line = origin[ 1 ];
-console.log(error); process.exit();
+
   console.error('');
   console.error("Critical ".bold.white + (error.hasOwnProperty('name') ? error.name : 'Error').bold.white);
   console.error(error.message.bgRed.white + "\n");

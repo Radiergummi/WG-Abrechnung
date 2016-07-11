@@ -9,21 +9,21 @@ var nconf = require('nconf'),
     winston = require('winston'),
 
     helper = require('./helper'),
-    controllers = require('../controllers'),
 
     mainRoutes = require('./main'),
     dashboardRoutes = require('./dashboard'),
+    invoiceRoutes = require('./invoices'),
     authenticationRoutes = require('./authentication');
     apiRoutes = require('./api');
 
-var setupPageRoute = helper.setupPageRoute;
 
-module.exports = function(app, middleware) {
+module.exports = function(app, middleware, controllers) {
   var router = express.Router();
 
   mainRoutes(router, middleware, controllers);
   authenticationRoutes(router, middleware, controllers);
   dashboardRoutes(router, middleware, controllers.dashboard);
+  invoiceRoutes(router, middleware, controllers.invoices);
   apiRoutes(router, middleware, controllers.api);
 
   app.use('/', router);

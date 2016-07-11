@@ -1,14 +1,20 @@
 'use strict';
 
+/*
+ global module,
+ require
+ */
+
 var Invoice = require('../invoice'),
     helper  = require('./helpers');
 
 var dashboard = module.exports = {};
 
 dashboard.dash = function(req, res, next) {
-  var vars = {};
-  vars.cacheBuster = req.cacheBuster;
-  vars.user = helper.userData(req);
+  var vars = {
+    user: {
+    }
+  };
 
   Invoice.getAll(function(error, data) {
     if (error) {

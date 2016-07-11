@@ -15,8 +15,7 @@ module.exports = function(router, middleware, controllers) {
    * As each page is only available for logged in users, authentication has to happen
    * here already.
    */
-  setupPageRoute(router, '/', middleware, [ middleware.checkAuth ], controllers.home);
-
+  setupPageRoute(router, '/', middleware, [], controllers.home);
   setupPageRoute(router, '/login', middleware, [], controllers.login);
   setupPageRoute(router, '/logout', middleware, [], controllers.authentication.logout);
 };

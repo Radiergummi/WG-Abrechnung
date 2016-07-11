@@ -1,12 +1,20 @@
+'use strict';
+
+/*
+ global module,
+ require
+ */
+
 var async = require('async'),
     nconf = require('nconf');
 
-var User = require('../user');
+var app,
+    User = require('../user');
 
 var controllers = {
       helpers: require('../controllers/helpers')
     },
-    middleware = {};
+    middleware  = {};
 
 /**
  * Authenticates a user
@@ -23,13 +31,6 @@ middleware.checkAuth = function (req, res, next) {
 
   return controllers.helpers.notAllowed(req, res);
 };
-
-
-middleware.cacheBuster = function (req, res, next) {
-  req.cacheBuster = Date.now();
-
-  return next(null);
-}
 
 
 /**
@@ -49,11 +50,6 @@ middleware.isAdmin = function (req, res, next) {
   }
 
   return next(null);
-};
-
-
-middleware.userData = function (req, res, next) {
-console.log('middleware loaded');
 };
 
 
@@ -99,4 +95,10 @@ middleware.addHeaders = function (req, res, next) {
   next();
 };
 
-module.exports = middleware;
+module.exports = function(webserver) {
+  app = webserver;
+
+  require('./render')(middleware);
+
+  return middleware;
+};

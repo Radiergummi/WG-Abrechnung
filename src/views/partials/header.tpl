@@ -8,7 +8,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/javascripts/app.js"></script>
     </head>
-  <body>
+  <body class="{bodyClass}">
     <div id="overlay" class="disabled"></div>
     <header class="site-header">
       <!--<a href="/" style="display:inline-block">

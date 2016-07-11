@@ -27,13 +27,14 @@ var favicon          = require('serve-favicon'),
     siofu            = require('socketio-file-upload'),
     flash            = require('connect-flash');
 
-var db   = require('../database').initialize(),
-    auth = require('../authentication');
+var db     = require('../database').initialize(),
+    auth   = require('../authentication'),
+    render = require('./render');
 
 var middleware = {};
 
-module.exports = function(app) {
-  middleware = require('./middleware');
+module.exports = function (app) {
+  middleware = require('./middleware')(app);
 
   // register templates.js
   app.engine('tpl', templates.__express);
@@ -58,7 +59,7 @@ module.exports = function(app) {
   // the server to the winston log using a custom WinstonStream object.
   if (nconf.get('environment') === 'development') {
     var winstonStream = {
-      write: function(message) {
+      write: function (message) {
         winston.verbose('[request] ' + message.replace(/\n$/, ''));
       }
     };
@@ -102,14 +103,15 @@ module.exports = function(app) {
 
   auth.initialize(app, middleware);
 
+  app.use(middleware.processRender);
   return middleware;
 };
 
-function registerTemplateHelpers () {
+function registerTemplateHelpers() {
   var moment = require('moment');
   moment.locale('de');
 
-  templates.registerHelper('format_date_string', function(data) {
+  templates.registerHelper('format_date_string', function (data) {
     return moment(data).format('LLLL:SS');
   });
 }

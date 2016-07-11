@@ -94,3 +94,15 @@ User.remove = function(id, callback) {
     return callback(null, deletedUser);
   });
 };
+
+
+User.getInvoices = function(id, callback) {
+  this.getById(id, function(error, user) {
+    if (error) {
+      return callback(error);
+    }
+
+    var invoices = user.invoices;
+    return callback(null, invoices);
+  });
+};
