@@ -17,6 +17,7 @@
     "connect-mongo": "^1.2.1",
     "cookie-parser": "^1.4.3",
     "debug": "~2.2.0",
+    "deep-extend": "^0.4.1",
     "express": "~4.13.1",
     "express-session": "^1.13.0",
     "express-validator": "^2.20.8",

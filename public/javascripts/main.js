@@ -60,10 +60,12 @@ if (!app) {
       return app.helpers.createElement('<div class="upload-modal">' +
         '<header><h2>Profilbild ändern</h2></header>' +
         '<article>' +
+        '<section class="preview">' +
         '<div class="current-picture"><img src="' + profilePicturePath + '" alt></div>' +
+        '</section>' +
         '<section class="upload-controls">' +
         '<input type="file" name="profilePicture" id="file-input">' +
-        '<button type="button" class="save-picture">Hochladen</button>' +
+        '<button type="button" class="save-picture"><span class="fa fa-upload"></span> Hochladen</button>' +
         '</section>' +
         '</article>' +
         '</div>');

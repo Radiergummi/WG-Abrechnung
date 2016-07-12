@@ -12,6 +12,7 @@ var Event   = require('../event'),
 
 helpers.notAllowed = function(req, res) {
   res.status(401);
+  console.log('user is not allowed');
   res.redirect('/login');
 };
 

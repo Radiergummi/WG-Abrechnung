@@ -10,18 +10,17 @@ var Invoice = require('../invoice'),
 
 var dashboard = module.exports = {};
 
-dashboard.dash = function(req, res, next) {
+dashboard.dash = function (req, res, next) {
   var vars = {
-    user: {
-    }
+    user: {}
   };
 
-  Invoice.getAll(function(error, data) {
+  Invoice.getAll(function (error, data) {
     if (error) {
       return next(error);
     }
 
-    vars.user.invoices = JSON.parse(JSON.stringify(data));
+    vars.user.userInvoices = JSON.parse(JSON.stringify(data));
 
     return res.render('dashboard', vars);
   });

@@ -3,7 +3,6 @@ var helper = module.exports = {};
 helper.setupPageRoute = function(router, name, middleware, middlewares, controller) {
 
   middlewares = middlewares.concat([
-    middleware.checkAuth,
     middleware.addHeaders,
     middleware.addExpiresHeaders
   ]);

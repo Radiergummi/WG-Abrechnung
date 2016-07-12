@@ -4,6 +4,7 @@
  global module,
  require
  */
+var deepExtend = require('deep-extend');
 
 var file = require('../meta/file');
 
@@ -37,31 +38,32 @@ module.exports = function (middleware) {
       }
 
 
-      variables.loggedIn             = req.hasOwnProperty('user');
-      variables.template             = { name: template };
-      variables.template[ template ] = true;
-      res.locals.template = template;
-      variables._locals = undefined;
+      var baseVariables = {};
+      baseVariables.loggedIn             = req.hasOwnProperty('user');
+      baseVariables.template             = { name: template };
+      baseVariables.template[ template ] = true;
+      res.locals.template            = template;
+      baseVariables._locals              = undefined;
 
-      if (variables.loggedIn) {
-        variables.user                   = JSON.parse(JSON.stringify(req.user));
-        variables.user.loggedIn          = true;
-        variables.user.id                = req.user.id;
-        variables.user.name              = req.user.firstName + ' ' + req.user.lastName;
-        variables.user.isAdmin           = (req.user.admin);
-        variables.user.hasProfilePicture = file.existsSync('public/images/users/' + req.user.id + '.jpg');
+      if (baseVariables.loggedIn) {
+        baseVariables.user                   = JSON.parse(JSON.stringify(req.user));
+        baseVariables.user.loggedIn          = true;
+        baseVariables.user.id                = req.user.id;
+        baseVariables.user.name              = req.user.firstName + ' ' + req.user.lastName;
+        baseVariables.user.isAdmin           = (req.user.admin);
+        baseVariables.user.hasProfilePicture = file.existsSync('public/images/users/' + req.user.id + '.jpg');
       }
 
-      variables.bodyClass   = buildBodyClass(req);
-      variables.url         = (req.baseUrl + req.path).replace(/^\/api/, '');
-      variables.cacheBuster = Date.now();
+      baseVariables.bodyClass   = buildBodyClass(req);
+      baseVariables.url         = (req.baseUrl + req.path).replace(/^\/api/, '');
+      baseVariables.cacheBuster = Date.now();
+
+      deepExtend(variables, baseVariables);
 
       return render.call(self, template, variables, function (error, str) {
         if (error) {
           return callback(error);
         }
-
-        console.log(variables);
 
         return callback(error, str);
       });

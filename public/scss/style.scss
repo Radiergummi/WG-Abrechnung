@@ -1,9 +1,9 @@
 @import "reset";
+@import "animations";
 @import "font-awesome/font-awesome";
 @import "navigation";
-
 @import "dashboard";
-
+@import "invoices";
 
 body {
   font: 14px "Roboto", "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -14,40 +14,42 @@ a {
 }
 
 input[type="text"],
+input[type="password"],
+input[type="date"],
 input[type="number"],
 input[type="email"] {
-  width: 100%;
-  margin: 5px 0;
-  padding: 6px 12px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  width:         100%;
+  margin:        5px 0;
+  padding:       6px 12px;
+  border:        1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
-  font-size: 16px;
-  color: #000;
-  background: white;
-  line-height: 16px;
-  cursor: pointer;
-  transition: all .12s;
+  font-size:     16px;
+  color:         #000;
+  background:    white;
+  line-height:   16px;
+  cursor:        pointer;
+  transition:    all .12s;
 
   &:focus {
-    border: 1px solid #03a9f4;
+    border:  1px solid #03a9f4;
     outline: 0;
   }
 }
 
-
 button,
 input[type="button"],
+input[type="submit"],
 .button {
   text-decoration: none;
-  padding: 6px 12px;
-  border: 1px solid rgba(0, 0, 0, 0);
-  border-radius: 4px;
-  font-size: 16px;
-  color: #fff;
-  background: #03a9f4;
-  line-height: 16px;
-  cursor: pointer;
-  transition: all .12s;
+  padding:         6px 12px;
+  border:          1px solid rgba(0, 0, 0, 0);
+  border-radius:   4px;
+  font-size:       16px;
+  color:           #fff;
+  background:      #03a9f4;
+  line-height:     16px;
+  cursor:          pointer;
+  transition:      all .12s;
 
   &:hover {
     background: #0277bd;
@@ -55,42 +57,176 @@ input[type="button"],
 
   &:focus {
     background: #0277bd;
-    outline: 0;
+    outline:    0;
+  }
+
+  &.danger {
+    background: #f47575;
   }
 }
 
 article {
   max-width: 80%;
-  margin: 50px auto;
+  margin:    50px auto;
 
-  color: rgba(0,0,0,.87);
+  color:     rgba(0, 0, 0, .87);
 
   h1 {
     font-size: 26px;
-    color: #0389c7;
+    color:     #0389c7;
+  }
+
+  h2 {
+    font-size: 22px;
   }
 
   p {
-    font-size: 16px;
+    font-size:   16px;
     line-height: 2.2;
+  }
+
+  code {
+    display:       inline-block;
+    padding:       2px 8px;
+    border-radius: 4px;
+    background:    #e5e5e5;
+    text-shadow:   1px 1px rgba(255, 255, 255, .75);
+    font-family:   monospace;
   }
 }
 
 #overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9;
+  top:      0;
+  left:     0;
+  width:    100%;
+  height:   100%;
+  z-index:  9;
 
   &.darken {
-    background: rgba(0,0,0,.5);
+    background: rgba(0, 0, 0, .5);
   }
 
   &.disabled {
     display: none;
   }
-
 }
 
+.sub-navigation {
+  margin:     20px auto;
+  padding:    0;
+  text-align: center;
+
+  ul {
+    display:       inline-block;
+    border:        1px solid #03a9f4;
+    border-radius: 4px;
+    box-shadow:    0 2px 5px rgba(0, 0, 0, .1);
+
+    li {
+      display: inline-block;
+
+      a {
+        display:         block;
+        padding:         10px 20px;
+        text-decoration: none;
+        color:           #1e88e5;
+        transition:      all .125s;
+
+        &:hover {
+          background: #03a9f4;
+          color:      #fff;
+        }
+      }
+
+      & + li a {
+        border-left: 1px solid #03a9f4;
+      }
+    }
+  }
+}
+
+.login-container {
+  width:         100%;
+  max-width:     400px;
+  padding:       25px;
+  text-align:    center;
+  background:    #03a9f4;
+  border-radius: 4px;
+  box-shadow:    0 2px 5px rgba(0, 0, 0, .2);
+
+  form {
+    text-align: left;
+  }
+
+  h1 {
+    color:         #fff;
+    margin-bottom: 25px;
+  }
+
+  input {
+    width:      calc(100% - 30px);
+    background: #03a9f4;
+    border:     2px solid #fff;
+    cursor:     text;
+
+    color:      #fff;
+
+    &:focus {
+      background: #fff;
+      color:      #0277bd;
+      border:     2px solid #fff;
+    }
+
+    &::-webkit-input-placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  button {
+    width:      100%;
+    margin-top: 15px;
+    padding:    10px 20px;
+    border:     2px solid #fff;
+    cursor:     pointer;
+
+    &:hover,
+    &:focus {
+      background: #fff;
+      color:      #0277bd;
+    }
+  }
+
+  label {
+    display:        inline-block;
+    vertical-align: middle;
+    width:          30px;
+    color:          #fff;
+  }
+}
+
+.page-login {
+  .site-header {
+    display: none;
+  }
+}
+
+.page-error {
+  max-width:     600px;
+  margin:        100px auto;
+  padding:       20px;
+  background:    rgba(0, 0, 0, .05);
+  border-radius: 4px;
+
+  h1 {
+    font-size:   56px;
+    color:       #f47575;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.51)
+  }
+
+  p {
+    margin:      50px auto 0;
+    color:       #666;
+    line-height: 1.6
+  }
+}

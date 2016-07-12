@@ -27,11 +27,12 @@ var controllers = {
 middleware.checkAuth = function (req, res, next) {
   if (req.user) {
     return next();
+  } else {
+    console.log(req.user);
   }
 
   return controllers.helpers.notAllowed(req, res);
 };
-
 
 /**
  * Checks if a user is an admin

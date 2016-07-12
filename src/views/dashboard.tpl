@@ -8,7 +8,7 @@
   </section>
   <section class="current-month">
     <div class="open-invoices">
-      <!-- IF user.invoices.length -->
+      <!-- IF user.userInvoices.length -->
       <table>
         <thead>
         <tr>
@@ -30,44 +30,44 @@
         </tr>
         </thead>
         <tbody>
-        <!-- BEGIN user.invoices -->
-        <tr id="{user.invoices._id}">
+        <!-- BEGIN user.userInvoices -->
+        <tr id="{user.userInvoices._id}">
           <td class="invoice-state">
-            <!-- IF user.invoices.sum -->
+            <!-- IF user.userInvoices.sum -->
             <span class="fa fa-check"></span>
             <!-- ELSE -->
             <span class="fa fa-times"></span>
-            <!-- ENDIF user.invoices.sum -->
+            <!-- ENDIF user.userInvoices.sum -->
           </td>
           <td class="invoice-image">
-            <img src="/images/invoices/{user._id}/{user.invoices._id}.jpg" alt>
+            <img src="/images/invoices/{user._id}/{user.userInvoices._id}.jpg" alt>
           </td>
           <td class="invoice-sum">
-            <!-- IF user.invoices.sum -->
-            <span>{user.invoices.sum} €</span>
+            <!-- IF user.userInvoices.sum -->
+            <span>{user.userInvoices.sum} €</span>
             <!-- ELSE -->
-            <input type="number" placeholder="Summe" step="0.01" name="sum-{user.invoices._id}">
+            <input type="number" placeholder="Summe" step="0.01" name="sum-{user.userInvoices._id}">
             <button type="button" class="save-invoice-sum"><span class="fa fa-save"></span> Speichern</button>
-            <!-- ENDIF user.invoices.sum -->
+            <!-- ENDIF user.userInvoices.sum -->
           </td>
           <td class="invoice-date">
-            <span>{user.invoices.creationDate}</span>
+            <span>{user.userInvoices.creationDate}</span>
           </td>
           <td class="invoice-tags">
-            <!-- BEGIN user.invoices.tags -->
-              <div class="tag tag-{user.invoices.tags.color}" id="{user.invoices.tags._id}">
-                {user.invoices.tags.name} <span class="remove-tag fa fa-times"></span>
+            <!-- BEGIN user.userInvoices.tags -->
+              <div class="tag tag-{user.userInvoices.tags.color}" id="{user.userInvoices.tags._id}">
+                {user.userInvoices.tags.name} <span class="remove-tag fa fa-times"></span>
               </div>
-            <!-- END user.invoices.tags -->
+            <!-- END user.userInvoices.tags -->
             <div class="tag editable add-new" contenteditable="true"><span class="fa fa-plus"></span></div>
           </td>
         </tr>
-        <!-- END user.invoices -->
+        <!-- END user.userInvoices -->
         </tbody>
       </table>
       <!-- ELSE -->
       <span class="no-invoices">Noch keine Rechnungen vorhanden.</span>
-      <!-- ENDIF user.invoices.length -->
+      <!-- ENDIF user.userInvoices.length -->
     </div>
   </section>
 </article>

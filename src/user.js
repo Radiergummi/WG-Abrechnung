@@ -36,7 +36,7 @@ User.getById = function(id, callback) {
       }
 
       if (!user) {
-        return callback(new Error('Der angegebene Angestellte mit der ID ' + id + ' existiert nicht'));
+        return callback(new Error('Der angegebene Mitbewohner mit der ID ' + id + ' existiert nicht'));
       }
 
       user.invoices = invoices;
@@ -54,11 +54,6 @@ User.getAll = function(callback) {
 
     return callback(null, user);
   });
-};
-
-
-User.getWorkDays = function(callback) {
-
 };
 
 

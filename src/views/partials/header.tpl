@@ -11,34 +11,9 @@
   <body class="{bodyClass}">
     <div id="overlay" class="disabled"></div>
     <header class="site-header">
-      <!--<a href="/" style="display:inline-block">
-        <figure class="logo">
-          <img src="/images/logo.svg" alt="">
-        </figure>
-      </a>-->
       <!-- IF user.loggedIn -->
-      <nav role="navigation" class="main-navigation">
-        <ul>
-          <li class="menu-dashboard"><a href="/dashboard">Übersicht</a></li>
-          <li class="menu-invoices"><a href="/invoices">Rechnungen</a></li>
-          <li class="menu-statistics"><a href="/statistics">Statistiken</a></li>
-          <li class="menu-balance"><a href="/balance">Abrechnung</a></li>
-          <!-- IF user.isAdmin -->
-          <li class="menu-admin"><a href="/admin/dashboard" title="Admin"><i class="fa fa-cogs"></i> Verwaltung</a></li>
-          <!-- ENDIF user.isAdmin -->
-        </ul>
-      </nav>
-      <div class="current-user" id="{user.id}">
-        <div class="profile-picture">
-        <!-- IF user.hasProfilePicture -->
-            <img src="/images/users/{user.id}.jpg?cacheBuster={cacheBuster}" alt="">
-        <!-- ELSE -->
-            <img src="/images/users/default.jpg" alt="">
-        <!-- ENDIF user.hasProfilePicture -->
-        </div>
-        <span class="username">{user.name}</span>
-        <a href="/logout" class="logout button"><i class="fa fa-sign-out"></i> Abmelden</a>
-      </div>
+        <!-- IMPORT partials/header/menu.tpl -->
+        <!-- IMPORT partials/header/account_menu.tpl -->
       <!-- ENDIF user.loggedIn -->
     </header>
     <nav class="breadcrumbs"></nav>

@@ -89,6 +89,7 @@
       z-index: 10;
       cursor: auto;
       color: rgba(0,0,0,.87);
+      box-shadow: 0 2px 5px rgba(0,0,0,.1);
 
       &::before {
         content: '';
@@ -119,6 +120,11 @@
         }
       }
 
+      .preview {
+        padding:    20px;
+        background: url(https://farm2.staticflickr.com/1619/26756716365_6bf1ae1317_c.jpg) 0 30%;
+      }
+
       .upload-controls {
         padding: 10px;
         text-align: center;
@@ -130,7 +136,7 @@
       }
 
       .current-picture {
-        margin: 20px auto;
+        margin: 0 auto;
         padding: 0;
         overflow: hidden;
         width: 100px;
