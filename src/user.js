@@ -101,3 +101,14 @@ User.getInvoices = function(id, callback) {
     return callback(null, invoices);
   });
 };
+
+
+User.getPaginatedInvoices = function(id, skip, limit, callback) {
+  this.getInvoices(id, function(error, invoices) {
+    if (error) {
+      return callback(error);
+    }
+    
+    return callback(null, invoices.slice(skip, limit));
+  });
+};

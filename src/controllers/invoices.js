@@ -55,12 +55,13 @@ invoices.delete = function (req, res, next) {
 invoices.edit = function (req, res, next) {
   var vars = {};
 
-  Invoice.getById(req.params.id, function (error, data) {
+  Invoice.getById(req.params.id, function (error, invoice) {
     if (error) {
       return next(error);
     }
 
-    vars.userInvoices = JSON.parse(JSON.stringify(data));
+    vars.invoice = JSON.parse(JSON.stringify(invoice));
+    vars.invoice.inputDate = invoice.getHTMLInputDate();
 
     return res.render('invoices/edit', vars);
   });

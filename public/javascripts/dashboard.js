@@ -144,6 +144,28 @@
       });
     };
 
+    app.connectors.changeTagColor = function(tag, newColor) {
+      app.io.emit('dashboard.updateTagColor', {
+        tagId:    tag.id,
+        newColor: newColor
+      }, function(error, tag) {
+        if (error) {
+          return console.log(error);
+        }
+
+        var searchTag = tag.textContent.trim(),
+            currentTags = [];
+        for (var i = 0; i < blackTags.length; i++) {
+          if (blackTags[i].textContent == 'Baumarkt') {
+            BaumarktTags.push(blackTags[i]);
+          }
+        }
+
+        document.getElementById('577aaea4820862942e3b4768').classList.add('tag-' + tag.color);
+        document.getElementById('577aaea4820862942e3b4768').classList.remove('tag-pink');
+      });
+    };
+
     app.templates.tagInput = (function() {
       var newTag = app.helpers.createNode('span', {
         contentEditable: 'true',

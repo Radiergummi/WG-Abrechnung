@@ -8,37 +8,44 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/javascripts/app.js"></script>
     </head>
-  <body>
+  <body class="{bodyClass}">
     <div id="overlay" class="disabled"></div>
     <header class="site-header">
-      <!--<a href="/" style="display:inline-block">
-        <figure class="logo">
-          <img src="/images/logo.svg" alt="">
-        </figure>
-      </a>-->
       <!-- IF user.loggedIn -->
-      <nav role="navigation" class="main-navigation">
-        <ul>
-          <li class="menu-dashboard"><a href="/dashboard">Übersicht</a></li>
-          <li class="menu-invoices"><a href="/invoices">Rechnungen</a></li>
-          <li class="menu-statistics"><a href="/statistics">Statistiken</a></li>
-          <li class="menu-balance"><a href="/balance">Abrechnung</a></li>
-          <!-- IF user.isAdmin -->
-          <li class="menu-admin"><a href="/admin/dashboard" title="Admin"><i class="fa fa-cogs"></i> Verwaltung</a></li>
-          <!-- ENDIF user.isAdmin -->
-        </ul>
-      </nav>
-      <div class="current-user" id="{user.id}">
-        <div class="profile-picture">
-        <!-- IF user.hasProfilePicture -->
-            <img src="/images/users/{user.id}.jpg?cacheBuster={cacheBuster}" alt="">
-        <!-- ELSE -->
-            <img src="/images/users/default.jpg" alt="">
-        <!-- ENDIF user.hasProfilePicture -->
-        </div>
-        <span class="username">{user.name}</span>
-        <a href="/logout" class="logout button"><i class="fa fa-sign-out"></i> Abmelden</a>
-      </div>
+<nav role="navigation" class="main-navigation">
+  <ul>
+    <li class="menu-dashboard">
+      <a href="/dashboard"><span class="fa fa-circle-o"></span> Übersicht</a>
+    </li>
+    <li class="menu-invoices">
+      <a href="/invoices"><span class="fa fa-inbox"></span> Rechnungen</a>
+    </li>
+    <li class="menu-statistics">
+      <a href="/statistics"><span class="fa fa-bar-chart"></span> Statistiken</a>
+    </li>
+    <li class="menu-balance">
+      <a href="/balance"><span class="fa fa-calculator"></span> Abrechnung</a>
+    </li>
+    <!-- IF user.isAdmin -->
+    <li class="menu-admin">
+      <a href="/admin/dashboard" title="Admin"><span class="fa fa-cogs"></span> Verwaltung</a>
+    </li>
+    <!-- ENDIF user.isAdmin -->
+  </ul>
+</nav>
+
+<div class="current-user" id="{user.id}">
+  <div class="profile-picture">
+    <!-- IF user.hasProfilePicture -->
+    <img src="/images/users/{user.id}.jpg?cacheBuster={cacheBuster}" alt="">
+    <!-- ELSE -->
+    <img src="/images/users/default.jpg" alt="">
+    <!-- ENDIF user.hasProfilePicture -->
+  </div>
+  <span class="username">{user.name}</span>
+  <a href="/logout" class="logout button"><i class="fa fa-sign-out"></i> Abmelden</a>
+</div>
+
       <!-- ENDIF user.loggedIn -->
     </header>
     <nav class="breadcrumbs"></nav>
@@ -53,7 +60,7 @@
   </section>
   <section class="current-month">
     <div class="open-invoices">
-      <!-- IF user.invoices.length -->
+      <!-- IF userInvoices.length -->
       <table>
         <thead>
         <tr>
@@ -75,50 +82,50 @@
         </tr>
         </thead>
         <tbody>
-        <!-- BEGIN user.invoices -->
-        <tr id="{user.invoices._id}">
+        <!-- BEGIN userInvoices -->
+        <tr id="{userInvoices._id}">
           <td class="invoice-state">
-            <!-- IF user.invoices.sum -->
+            <!-- IF userInvoices.sum -->
             <span class="fa fa-check"></span>
             <!-- ELSE -->
             <span class="fa fa-times"></span>
-            <!-- ENDIF user.invoices.sum -->
+            <!-- ENDIF userInvoices.sum -->
           </td>
           <td class="invoice-image">
-            <img src="/images/invoices/{user._id}/{user.invoices._id}.jpg" alt>
+            <img src="/images/invoices/{user._id}/{userInvoices._id}.jpg" alt>
           </td>
           <td class="invoice-sum">
-            <!-- IF user.invoices.sum -->
-            <span>{user.invoices.sum} €</span>
+            <!-- IF userInvoices.sum -->
+            <span>{userInvoices.sum} €</span>
             <!-- ELSE -->
-            <input type="number" placeholder="Summe" step="0.01" name="sum-{user.invoices._id}">
+            <input type="number" placeholder="Summe" step="0.01" name="sum-{userInvoices._id}">
             <button type="button" class="save-invoice-sum"><span class="fa fa-save"></span> Speichern</button>
-            <!-- ENDIF user.invoices.sum -->
+            <!-- ENDIF userInvoices.sum -->
           </td>
           <td class="invoice-date">
-            <span>{user.invoices.creationDate}</span>
+            <span>{userInvoices.creationDate}</span>
           </td>
           <td class="invoice-tags">
-            <!-- BEGIN user.invoices.tags -->
-              <div class="tag tag-{user.invoices.tags.color}" id="{user.invoices.tags._id}">
-                {user.invoices.tags.name} <span class="remove-tag fa fa-times"></span>
+            <!-- BEGIN userInvoices.tags -->
+              <div class="tag tag-{userInvoices.tags.color}" id="{userInvoices.tags._id}">
+                {userInvoices.tags.name} <span class="remove-tag fa fa-times"></span>
               </div>
-            <!-- END user.invoices.tags -->
+            <!-- END userInvoices.tags -->
             <div class="tag editable add-new" contenteditable="true"><span class="fa fa-plus"></span></div>
           </td>
         </tr>
-        <!-- END user.invoices -->
+        <!-- END userInvoices -->
         </tbody>
       </table>
       <!-- ELSE -->
       <span class="no-invoices">Noch keine Rechnungen vorhanden.</span>
-      <!-- ENDIF user.invoices.length -->
+      <!-- ENDIF userInvoices.length -->
     </div>
   </section>
 </article>
 <script src="/javascripts/dashboard.js"></script>
     </main>
-    <script src="javascripts/main.js"></script>
+    <script src="/javascripts/main.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function(event) {
         app.init();

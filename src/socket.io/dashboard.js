@@ -93,3 +93,33 @@ dashboardSockets.saveTag = function(socket, data, callback) {
   );
 };
 
+/**
+ *
+ * @param socket
+ * @param {object} data
+ * @param {string} data.tagId  the ID of the tag to change the color for
+ * @param {string} data.newColor  the new tag color
+ * @param {function} callback
+ */
+dashboardSockets.updateTagColor = function(socket, data, callback) {
+  Tag.getById(data.tagId, function(error, tag) {
+    if (error) {
+      return callback(error);
+    }
+
+    // check if the color is not within the possible colors list
+    if (Tag.colors.indexOf(data.newColor) === -1) {
+      return callback(new Error('The color %s is not defined', data.newColor));
+    }
+
+    tag.color = data.newColor;
+
+    tag.save(function(error) {
+      if (error) {
+        return callback(error);
+      }
+
+      callback(null, tag);
+    });
+  });
+};

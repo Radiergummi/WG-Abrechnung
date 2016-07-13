@@ -52,3 +52,12 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
+
+@mixin clearfix() {
+  &::after {
+    content: '';
+    display: block;
+    clear:   both;
+  }
+}

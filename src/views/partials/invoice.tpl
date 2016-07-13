@@ -7,7 +7,7 @@
     <div class="invoice-id">{userInvoices._id}</div>
     Datum: <span class="invoice-creation-date">{userInvoices.creationDate}</span><br>
     Summe: <span class="invoice-sum">{userInvoices.sum}</span>€<br>
-    Tags:
+    <div class="tags-label">Tags:</div>
     <div class="invoice-tags">
       <!-- IF userInvoices.tags.length -->
       <!-- BEGIN userInvoices.tags -->

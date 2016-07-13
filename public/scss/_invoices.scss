@@ -138,11 +138,7 @@
     background:    #fff;
     box-shadow:    0 2px 5px rgba(0, 0, 0, .1);
 
-    &::after {
-      content: '';
-      display: block;
-      clear:   both;
-    }
+    @include clearfix();
 
     section {
       font-size: 18px;
@@ -183,8 +179,17 @@
       height:  150px;
       padding: 20px;
 
+      .tags-label {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 2px 0;
+      }
+
       .invoice-tags {
         display: inline-block;
+        vertical-align: middle;
+
+        @include clearfix();
       }
 
       .invoice-id {
@@ -243,8 +248,19 @@
         font-weight: bold;
       }
 
+      .tags-label {
+        display: inline-block;
+        vertical-align: middle;
+        padding: 2px 0;
+        font-weight: normal;
+      }
+
       .invoice-tags {
         display: inline-block;
+        vertical-align: middle;
+
+        @include clearfix();
+
       }
 
       .invoice-id {
@@ -309,6 +325,8 @@
         border: 1px solid rgba(0,0,0,.1);
         border-radius: 4px;
         font-size: 16px;
+
+        @include clearfix();
       }
     }
 

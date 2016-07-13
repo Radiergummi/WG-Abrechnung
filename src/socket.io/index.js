@@ -50,6 +50,7 @@ function requireModules () {
   var modules = [
     'app',
     'user',
+    'invoices',
     'dashboard'
   ];
 

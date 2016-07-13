@@ -1,5 +1,12 @@
+'use strict';
+
+/*
+ global module,
+ require
+ */
+
 var mongoose = require('mongoose'),
-    moment   = require('moment');
+    moment = require('moment');
 
 var Tag      = require('./tag'),
     ObjectId = mongoose.Schema.Types.ObjectId;
@@ -10,11 +17,7 @@ var invoiceSchema = new mongoose.Schema({
   /**
    * the invoice creation date
    */
-  creationDate: {
-    type: Date, required: true, get: function(date) {
-      return moment(date).format('Do MMMM YYYY');
-    }
-  },
+  creationDate: { type: Date, required: true },
 
   /**
    * the invoice sum
@@ -35,5 +38,13 @@ var invoiceSchema = new mongoose.Schema({
   toObject: { getters: true },
   toJSON:   { getters: true }
 });
+
+invoiceSchema.methods.getHTMLInputDate = function() {
+  return new Date(this.creationDate.toString()).toISOString().substring(0, 10);
+};
+
+invoiceSchema.methods.getFormattedDate = function() {
+  return moment(this.creationDate).format('Do MMMM YYYY');
+};
 
 module.exports = mongoose.model('invoice', invoiceSchema);

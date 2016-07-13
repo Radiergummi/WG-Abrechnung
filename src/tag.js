@@ -11,6 +11,16 @@ var tagModel = require('./models/tag');
 
 var Tag = module.exports = {};
 
+Tag.colors = [
+  'red',
+  'green',
+  'blue',
+  'yellow',
+  'pink',
+  'brown',
+  'black'
+];
+
 /**
  * @callback tagCallback
  *
@@ -75,15 +85,7 @@ Tag.createNew = function(data, callback) {
 
     // if not, create a new tag
     var newTag = new tagModel(),
-        colors = [
-          'red',
-          'green',
-          'blue',
-          'yellow',
-          'pink',
-          'brown',
-          'black'
-        ];
+        colors = Tag.colors;
 
     // choose a random color if none given
     data.tagColor = data.tagColor || colors[ Math.floor(Math.random() * colors.length) ];

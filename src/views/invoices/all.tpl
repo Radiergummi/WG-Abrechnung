@@ -23,4 +23,5 @@
     <span class="no-invoices">Es sind noch keine Rechnungen vorhanden.</span>
   <!-- ENDIF userInvoices.length -->
 </article>
+<script src="/javascripts/invoices.all.js"></script>
 <!-- IMPORT partials/footer.tpl -->

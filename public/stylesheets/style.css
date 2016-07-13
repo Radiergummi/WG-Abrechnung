@@ -2535,6 +2535,13 @@ table {
   .tag.tag-black {
     background: #000;
     color: #fff; }
+  .tag .remove-tag {
+    position: relative;
+    right: -4px;
+    cursor: pointer;
+    transition: all .12s; }
+    .tag .remove-tag:hover {
+      opacity: .75; }
 
 .invoices .invoice {
   position: relative;
@@ -2575,8 +2582,17 @@ table {
     width: calc(100% - 200px);
     height: 150px;
     padding: 20px; }
+    .invoices .invoice .invoice-data .tags-label {
+      display: inline-block;
+      vertical-align: middle;
+      padding: 2px 0; }
     .invoices .invoice .invoice-data .invoice-tags {
-      display: inline-block; }
+      display: inline-block;
+      vertical-align: middle; }
+      .invoices .invoice .invoice-data .invoice-tags::after {
+        content: '';
+        display: block;
+        clear: both; }
     .invoices .invoice .invoice-data .invoice-id {
       position: absolute;
       top: 0;
@@ -2615,8 +2631,18 @@ table {
     line-height: 2; }
     .single-invoice .invoice .invoice-data > span {
       font-weight: bold; }
+    .single-invoice .invoice .invoice-data .tags-label {
+      display: inline-block;
+      vertical-align: middle;
+      padding: 2px 0;
+      font-weight: normal; }
     .single-invoice .invoice .invoice-data .invoice-tags {
-      display: inline-block; }
+      display: inline-block;
+      vertical-align: middle; }
+      .single-invoice .invoice .invoice-data .invoice-tags::after {
+        content: '';
+        display: block;
+        clear: both; }
     .single-invoice .invoice .invoice-data .invoice-id {
       position: absolute;
       top: 0;
@@ -2667,6 +2693,11 @@ table {
       border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: 4px;
       font-size: 16px; }
+      .edit-invoice .invoice .invoice-data .invoice-tags::after,
+      .create-invoice .invoice .invoice-data .invoice-tags::after {
+        content: '';
+        display: block;
+        clear: both; }
   .edit-invoice .invoice .invoice-image,
   .create-invoice .invoice .invoice-image {
     position: relative;

@@ -15,12 +15,16 @@ dashboard.dash = function (req, res, next) {
     user: {}
   };
 
-  Invoice.getAll(function (error, data) {
+  Invoice.getAll(function (error, invoices) {
     if (error) {
       return next(error);
     }
 
-    vars.user.userInvoices = JSON.parse(JSON.stringify(data));
+    vars.userInvoices = JSON.parse(JSON.stringify(invoices));
+
+    for (var i = 0; i < vars.userInvoices.length; i++) {
+      vars.userInvoices[ i ].creationDate = invoices[ i ].getFormattedDate();
+    }
 
     return res.render('dashboard', vars);
   });
