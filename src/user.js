@@ -28,6 +28,10 @@ var User = module.exports = {};
  */
 User.getById = function(id, callback) {
   userModel.findOne({ '_id': id }).populate('invoices').exec(function(error, user) {
+    if (error) {
+      return callback(error);
+    }
+
     invoiceModel.populate(user.invoices, {
       path: 'tags'
     }, function(error, invoices) {

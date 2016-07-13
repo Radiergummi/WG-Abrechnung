@@ -18,12 +18,11 @@ var invoiceSockets = module.exports = {};
  * @param {number} data.pageSize
  * @param {function} callback
  */
-invoiceSockets.getPaginated = function(socket, data, callback) {
-  data.pageNumber = data.pageNumber - 1;
-  var skip  = (data.pageNumber > 0 ? (data.pageNumber - 1) * data.pageSize : 0),
-      limit = data.pageSize;
+invoiceSockets.getPaginated = function (socket, data, callback) {
+  var skip  = (data.pageNumber > 0 ? (data.pageNumber) * data.pageSize : 0),
+      limit = skip + data.pageSize;
 
-  User.getPaginatedInvoices(data.userId, skip, limit, function(error, dataSet) {
+  User.getPaginatedInvoices(data.userId, skip, limit, function (error, dataSet) {
     if (error) {
       return callback(error);
     }

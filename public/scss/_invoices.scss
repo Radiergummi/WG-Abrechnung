@@ -64,28 +64,50 @@
       @include loading();
     }
   }
+
+  &.timeline-data-available {
+    height: 40px;
+
+    &::after {
+      content:          '\f141';
+      position:         absolute;
+      top:              20px;
+      left:            -18px;
+      width:            20px;
+      height:           20px;
+      line-height:      22px;
+      padding:          10px;
+      border-radius:    20px;
+      background-color: #eee;
+      color:            #999;
+      text-align:       center;
+      vertical-align:   middle;
+      font-family:      'FontAwesome';
+      font-size:        20px;
+    }
+  }
 }
 
 .tag {
-  display: inline-block;
-  float: left;
-  margin: 2px;
-  padding: 4px 10px;
-  border: 1px solid rgba(0, 0, 0, .1);
+  display:       inline-block;
+  float:         left;
+  margin:        2px;
+  padding:       4px 10px;
+  border:        1px solid rgba(0, 0, 0, .1);
   border-radius: 4px;
-  background: #b3e5fc;
-  color: rgba(0, 0, 0, .5);
-  cursor: default;
+  background:    #b3e5fc;
+  color:         rgba(0, 0, 0, .5);
+  cursor:        default;
 
   &.tag-red {
-    background: #f44336;
-    color: #fff;
+    background:  #f44336;
+    color:       #fff;
     text-shadow: 1px 1px rgba(0, 0, 0, .25);
   }
 
   &.tag-green {
-    background: #8bc34a;
-    color: #fff;
+    background:  #8bc34a;
+    color:       #fff;
     text-shadow: 1px 1px rgba(0, 0, 0, .25);
   }
 
@@ -95,7 +117,7 @@
 
   &.tag-pink {
     background: #e91e63;
-    color: #fff;
+    color:      #fff;
   }
 
   &.tag-yellow {
@@ -112,13 +134,13 @@
 
   &.tag-black {
     background: #000;
-    color: #fff;
+    color:      #fff;
   }
 
   .remove-tag {
-    position: relative;
-    right: -4px;
-    cursor: pointer;
+    position:   relative;
+    right:      -4px;
+    cursor:     pointer;
     transition: all .12s;
 
     &:hover {
@@ -180,13 +202,13 @@
       padding: 20px;
 
       .tags-label {
-        display: inline-block;
+        display:        inline-block;
         vertical-align: middle;
-        padding: 2px 0;
+        padding:        2px 0;
       }
 
       .invoice-tags {
-        display: inline-block;
+        display:        inline-block;
         vertical-align: middle;
 
         @include clearfix();
@@ -249,14 +271,14 @@
       }
 
       .tags-label {
-        display: inline-block;
+        display:        inline-block;
         vertical-align: middle;
-        padding: 2px 0;
-        font-weight: normal;
+        padding:        2px 0;
+        font-weight:    normal;
       }
 
       .invoice-tags {
-        display: inline-block;
+        display:        inline-block;
         vertical-align: middle;
 
         @include clearfix();
@@ -290,7 +312,7 @@
     overflow:      hidden;
 
     .invoice-actions {
-      padding: 40px;
+      padding:    40px;
       text-align: center;
     }
 
@@ -320,11 +342,11 @@
       }
 
       .invoice-tags {
-        margin: 5px 0;
-        padding: 6px 12px;
-        border: 1px solid rgba(0,0,0,.1);
+        margin:        5px 0;
+        padding:       6px 12px;
+        border:        1px solid rgba(0, 0, 0, .1);
         border-radius: 4px;
-        font-size: 16px;
+        font-size:     16px;
 
         @include clearfix();
       }

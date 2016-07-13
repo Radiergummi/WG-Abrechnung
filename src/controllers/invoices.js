@@ -27,7 +27,7 @@ invoices.viewSingle = function (req, res, next) {
 invoices.viewAll = function (req, res, next) {
   var vars = {};
 
-  User.getInvoices(req.user.id, function (error, data) {
+  User.getPaginatedInvoices(req.user.id, 0, 4, function (error, data) {
     if (error) {
       return next(error);
     }

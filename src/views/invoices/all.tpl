@@ -17,8 +17,7 @@
         <div class="timeline-item timeline-separator timeline-within-range"></div>
       <!-- ENDIF !@last -->
     <!-- END userInvoices -->
-  <div class="timeline-item timeline-loading"></div>
-  <div class="timeline-item timeline-last" data-timeline-description="Keine älteren Daten"></div>
+  <div class="timeline-item timeline-data-available"></div>
   <!-- ELSE -->
     <span class="no-invoices">Es sind noch keine Rechnungen vorhanden.</span>
   <!-- ENDIF userInvoices.length -->

@@ -2502,6 +2502,24 @@ table {
       background-repeat: no-repeat;
       background-position: center center;
       background-size: 80% 80%; }
+  .timeline-item.timeline-data-available {
+    height: 40px; }
+    .timeline-item.timeline-data-available::after {
+      content: '\f141';
+      position: absolute;
+      top: 20px;
+      left: -18px;
+      width: 20px;
+      height: 20px;
+      line-height: 22px;
+      padding: 10px;
+      border-radius: 20px;
+      background-color: #eee;
+      color: #999;
+      text-align: center;
+      vertical-align: middle;
+      font-family: 'FontAwesome';
+      font-size: 20px; }
 
 .tag {
   display: inline-block;
