@@ -2481,9 +2481,11 @@ table {
     top: initial;
     bottom: -40px; }
   .timeline-item.timeline-loading {
-    height: 80px; }
+    height: 80px;
+    border-radius: 0 0 4px 4px; }
     .timeline-item.timeline-loading.timeline-last {
-      height: 40px; }
+      height: 40px;
+      border-radius: 0; }
       .timeline-item.timeline-loading.timeline-last::after {
         top: 40px;
         left: 2px; }

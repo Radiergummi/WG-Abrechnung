@@ -40,9 +40,11 @@
 
   &.timeline-loading {
     height: 80px;
+    border-radius: 0 0 4px 4px;
 
     &.timeline-last {
       height: 40px;
+      border-radius: 0;
 
       &::after {
         top:  40px;
