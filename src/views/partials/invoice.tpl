@@ -1,12 +1,14 @@
 <article class="invoice" id="{userInvoices._id}">
   <section class="invoice-image">
     <img src="/images/invoices/{user._id}/{userInvoices._id}.jpg"
-         alt="Rechnung {userInvoices._id}">
+         alt="Rechnung {userInvoices._id}"
+         onerror="app.events.imageError(this)"
+    >
   </section>
   <section class="invoice-data">
     <div class="invoice-id">{userInvoices._id}</div>
     Datum: <span class="invoice-creation-date">{userInvoices.creationDate}</span><br>
-    Summe: <span class="invoice-sum">{userInvoices.sum}</span>€<br>
+    Summe: <!-- IF userInvoices.sum --><span class="invoice-sum">{userInvoices.sum}</span>€<!-- ELSE -->Noch keine Summe angegeben<!-- ENDIF userInvoices.sum --><br>
     <div class="tags-label">Tags:</div>
     <div class="invoice-tags">
       <!-- IF userInvoices.tags.length -->

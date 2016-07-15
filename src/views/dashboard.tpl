@@ -40,7 +40,7 @@
             <!-- ENDIF userInvoices.sum -->
           </td>
           <td class="invoice-image">
-            <img src="/images/invoices/{user._id}/{userInvoices._id}.jpg" alt>
+            <img src="/images/invoices/{user._id}/{userInvoices._id}.jpg" alt onerror="app.events.imageError(this);">
           </td>
           <td class="invoice-sum">
             <!-- IF userInvoices.sum -->

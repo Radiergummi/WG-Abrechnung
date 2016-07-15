@@ -187,6 +187,13 @@
         left:       10%;
         transform:  translate(-10%, -50%);
         transition: all .5s;
+
+        &.image-error {
+          width: 50px !important;
+          left: calc(50% - 25px);
+          top: calc(50% - 25px);
+          transform: none !important;
+        }
       }
 
       &:hover {

@@ -2594,6 +2594,11 @@ table {
       left: 10%;
       transform: translate(-10%, -50%);
       transition: all .5s; }
+      .invoices .invoice .invoice-image img.image-error {
+        width: 50px !important;
+        left: calc(50% - 25px);
+        top: calc(50% - 25px);
+        transform: none !important; }
     .invoices .invoice .invoice-image:hover img {
       width: 120%;
       transform: translate(-15%, -50%); }

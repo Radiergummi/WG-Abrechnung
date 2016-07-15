@@ -74,6 +74,15 @@ app.connectors.getConfig = function(callback) {
   });
 };
 
+app.events.imageError = function(image) {
+  image.onerror = '';
+  image.src = '/images/noImage.svg';
+  image.classList.add('image-error');
+  image.parentNode.title = 'Kein Bild verfügbar';
+
+  return true;
+};
+
 app.init = function() {
   app.io = io();
   app.elements.overlay = document.getElementById('overlay');
