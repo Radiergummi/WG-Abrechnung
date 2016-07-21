@@ -3,7 +3,7 @@
   <header>
     <h1>Statistiken</h1>
   </header>
-  <section class="own-spending"></section>
+  <section class="flat-spending"></section>
 </article>
 <script src="/javascripts/statistics.js"></script>
 <!-- IMPORT partials/footer.tpl -->

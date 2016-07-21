@@ -473,3 +473,25 @@ Invoice.getSums = function (id, callback) {
       return callback(null, data);
     });
 };
+
+Invoice.getByUser = function(callback) {
+  this.getAll(function(error, data) {
+    if (error) {
+      return callback(error);
+    }
+
+    var users = {};
+
+    for (var i = 0; i < data.length; i++) {
+      var userId = data[ i ].user._id;
+
+      if (!users.hasOwnProperty(userId)) {
+        users[userId] = [];
+      }
+
+      users[userId].push(data[ i ]);
+    }
+
+    return callback(null, users);
+  });
+};
