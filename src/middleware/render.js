@@ -4,7 +4,8 @@
  global module,
  require
  */
-var deepExtend = require('deep-extend');
+var deepExtend = require('deep-extend'),
+    nconf      = require('nconf');
 
 var file = require('../meta/file');
 
@@ -38,11 +39,11 @@ module.exports = function (middleware) {
       }
 
 
-      var baseVariables = {};
+      var baseVariables                  = {};
       baseVariables.loggedIn             = req.hasOwnProperty('user');
       baseVariables.template             = { name: template };
       baseVariables.template[ template ] = true;
-      res.locals.template            = template;
+      res.locals.template                = template;
       baseVariables._locals              = undefined;
 
       if (baseVariables.loggedIn) {
@@ -59,7 +60,8 @@ module.exports = function (middleware) {
       baseVariables.cacheBuster = Date.now();
 
       deepExtend(variables, baseVariables);
-
+      variables.pageTitle = (variables.pageTitle ? variables.pageTitle + ' | ' : '') + nconf.get('name');
+      
       return render.call(self, template, variables, function (error, str) {
         if (error) {
           return callback(error);

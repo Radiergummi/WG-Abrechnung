@@ -19,14 +19,7 @@ var userSchema = mongoose.Schema({
   authentication: {
     username: { type: String, required: true },
     password: { type: String, required: true }
-  },
-
-  /**
-   * the invoices registered for a specific user
-   */
-  invoices: [
-    { type: ObjectId, ref: 'invoice' }
-  ]
+  }
 });
 
 
@@ -38,11 +31,6 @@ var userSchema = mongoose.Schema({
  */
 userSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.authentication.password);
-};
-
-
-userSchema.methods.getInvoices = function() {
-  return this.populate('invoices');
 };
 
 

@@ -9,7 +9,8 @@ var async = require('async'),
     nconf = require('nconf');
 
 var app,
-    User = require('../user');
+    User = require('../user'),
+    Invoice = require('../invoice');
 
 var controllers = {
       helpers: require('../controllers/helpers')
@@ -94,6 +95,23 @@ middleware.addHeaders = function (req, res, next) {
   }
 
   next();
+};
+
+/**
+ * checks if a user owns an invoice
+ * 
+ * @param req
+ * @param res
+ * @param next
+ */
+middleware.checkInvoicePermissions = function(req, res, next) {
+  Invoice.checkOwnership(req.user._id, req.params.id, function(isOwner) {
+    if (!isOwner) {
+      return controllers.helpers.noPermission(req, res);
+    }
+
+    return next();
+  });
 };
 
 module.exports = function(webserver) {

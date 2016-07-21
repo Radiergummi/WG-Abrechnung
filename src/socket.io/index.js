@@ -51,6 +51,7 @@ function requireModules () {
     'app',
     'user',
     'invoices',
+    'statistics',
     'dashboard'
   ];
 

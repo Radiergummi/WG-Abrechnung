@@ -11,10 +11,10 @@ var app = {
   connectors: {},
   templates:  {},
   startup:    [],
-  config: {}
+  config:     {}
 };
 
-app.helpers.createNode = function(tagName, attributes, content) {
+app.helpers.createNode = function (tagName, attributes, content) {
   var node = document.createElement(tagName);
 
   attributes = attributes || {};
@@ -34,7 +34,7 @@ app.helpers.createNode = function(tagName, attributes, content) {
   return node;
 };
 
-app.helpers.createElement = function(elementString) {
+app.helpers.createElement = function (elementString) {
   var parser = new DOMParser();
 
   return parser.parseFromString(elementString, 'text/html').body.childNodes[ 0 ];
@@ -47,23 +47,23 @@ app.helpers.createElement = function(elementString) {
  * @param immediate
  * @returns {Function}
  */
-app.helpers.debounce = function(func, wait, immediate) {
+app.helpers.debounce = function (func, wait, immediate) {
   var timeout;
-  return function() {
+  return function () {
     var context = this, args = arguments;
-    var later = function() {
+    var later   = function () {
       timeout = null;
-      if (!immediate) func.apply(context, args);
+      if (! immediate) func.apply(context, args);
     };
-    var callNow = immediate && !timeout;
+    var callNow = immediate && ! timeout;
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
 };
 
-app.connectors.getConfig = function(callback) {
-  app.io.emit('app.getConfig', function(error, data) {
+app.connectors.getConfig = function (callback) {
+  app.io.emit('app.getConfig', function (error, data) {
     if (error) {
       return console.error(error);
     }
@@ -74,22 +74,66 @@ app.connectors.getConfig = function(callback) {
   });
 };
 
-app.events.imageError = function(image) {
+app.events.imageError = function (image) {
   image.onerror = '';
-  image.src = '/images/noImage.svg';
+  image.src     = '/images/noImage.svg';
   image.classList.add('image-error');
   image.parentNode.title = 'Kein Bild verfügbar';
 
   return true;
 };
 
-app.init = function() {
-  app.io = io();
+app.charts = {
+  prepare: function (container, id, data) {
+    var canvas;
+
+    /**
+     * use existing canvas or create a new one
+     */
+    if (container.getElementsByTagName('canvas').length !== 0) {
+      canvas = container.getElementsByTagName('canvas')[ 0 ];
+    } else {
+
+      // create a new chart canvas
+      canvas = app.helpers.createNode('canvas', {
+        class:  'chart',
+        id:     'id',
+        width:  container.offsetWidth,
+        height: container.offsetHeight
+      });
+
+      // append canvas to the container
+      container.appendChild(canvas);
+    }
+
+    return new app.Charts(canvas.getContext('2d'), data);
+  },
+
+  line: function (container, id, data) {
+    return this.prepare(container, id, {
+      type:    'line',
+      data:    data,
+      options: {
+        scales: {
+          yAxes: [ {
+            ticks: {
+              beginAtZero: true
+            }
+          } ]
+        }
+      }
+    });
+  }
+};
+
+app.init = function () {
+  app.io               = io();
+  app.Charts           = Chart;
   app.elements.overlay = document.getElementById('overlay');
-  app.connectors.getConfig(function() {
+  app.connectors.getConfig(function () {
 
     // call all startup scripts
-    for (var i = 0; i < app.startup.length; i++) {
+    for (var i = 0; i < app.startup.length; i ++) {
       app.startup[ i ].call(app);
     }
   });

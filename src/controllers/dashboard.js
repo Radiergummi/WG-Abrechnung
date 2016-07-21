@@ -15,7 +15,7 @@ dashboard.dash = function (req, res, next) {
     user: {}
   };
 
-  Invoice.getAll(function (error, invoices) {
+  Invoice.getOwn(req.user._id, function (error, invoices) {
     if (error) {
       return next(error);
     }

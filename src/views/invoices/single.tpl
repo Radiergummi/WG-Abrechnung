@@ -2,12 +2,12 @@
 <nav class="invoices-navigation sub-navigation">
   <ul>
     <li>
-      <a href="/invoices"><span class="fa fa-arrow-left"></span> Zurück</a>
-    </li><li>
+      <a href="/invoices" class="back-link"><span class="fa fa-arrow-left"></span> Zurück</a>
+    </li><!-- IF userInvoices.ownInvoice --><li>
       <a href="/invoices/{userInvoices._id}/edit"><span class="fa fa-edit"></span> Bearbeiten</a>
     </li><li>
     <a href="/invoices/{userInvoices._id}/delete"><span class="fa fa-save"></span> Löschen</a>
-  </li>
+  </li><!-- ENDIF userInvoices.ownInvoice -->
   </ul>
 </nav>
 <div class="single-invoice">

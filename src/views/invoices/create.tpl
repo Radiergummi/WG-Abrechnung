@@ -2,7 +2,7 @@
 <nav class="invoices-navigation sub-navigation">
   <ul>
     <li>
-      <a href="/invoices"><span class="fa fa-arrow-left"></span> Zurück</a>
+      <a href="/invoices" class="back-link"><span class="fa fa-arrow-left"></span> Zurück</a>
     </li><li>
     <a href="/invoices/create/save"><span class="fa fa-save"></span> Speichern</a>
   </li>

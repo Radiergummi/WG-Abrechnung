@@ -13,14 +13,17 @@ a {
   color: #00b7ff;
 }
 
+textarea,
+select,
 input[type="text"],
+input[type="search"],
 input[type="password"],
 input[type="date"],
 input[type="number"],
 input[type="email"] {
   width:         100%;
   margin:        5px 0;
-  padding:       6px 12px;
+  padding:       8px 12px 6px;
   border:        1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   font-size:     16px;
@@ -33,6 +36,7 @@ input[type="email"] {
   &:focus {
     border:  1px solid #03a9f4;
     outline: 0;
+    cursor: text;
   }
 }
 
@@ -65,11 +69,31 @@ input[type="submit"],
   }
 }
 
+label.in-focus {
+  color: #03a9f4;
+}
+
+textarea {
+  display: block;
+  resize:  vertical;
+}
+
+select {
+  padding: 7px 12px 5px;
+
+  &:focus {
+    border-radius: 4px 4px 0 0;
+  }
+}
+
 article {
   max-width: 80%;
   margin:    50px auto;
-
   color:     rgba(0, 0, 0, .87);
+
+  @media screen and (max-width: 1100px) {
+    max-width: initial;
+  }
 
   h1 {
     font-size: 26px;
@@ -117,7 +141,7 @@ img.image-error {
 }
 
 .sub-navigation {
-  margin:     20px auto;
+  margin:     20px auto 15px;
   padding:    0;
   text-align: center;
 
@@ -137,6 +161,7 @@ img.image-error {
         color:           #1e88e5;
         transition:      all .125s;
 
+        &.control-active,
         &:hover {
           background: #03a9f4;
           color:      #fff;
@@ -222,10 +247,18 @@ img.image-error {
   background:    rgba(0, 0, 0, .05);
   border-radius: 4px;
 
+  @media screen and (max-width: 600px) {
+    margin: 20px;
+  }
+
   h1 {
     font-size:   56px;
     color:       #f47575;
-    text-shadow: 1px 1px rgba(0, 0, 0, 0.51)
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.51);
+
+    @media screen and (max-width: 320px) {
+      font-size: 32px;
+    }
   }
 
   p {

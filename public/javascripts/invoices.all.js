@@ -62,6 +62,8 @@ if (! app) {
     };
 
     app.connectors.getMoreInvoices = function () {
+      var page = (document.getElementsByClassName('invoice').length) / 2;
+
       // remove tail element
       document.getElementsByClassName('timeline-data-available')[ 0 ].remove();
 
@@ -70,7 +72,7 @@ if (! app) {
 
       app.io.emit('invoices.getPaginated', {
         userId:     app.config.user.id,
-        pageNumber: (document.getElementsByClassName('invoice').length) / 2,
+        pageNumber: page,
         pageSize:   2
       }, function (error, invoices) {
         if (error) {
@@ -95,6 +97,8 @@ if (! app) {
               app.elements.invoicesContainer.appendChild(app.templates.invoiceCard(invoices[ i ]));
             }
 
+            history.pushState(null, 'Rechnungen | Seite' + page, '/invoices/page/' + page);
+
             app.elements.invoicesContainer.appendChild(app.templates.invoiceTimelineAvailabilityIndicator);
           } else {
             app.listeners.removeInvoiceEvents();
@@ -111,13 +115,19 @@ if (! app) {
       return function (invoice) {
         var template = '<article class="invoice" id="' + invoice._id + '">' +
           '<section class="invoice-image">' +
-          '<img src="/images/invoices/' + userId + '/' + invoice._id + '.jpg" alt="Rechnung ' + invoice._id + '">' +
+          '<img src="/images/invoices/' + userId + '/' + invoice._id + '.jpg" alt="Rechnung ' + invoice._id + '" onerror="app.events.imageError(this)">' +
           '</section>' +
           '<section class="invoice-data">' +
           '<div class="invoice-id">' + invoice._id + '</div>' +
+          '<div class="invoice-owner">' +
+          '<div class="profile-picture">' +
+          '<img src="/images/users/' + invoice.user._id + '.jpg" alt>' +
+          '</div>' +
+          '<span class="owner-name">' + invoice.user.firstName + ' ' + invoice.user.lastName + '</span>' +
+          '</div>' +
           'Datum: <span class="invoice-creation-date">' + invoice.creationDate + '</span><br>' +
           'Summe: <span class="invoice-sum">' + invoice.sum + '</span>€<br>' +
-          '<div class="tags-label">Tags:</div>' +
+          '<div class="tags-label">Tags: </div>' +
           '<div class="invoice-tags">';
 
         if (invoice.tags.length) {
@@ -133,10 +143,15 @@ if (! app) {
         template += '</div>' +
           '</section>' +
           '<section class="invoice-actions">' +
-          '<a class="button" href="/invoices/' + invoice._id + '"><span class="fa fa-eye"></span> Ansehen</a>' +
-          '<a class="button" href="/invoices/' + invoice._id + '/edit"><span class="fa fa-edit"></span> Bearbeiten</a>' +
-          '<a class="button danger" href="/invoices/' + invoice._id + '/delete"><span class="fa fa-trash-o"></span> Löschen</a>' +
-          '</section>' +
+          '<a class="button" href="/invoices/' + invoice._id + '"><span class="fa fa-eye"></span> Ansehen</a>';
+console.log(invoice.ownInvoice);
+        if (invoice.ownInvoice) {
+
+          template += '<a class="button" href="/invoices/' + invoice._id + '/edit"><span class="fa fa-edit"></span> Bearbeiten</a>' +
+            '<a class="button danger" href="/invoices/' + invoice._id + '/delete"><span class="fa fa-trash-o"></span> Löschen</a>';
+        }
+
+        template += '</section>' +
           '</article>';
 
         return app.helpers.createElement(template);
@@ -155,9 +170,10 @@ if (! app) {
       return app.helpers.createElement('<div class="timeline-item timeline-last" data-timeline-description="Keine älteren Daten"></div>');
     })();
 
-    app.templates.invoiceTimelineAvailabilityIndicator = (function() {
+    app.templates.invoiceTimelineAvailabilityIndicator = (function () {
       return app.helpers.createElement('<div class="timeline-item timeline-data-available"></div>');
     })();
+
 
     app.listeners.addInvoicesEvents();
   });

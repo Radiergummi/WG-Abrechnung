@@ -13,6 +13,7 @@ var nconf = require('nconf'),
     mainRoutes = require('./main'),
     dashboardRoutes = require('./dashboard'),
     invoiceRoutes = require('./invoices'),
+    statisticsRoutes = require('./statistics'),
     authenticationRoutes = require('./authentication');
     apiRoutes = require('./api');
 
@@ -24,6 +25,7 @@ module.exports = function(app, middleware, controllers) {
   authenticationRoutes(router, middleware, controllers);
   dashboardRoutes(router, middleware, controllers.dashboard);
   invoiceRoutes(router, middleware, controllers.invoices);
+  statisticsRoutes(router, middleware, controllers.statistics);
   apiRoutes(router, middleware, controllers.api);
 
   app.use('/', router);

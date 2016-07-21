@@ -34,6 +34,7 @@ var File = module.exports = {};
  * @param {function} callback  a callback to execute once the file is read
  */
 File.read = function(file, callback) {
+  console.log(arguments);
   file = resolvePath(file);
 
   try {

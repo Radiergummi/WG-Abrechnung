@@ -2261,6 +2261,25 @@ table {
       line-height: 60px;
       font-size: 25px;
       transition: all .125s; }
+      @media screen and (max-width: 1100px) {
+        .site-header .main-navigation a {
+          font-size: 20px;
+          padding: 0 10px; } }
+      @media screen and (max-width: 900px) {
+        .site-header .main-navigation a {
+          font-size: 20px;
+          padding: 0 10px; }
+          .site-header .main-navigation a .fa {
+            display: none; } }
+      @media screen and (max-width: 600px) {
+        .site-header .main-navigation a {
+          font-size: 0;
+          padding: 0 20px;
+          line-height: 70px;
+          height: 60px; }
+          .site-header .main-navigation a .fa {
+            display: inline;
+            font-size: 16px; } }
       .site-header .main-navigation a:hover {
         background: rgba(0, 0, 0, 0.075); }
   .site-header .current-user {
@@ -2347,6 +2366,31 @@ table {
           position: relative;
           left: 50%;
           transform: translateX(-50%); }
+    @media screen and (max-width: 900px) {
+      .site-header .current-user {
+        padding: 0; }
+        .site-header .current-user .profile-picture {
+          margin: 10px 0; }
+        .site-header .current-user .username {
+          display: none; }
+        .site-header .current-user .logout {
+          display: inline-block;
+          height: 60px;
+          vertical-align: top;
+          line-height: 70px;
+          border-radius: 0;
+          font-size: 0;
+          padding: 0 20px; }
+          .site-header .current-user .logout .fa {
+            font-size: 16px; }
+        .site-header .current-user .upload-modal {
+          right: calc(50% - 10px); }
+          .site-header .current-user .upload-modal::before {
+            left: initial;
+            right: 10px; } }
+    @media screen and (max-width: 600px) {
+      .site-header .current-user .logout {
+        padding: 0 10px; } }
 
 .introduction {
   padding: 20px; }
@@ -2522,6 +2566,9 @@ table {
       vertical-align: middle;
       font-family: 'FontAwesome';
       font-size: 20px; }
+  @media screen and (max-width: 600px) {
+    .timeline-item.timeline-first {
+      display: none; } }
 
 .tag {
   display: inline-block;
@@ -2542,7 +2589,9 @@ table {
     color: #fff;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.25); }
   .tag.tag-blue {
-    background: #2196f3; }
+    background: #2196f3;
+    color: #fff;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.25); }
   .tag.tag-pink {
     background: #e91e63;
     color: #fff; }
@@ -2563,6 +2612,9 @@ table {
     .tag .remove-tag:hover {
       opacity: .75; }
 
+@media screen and (max-width: 600px) {
+  .invoices {
+    margin-top: 0; } }
 .invoices .invoice {
   position: relative;
   width: 80%;
@@ -2576,6 +2628,8 @@ table {
     content: '';
     display: block;
     clear: both; }
+  .invoices .invoice.search-result + .search-result {
+    margin-top: 40px; }
   .invoices .invoice section {
     font-size: 18px; }
     .invoices .invoice section > span {
@@ -2607,6 +2661,26 @@ table {
     width: calc(100% - 200px);
     height: 150px;
     padding: 20px; }
+    .invoices .invoice .invoice-data .invoice-owner {
+      margin-bottom: 20px; }
+      .invoices .invoice .invoice-data .invoice-owner .profile-picture {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        overflow: hidden;
+        vertical-align: middle;
+        box-shadow: 0 0 0 4px transparent;
+        transition: all .125s;
+        cursor: pointer;
+        margin-right: 10px; }
+        .invoices .invoice .invoice-data .invoice-owner .profile-picture img {
+          width: 40px;
+          height: 40px;
+          border-radius: 20px;
+          position: relative;
+          left: 50%;
+          transform: translateX(-50%); }
     .invoices .invoice .invoice-data .tags-label {
       display: inline-block;
       vertical-align: middle;
@@ -2637,6 +2711,29 @@ table {
     text-align: right; }
     .invoices .invoice .invoice-actions .button {
       display: inline-block; }
+      @media screen and (max-width: 900px) {
+        .invoices .invoice .invoice-actions .button {
+          font-size: 0;
+          line-height: 16px;
+          height: 32px; }
+          .invoices .invoice .invoice-actions .button .fa {
+            font-size: 16px; } }
+      .invoices .invoice .invoice-actions .button + .button {
+        margin-left: 5px; }
+  @media screen and (max-width: 1100px) {
+    .invoices .invoice {
+      width: calc(100% - 20px); } }
+  @media screen and (max-width: 600px) {
+    .invoices .invoice .invoice-image,
+    .invoices .invoice .invoice-data,
+    .invoices .invoice .invoice-actions {
+      width: 100%;
+      float: none;
+      border: none; }
+    .invoices .invoice .invoice-actions {
+      margin-top: 20px; }
+    .invoices .invoice .invoice-data .invoice-id {
+      background: rgba(255, 255, 255, 0.75); } }
 
 .single-invoice .invoice {
   position: relative;
@@ -2764,20 +2861,72 @@ table {
       opacity: 1;
       pointer-events: initial; }
 
+.search-invoices h1 {
+  text-align: center; }
+.search-invoices [type="search"] {
+  display: inline-block;
+  width: calc(100% - 64px); }
+.search-invoices #submit-search {
+  display: inline-block;
+  width: 60px;
+  padding: 8px 12px 8px; }
+.search-invoices #advanced-search-controls {
+  height: 0;
+  overflow: hidden;
+  padding: 0;
+  transition: height .25s, padding .25s; }
+  .search-invoices #advanced-search-controls.active, .search-invoices #advanced-search-controls:target {
+    height: auto;
+    padding: 20px 0; }
+  .search-invoices #advanced-search-controls .control-container {
+    display: table;
+    width: 100%;
+    padding: 10px 0; }
+    .search-invoices #advanced-search-controls .control-container > div {
+      display: table-cell;
+      padding: 0 5px;
+      vertical-align: middle; }
+      .search-invoices #advanced-search-controls .control-container > div:first-child {
+        padding-left: 0; }
+      .search-invoices #advanced-search-controls .control-container > div:last-child {
+        padding-right: 0; }
+  .search-invoices #advanced-search-controls label {
+    display: block;
+    color: rgba(0, 0, 0, 0.5);
+    text-indent: 14px; }
+    .search-invoices #advanced-search-controls label.in-focus {
+      color: #03a9f4; }
+.search-invoices .search-results {
+  margin-top: 50px; }
+  .search-invoices .search-results .search-query {
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.6);
+    quotes: "\00BB" "\00AB"; }
+    .search-invoices .search-results .search-query::before {
+      content: open-quote; }
+    .search-invoices .search-results .search-query::after {
+      content: close-quote; }
+  .search-invoices .search-results h2 {
+    text-align: center;
+    margin-bottom: 30px; }
+
 body {
   font: 14px "Roboto", "Lucida Grande", Helvetica, Arial, sans-serif; }
 
 a {
   color: #00b7ff; }
 
+textarea,
+select,
 input[type="text"],
+input[type="search"],
 input[type="password"],
 input[type="date"],
 input[type="number"],
 input[type="email"] {
   width: 100%;
   margin: 5px 0;
-  padding: 6px 12px;
+  padding: 8px 12px 6px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   font-size: 16px;
@@ -2786,13 +2935,17 @@ input[type="email"] {
   line-height: 16px;
   cursor: pointer;
   transition: all .12s; }
+  textarea:focus,
+  select:focus,
   input[type="text"]:focus,
+  input[type="search"]:focus,
   input[type="password"]:focus,
   input[type="date"]:focus,
   input[type="number"]:focus,
   input[type="email"]:focus {
     border: 1px solid #03a9f4;
-    outline: 0; }
+    outline: 0;
+    cursor: text; }
 
 button,
 input[type="button"],
@@ -2825,10 +2978,25 @@ input[type="submit"],
   .button.danger {
     background: #f47575; }
 
+label.in-focus {
+  color: #03a9f4; }
+
+textarea {
+  display: block;
+  resize: vertical; }
+
+select {
+  padding: 7px 12px 5px; }
+  select:focus {
+    border-radius: 4px 4px 0 0; }
+
 article {
   max-width: 80%;
   margin: 50px auto;
   color: rgba(0, 0, 0, 0.87); }
+  @media screen and (max-width: 1100px) {
+    article {
+      max-width: initial; } }
   article h1 {
     font-size: 26px;
     color: #0389c7; }
@@ -2858,7 +3026,7 @@ article {
     display: none; }
 
 .sub-navigation {
-  margin: 20px auto;
+  margin: 20px auto 15px;
   padding: 0;
   text-align: center; }
   .sub-navigation ul {
@@ -2874,7 +3042,7 @@ article {
         text-decoration: none;
         color: #1e88e5;
         transition: all .125s; }
-        .sub-navigation ul li a:hover {
+        .sub-navigation ul li a.control-active, .sub-navigation ul li a:hover {
           background: #03a9f4;
           color: #fff; }
       .sub-navigation ul li + li a {
@@ -2929,10 +3097,16 @@ article {
   padding: 20px;
   background: rgba(0, 0, 0, 0.05);
   border-radius: 4px; }
+  @media screen and (max-width: 600px) {
+    .page-error {
+      margin: 20px; } }
   .page-error h1 {
     font-size: 56px;
     color: #f47575;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.51); }
+    @media screen and (max-width: 320px) {
+      .page-error h1 {
+        font-size: 32px; } }
   .page-error p {
     margin: 50px auto 0;
     color: #666;
