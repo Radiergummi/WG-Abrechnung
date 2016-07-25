@@ -1,0 +1,89 @@
+@font-face {
+  font-family: 'Brandon Grotesque';
+  src:         url('/fonts/brandon-grotesque-medium.woff2') format('woff2'),
+               url('/fonts/brandon-grotesque-medium.woff') format('woff');
+
+  font-weight: normal;
+  font-style:  normal;
+}
+
+@font-face {
+  font-family: 'Brandon Grotesque';
+  src:         url('/fonts/brandon-grotesque-bold.woff2') format('woff2'),
+               url('/fonts/brandon-grotesque-bold.woff') format('woff');
+
+  font-weight: bold;
+  font-style:  normal;
+}
+
+@font-face {
+  font-family: 'Brandon Grotesque';
+  src:         url('/fonts/brandon-grotesque-black.woff2') format('woff2'),
+               url('/fonts/brandon-grotesque-black.woff') format('woff');
+
+  font-weight: bolder;
+  font-style:  normal;
+}
+
+@font-face {
+  font-family: 'Brandon Grotesque';
+  src:         url('/fonts/brandon-grotesque-light.woff2') format('woff2'),
+               url('/fonts/brandon-grotesque-light.woff') format('woff');
+
+  font-weight: lighter;
+  font-style:  normal;
+}
+
+$font-family-headings: 'Brandon Grotesque', 'Roboto', 'Lucida Grande', 'Verdana', sans-serif;
+$font-family-text: 'Brandon Grotesque', 'Roboto', 'Lucida Grande', 'Verdana', sans-serif;
+$font-family-interactive: 'Brandon Grotesque', 'Roboto', 'Lucida Grande', 'Verdana', sans-serif;
+
+$font-weight-bold: bold;
+$font-weight-medium: normal;
+$font-weight-thin: lighter;
+
+body {
+  font-family: $font-family-headings;
+  font-weight: $font-weight-thin;
+  font-size: 16px;
+}
+
+a {
+  color: #00b7ff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-headings;
+  font-weight: $font-weight-bold;
+}
+
+p {
+  font-family: $font-family-text;
+}
+
+article {
+  color:     rgba(0, 0, 0, .87);
+
+  h1 {
+    font-size: 36px;
+    color:     #0389c7;
+  }
+
+  h2 {
+    font-size: 30px;
+  }
+
+  p {
+    font-size:   20px;
+    line-height: 2.2;
+  }
+
+  code {
+    text-shadow:   1px 1px rgba(255, 255, 255, .75);
+    font-family:   monospace;
+  }
+}
+
+nav[role="navigation"] a {
+  font-weight: $font-weight-medium
+}

@@ -7,7 +7,8 @@
 
 var templates = require('templates.js');
 
-var file = require('../meta/file');
+var file = require('../meta/file'),
+    User = require('../user');
 
 var appSockets = module.exports = {};
 
@@ -19,14 +20,18 @@ var appSockets = module.exports = {};
  * @returns {null|error|object}
  */
 appSockets.getConfig = function (socket, callback) {
-  var config = {
-    user: {
-      id:                socket._id,
-      hasProfilePicture: file.existsSync('public/images/users/' + socket._id + '.jpg')
-    }
-  };
+  var config = {};
 
-  return callback(null, config);
+  User.getById(socket._id, function(error, data) {
+    if (error) {
+      return callback(error);
+    }
+
+    config.user = JSON.parse(JSON.stringify(data));
+    config.user.hasProfilePicture = file.existsSync('public/images/users/' + socket._id + '.jpg');
+
+    return callback(null, config);
+  });
 };
 
 /**

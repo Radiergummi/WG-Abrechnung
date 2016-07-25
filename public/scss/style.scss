@@ -1,17 +1,10 @@
 @import "reset";
+@import "typography";
 @import "animations";
 @import "font-awesome/font-awesome";
 @import "navigation";
 @import "dashboard";
 @import "invoices";
-
-body {
-  font: 14px "Roboto", "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-a {
-  color: #00b7ff;
-}
 
 textarea,
 select,
@@ -36,7 +29,7 @@ input[type="email"] {
   &:focus {
     border:  1px solid #03a9f4;
     outline: 0;
-    cursor: text;
+    cursor:  text;
   }
 }
 
@@ -54,6 +47,7 @@ input[type="submit"],
   line-height:     16px;
   cursor:          pointer;
   transition:      all .12s;
+  font-family: $font-family-interactive;
 
   &:hover {
     background: #0277bd;
@@ -89,24 +83,9 @@ select {
 article {
   max-width: 80%;
   margin:    50px auto;
-  color:     rgba(0, 0, 0, .87);
 
   @media screen and (max-width: 1100px) {
     max-width: initial;
-  }
-
-  h1 {
-    font-size: 26px;
-    color:     #0389c7;
-  }
-
-  h2 {
-    font-size: 22px;
-  }
-
-  p {
-    font-size:   16px;
-    line-height: 2.2;
   }
 
   code {
@@ -114,8 +93,6 @@ article {
     padding:       2px 8px;
     border-radius: 4px;
     background:    #e5e5e5;
-    text-shadow:   1px 1px rgba(255, 255, 255, .75);
-    font-family:   monospace;
   }
 }
 

@@ -39,6 +39,58 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
+@font-face {
+  font-family: 'Brandon Grotesque';
+  src: url("/fonts/brandon-grotesque-medium.woff2") format("woff2"), url("/fonts/brandon-grotesque-medium.woff") format("woff");
+  font-weight: normal;
+  font-style: normal; }
+@font-face {
+  font-family: 'Brandon Grotesque';
+  src: url("/fonts/brandon-grotesque-bold.woff2") format("woff2"), url("/fonts/brandon-grotesque-bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal; }
+@font-face {
+  font-family: 'Brandon Grotesque';
+  src: url("/fonts/brandon-grotesque-black.woff2") format("woff2"), url("/fonts/brandon-grotesque-black.woff") format("woff");
+  font-weight: bolder;
+  font-style: normal; }
+@font-face {
+  font-family: 'Brandon Grotesque';
+  src: url("/fonts/brandon-grotesque-light.woff2") format("woff2"), url("/fonts/brandon-grotesque-light.woff") format("woff");
+  font-weight: lighter;
+  font-style: normal; }
+body {
+  font-family: "Brandon Grotesque", "Roboto", "Lucida Grande", "Verdana", sans-serif;
+  font-weight: lighter;
+  font-size: 16px; }
+
+a {
+  color: #00b7ff; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Brandon Grotesque", "Roboto", "Lucida Grande", "Verdana", sans-serif;
+  font-weight: bold; }
+
+p {
+  font-family: "Brandon Grotesque", "Roboto", "Lucida Grande", "Verdana", sans-serif; }
+
+article {
+  color: rgba(0, 0, 0, 0.87); }
+  article h1 {
+    font-size: 36px;
+    color: #0389c7; }
+  article h2 {
+    font-size: 30px; }
+  article p {
+    font-size: 20px;
+    line-height: 2.2; }
+  article code {
+    text-shadow: 1px 1px rgba(255, 255, 255, 0.75);
+    font-family: monospace; }
+
+nav[role="navigation"] a {
+  font-weight: normal; }
+
 @-moz-keyframes spin {
   100% {
     -moz-transform: rotate(360deg); } }
@@ -2412,7 +2464,7 @@ table {
       text-align: left; }
       .current-month .open-invoices table thead th {
         padding: 20px 0;
-        font-weight: 500;
+        font-weight: normal;
         font-size: 20px;
         vertical-align: middle;
         border-bottom: 5px solid #e5e5e5; }
@@ -2910,12 +2962,6 @@ table {
     text-align: center;
     margin-bottom: 30px; }
 
-body {
-  font: 14px "Roboto", "Lucida Grande", Helvetica, Arial, sans-serif; }
-
-a {
-  color: #00b7ff; }
-
 textarea,
 select,
 input[type="text"],
@@ -2960,7 +3006,8 @@ input[type="submit"],
   background: #03a9f4;
   line-height: 16px;
   cursor: pointer;
-  transition: all .12s; }
+  transition: all .12s;
+  font-family: "Brandon Grotesque", "Roboto", "Lucida Grande", "Verdana", sans-serif; }
   button:hover,
   input[type="button"]:hover,
   input[type="submit"]:hover,
@@ -2992,26 +3039,15 @@ select {
 
 article {
   max-width: 80%;
-  margin: 50px auto;
-  color: rgba(0, 0, 0, 0.87); }
+  margin: 50px auto; }
   @media screen and (max-width: 1100px) {
     article {
       max-width: initial; } }
-  article h1 {
-    font-size: 26px;
-    color: #0389c7; }
-  article h2 {
-    font-size: 22px; }
-  article p {
-    font-size: 16px;
-    line-height: 2.2; }
   article code {
     display: inline-block;
     padding: 2px 8px;
     border-radius: 4px;
-    background: #e5e5e5;
-    text-shadow: 1px 1px rgba(255, 255, 255, 0.75);
-    font-family: monospace; }
+    background: #e5e5e5; }
 
 #overlay {
   position: fixed;

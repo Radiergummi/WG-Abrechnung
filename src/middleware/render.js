@@ -12,15 +12,15 @@ var file = require('../meta/file');
 /**
  * Override res.render to do any pre/post processing
  */
-module.exports = function (middleware) {
-  middleware.processRender = function (req, res, next) {
+module.exports = function(middleware) {
+  middleware.processRender = function(req, res, next) {
     var render = res.render;
 
-    res.render = function (template, variables, callback) {
+    res.render = function(template, variables, callback) {
       var self = this;
       var req  = this.req;
 
-      var defaultCallback = function (error, string) {
+      var defaultCallback = function(error, string) {
         if (error) {
           return next(error);
         }
@@ -53,6 +53,7 @@ module.exports = function (middleware) {
         baseVariables.user.name              = req.user.firstName + ' ' + req.user.lastName;
         baseVariables.user.isAdmin           = (req.user.admin);
         baseVariables.user.hasProfilePicture = file.existsSync('public/images/users/' + req.user.id + '.jpg');
+        baseVariables.user.color             = req.user.color;
       }
 
       baseVariables.bodyClass   = buildBodyClass(req);
@@ -61,8 +62,8 @@ module.exports = function (middleware) {
 
       deepExtend(variables, baseVariables);
       variables.pageTitle = (variables.pageTitle ? variables.pageTitle + ' | ' : '') + nconf.get('name');
-      
-      return render.call(self, template, variables, function (error, str) {
+
+      return render.call(self, template, variables, function(error, str) {
         if (error) {
           return callback(error);
         }
@@ -74,10 +75,10 @@ module.exports = function (middleware) {
     next();
   };
 
-  function buildBodyClass(req) {
+  function buildBodyClass (req) {
     var clean = req.path.replace(/^\/|\/$/g, '');
     var parts = clean.split('/').slice(0, 3);
-    parts.forEach(function (part, index) {
+    parts.forEach(function(part, index) {
       parts[ index ] = index ? parts[ 0 ] + '-' + part : 'page-' + (part || 'home');
     });
     return parts.join(' ');

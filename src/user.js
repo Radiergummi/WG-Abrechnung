@@ -116,3 +116,24 @@ User.getPaginatedInvoices = function(id, skip, limit, callback) {
     return callback(null, invoices.slice(skip, limit));
   });
 };
+
+User.countAll = function(callback) {
+  userModel.count({}, function(error, amount) {
+    if (error) {
+      return callback(error);
+    }
+
+    return callback(null, amount);
+  });
+};
+
+User.getIds = function(callback) {
+  userModel.find({}, '_id', function(error, ids) {
+    if (error) {
+      return callback(error);
+    }
+
+    return callback(null, ids);
+  });
+};
+

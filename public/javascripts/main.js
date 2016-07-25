@@ -87,12 +87,14 @@ if (! app) {
     };
 
     app.templates.profilePictureUploadModal = (function () {
-      var profilePicturePath = '/images/users/' + (app.config.user.hasProfilePicture ? app.config.user.id : 'default') + '.jpg';
+      var profilePicturePath = '/images/users/' + (app.config.user.hasProfilePicture ? app.config.user._id : 'default') + '.jpg',
+          userPrimaryColor = app.config.user.color,
+          userSecondaryColor = app.config.user.color.replace(/, 1\)$/, ', .2)');
 
       return app.helpers.createElement('<div class="upload-modal">' +
         '<header><h2>Profilbild ändern</h2></header>' +
         '<article>' +
-        '<section class="preview">' +
+        '<section class="preview" style="background: linear-gradient(135deg, ' + userSecondaryColor + ' 0%,' + userPrimaryColor + ' 100%);">' +
         '<div class="current-picture"><img src="' + profilePicturePath + '" alt></div>' +
         '</section>' +
         '<section class="upload-controls">' +

@@ -10,9 +10,7 @@ var User    = require('../user'),
 
 var invoices = module.exports = {};
 
-invoices.redirectToInvoices = function (req, res, next) {
-  res.redirect('/invoices');
-};
+invoices.redirectToInvoices = (req, res, next)  => res.redirect('/invoices');
 
 invoices.viewSingle = function (req, res, next) {
   var vars = {};
@@ -41,7 +39,7 @@ invoices.viewAll = function (req, res, next) {
     }
 
     vars.userInvoices = JSON.parse(JSON.stringify(data));
-
+    
     for (var i = 0; i < vars.userInvoices.length; i ++) {
       vars.userInvoices[ i ].creationDate = data[ i ].getFormattedDate();
       vars.userInvoices[ i ].ownInvoice   = (vars.userInvoices[ i ].user._id == req.user._id);
