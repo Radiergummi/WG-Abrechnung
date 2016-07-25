@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "agenda": "^0.8.1",
     "archiver": "^0.21.0",
     "array-pad": "0.0.1",
     "async": "^2.0.0-rc.6",

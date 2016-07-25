@@ -9,7 +9,8 @@
  * Returns a mongo database handle
  */
 (function (module) {
-  var mongoose = require('mongoose'),
+  var colors = require('colors'),
+      mongoose = require('mongoose'),
       mongoAdmin  = mongoose.mongo.Admin,
       mongoStore = require('connect-mongo'),
       winston = require('winston'),
@@ -57,9 +58,9 @@
 
   module.collection = function(name) {
     try {
-      return mongoose.connection.db.collection(name);
+      return mongoose.connection.collection(name);
     } catch (error) {
-      winston.error('[database]'.white + ' Could not retrieve mongoose collection');
+      winston.error('[database]'.white + ' Could not retrieve mongoose collection %s', name);
       winston.error('[database]'.white + ' %s', error.message);
     }
   };

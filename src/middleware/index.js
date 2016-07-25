@@ -28,6 +28,7 @@ var favicon          = require('serve-favicon'),
     flash            = require('connect-flash');
 
 var db     = require('../database').initialize(),
+    jobs   = require('../jobs'),
     auth   = require('../authentication'),
     render = require('./render');
 
@@ -104,6 +105,10 @@ module.exports = function (app) {
   auth.initialize(app, middleware);
 
   app.use(middleware.processRender);
+
+  jobs.initialize();
+  console.log(jobs.instance.start());
+
   return middleware;
 };
 

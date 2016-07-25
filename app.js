@@ -7,16 +7,16 @@
  __dirname
  */
 
-var cluster = require('cluster'),
-    fs = require('fs'),
-    path = require('path'),
-    url = require('url'),
+var cluster         = require('cluster'),
+    fs              = require('fs'),
+    path            = require('path'),
+    url             = require('url'),
 
-    async = require('async'),
-    colors = require('colors'),
-    nconf = require('nconf'),
-    moment = require('moment'),
-    winston = require('winston'),
+    async           = require('async'),
+    colors          = require('colors'),
+    nconf           = require('nconf'),
+    moment          = require('moment'),
+    winston         = require('winston'),
 
     runningInstance = true,
     runningInstancePidFile,
@@ -35,7 +35,7 @@ setupLogger();
 // we will assume there is no running instance yet.
 try {
   runningInstancePidFile = fs.readFileSync('./pidfile', 'utf-8');
-  runningInstancePid = parseInt(runningInstancePidFile, 10);
+  runningInstancePid     = parseInt(runningInstancePidFile, 10);
 }
 catch (error) {
   runningInstance = false;
@@ -68,7 +68,7 @@ function start() {
   prepareAssets();
 
   var webserver = require('./src/server'),
-      sockets = require('./src/socket.io');
+      sockets   = require('./src/socket.io');
 
   // start the server
   sockets.initialize(webserver.server);
@@ -82,7 +82,7 @@ function start() {
  * @returns void
  */
 function exceptionHandler(error) {
-  var path = nconf.get('path'),
+  var path  = nconf.get('path'),
       stack = (stack ? error.stack.toString().split(path).join('') : ''),
       origin;
 
@@ -122,9 +122,14 @@ function shutdown(code) {
   // remove lock file
   try {
     fs.unlinkSync('./pidfile');
-  } catch (error) {
+  }
+  catch (error) {
     winston.error('[app]'.white + ' Could not remove PIDFile, you will have to do this by yourself to start the app again.');
   }
+
+  require('./src/jobs').instance.stop(function() {
+    winston.info('[jobs]'.white + ' Agenda has been stopped.');
+  });
 
   return process.exit(code || 0);
 }
@@ -133,8 +138,8 @@ function shutdown(code) {
  *
  */
 function prepareAssets() {
-  var templates = require('./src/meta/templates'),
-     // stylesheets = require('./src/meta/stylesheets'),
+  var templates   = require('./src/meta/templates'),
+      // stylesheets = require('./src/meta/stylesheets'),
       javascripts = require('./src/meta/javascripts');
 
   // compile templates
@@ -174,18 +179,18 @@ function setupLogger() {
     level:       (nconf.get('environment') === 'development' ? 'silly' : 'info')
   });
 
-/*
-  winston.add(winston.transports.File, {
-    filename:    'logs/output.log',
-    colorize:    false,
-    timestamp:   true,
-    maxsize:     1000000,
-    maxFiles:    10,
-    json:        false,
-    prettyPrint: true,
-    showLevel:   true,
-    tailable:    true,
-    level:       'silly'
-  });
-*/
+  /*
+   winston.add(winston.transports.File, {
+   filename:    'logs/output.log',
+   colorize:    false,
+   timestamp:   true,
+   maxsize:     1000000,
+   maxFiles:    10,
+   json:        false,
+   prettyPrint: true,
+   showLevel:   true,
+   tailable:    true,
+   level:       'silly'
+   });
+   */
 }
