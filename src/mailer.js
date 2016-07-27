@@ -6,6 +6,7 @@
  */
 
 var colors            = require('colors'),
+    deepExtend        = require('deep-extend'),
     htmlToText        = require('html-to-text'),
     nconf             = require('nconf'),
     nodeMailer        = require('nodemailer'),
@@ -31,7 +32,7 @@ var colors            = require('colors'),
        * relay mail transport: will relay mails to a remote SMTP server
        */
       relay: (nconf.get('mail:transport') === 'relay'
-          ? nodeMailer.createTransport(smtpTransport(nconf.get('mail:relay')))
+          ? nodeMailer.createTransport(nconf.get('mail:relay'))
           : undefined
              ),
 
@@ -73,9 +74,13 @@ var colors            = require('colors'),
    */
   mailer.initialize = function(expressApp) {
 
-    // loads the transport connector specified in the config file
-    transport = nodeMailer.createTransport(transports[ nconf.get('mail:transport') ]);
+    if ((! nconf.get('mail:transport'))) {
+      transport = transports.local;
+    } else {
 
+      // loads the transport connector specified in the config file
+      transport = transports[ nconf.get('mail:transport') ];
+    }
     // references the app
     app = expressApp;
 
@@ -125,6 +130,7 @@ var colors            = require('colors'),
               reject(error);
             }
 
+            winston.info('[mailer]'.white + ' Rendered template %s, now sending as an email', template);
             resolve(html);
           })
         })
@@ -163,7 +169,18 @@ var colors            = require('colors'),
   mailer.transmit = function(data, callback) {
 
     // transmit the email using nodeMailer
-    transport.sendMail(data, callback);
+    transport.sendMail(data, function(error, response) {
+      if (error) {
+        winston.error('[mailer]'.red + ' Could not send email: %s', error.message);
+        return callback(error);
+      }
+
+      response.transport = transport;
+
+
+      winston.info('[mailer]'.white + ' Successfully sent an email to %s', data.to);
+      return callback(null, response);
+    });
   };
 })(module.exports);
 

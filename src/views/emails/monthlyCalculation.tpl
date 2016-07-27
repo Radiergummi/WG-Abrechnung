@@ -596,6 +596,7 @@
                         <h2>Deine Ausgaben</h2>
                         Diesen Monat hast du insgesamt {ownSpendingSum}€ ausgegeben. Das sind {ownSpendingPercentage}% der Gesamtausgaben.
                         <br/>
+                        <br/>
                         <h2>Deine Ausgleichszahlungen</h2>
                         <!-- BEGIN debts -->
                           <!-- IF debts.youOwe -->
@@ -615,9 +616,11 @@
                   <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateFooter">
                     <tr>
                       <td valign="top" class="footerContent">
-                        <a href="{url}/invoices">Zu deinen Rechnungen</a>&nbsp;&nbsp;&nbsp;<a
-                        href="{url}/statistics">Zu den Statistiken</a>&nbsp;&nbsp;&nbsp;<a
-                        href="{url}/balance">Zur Abrechnungsübersicht</a>&nbsp;
+                        <center>
+                          <a href="{url}/invoices">Zu deinen Rechnungen</a>&nbsp;&#183;&nbsp;<a
+                            href="{url}/statistics">Zu den Statistiken</a>&nbsp;&#183;&nbsp;<a
+                            href="{url}/balance">Zur Abrechnungsübersicht</a>&nbsp;
+                        </center>
                       </td>
                     </tr>
                   </table>

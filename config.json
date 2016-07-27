@@ -7,6 +7,7 @@
   "secret": "FJFuh24if8Y9",
 
   "mail": {
+    "sender": "relay@9dev.de",
     "transport": "relay",
     "relay": {
       "host": "sslout.df.eu",
@@ -15,7 +16,9 @@
       "auth": {
         "user": "relay@9dev.de",
         "pass": "yCmUncr1#dqk"
-      }
+      },
+      "debug": true,
+      "logger": true
     }
   },
 

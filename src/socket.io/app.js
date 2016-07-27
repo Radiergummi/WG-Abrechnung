@@ -104,6 +104,6 @@ appSockets.sendTestMail = function(socket, data, callback) {
       callback(error);
     }
 
-    callback(data);
+    callback(error, data);
   });
 };
