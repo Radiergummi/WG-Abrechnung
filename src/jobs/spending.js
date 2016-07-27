@@ -5,13 +5,23 @@
  require
  */
 
+var winston = require('winston'),
+    
+    mailer = require('../mailer'),
+    Invoice = require('../invoice');
+
 module.exports = function(agenda) {
-  agenda.define('generate yearly statistics', function(job, done) {
+  agenda.define('monthly spending calculation', function(job, done) {
+    winston.info('Calculating spendings');
+
+    var now = new Date();
+    Invoice.getByMonth(new Date(now.setMonth(now.getMonth() - 1)), function(error, data) {
+      if (error) {
+        
+      }
+    });
   });
 
-  agenda.define('generate monthly statistics', function(job, done) {
-    // etc etc
-  });
-
-  // More email related jobs
+  // run the spending calculations at 00:00 every first day of the month
+  agenda.every('0 0 1 * *', 'monthly spending calculation');
 };

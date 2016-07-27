@@ -11,7 +11,9 @@ module.exports = function(agenda) {
 
   agenda.define('generate monthly statistics', function(job, done) {
     // etc etc
+    //console.log(new Date().toLocaleTimeString() + ': agenda task should be run every 5 seconds.');
+    done();
   });
 
-  // More email related jobs
+  agenda.every('5 seconds', 'generate monthly statistics');
 };

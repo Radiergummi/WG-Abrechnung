@@ -6,6 +6,18 @@
   "environment": "production",
   "secret": "FJFuh24if8Y9",
 
+  "mail": {
+    "transport": "relay",
+    "relay": {
+      "host": "sslout.df.eu",
+      "port": 465,
+      "secure": true,
+      "auth": {
+        "user": "relay@9dev.de",
+        "pass": "yCmUncr1#dqk"
+      }
+    }
+  },
 
   "database": {
     "name": "wgdb",

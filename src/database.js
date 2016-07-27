@@ -8,13 +8,13 @@
 /**
  * Returns a mongo database handle
  */
-(function (module) {
-  var colors = require('colors'),
-      mongoose = require('mongoose'),
-      mongoAdmin  = mongoose.mongo.Admin,
+(function(module) {
+  var colors     = require('colors'),
+      mongoose   = require('mongoose'),
+      mongoAdmin = mongoose.mongo.Admin,
       mongoStore = require('connect-mongo'),
-      winston = require('winston'),
-      nconf = require('nconf');
+      winston    = require('winston'),
+      nconf      = require('nconf');
 
   /**
    * initializes the database
@@ -22,8 +22,8 @@
    * @param {function} callback  a callback to execute once the db is connected
    * @returns {exports}
    */
-  module.initialize = function (callback) {
-    callback = callback || function () {
+  module.initialize = function(callback) {
+    callback = callback || function() {
       };
 
     var connOptions = {
@@ -47,7 +47,7 @@
     try {
       return new mongo({
         mongooseConnection: mongoose.connection,
-        stringify: false
+        stringify:          false
       });
     }
     catch (error) {
@@ -66,7 +66,13 @@
   };
 
 
-  module.connection = function() {return mongoose.connection.db};
+  module.connection = function() {
+    return mongoose.connection.db;
+  };
+
+  module.nativeClient = function() {
+    return mongoose.connection;
+  };
 
   module.status = function(callback) {
     new mongoAdmin(this.connection()).serverStatus(function(error, data) {
@@ -78,7 +84,7 @@
     });
   };
 
-  module.buildConnectionString = function () {
+  module.buildConnectionString = function() {
     // optionally use authentication
     var usernamePassword = '';
     if (nconf.get('database:username') && nconf.get('database:password')) {
@@ -86,13 +92,13 @@
     }
 
     // Sensible defaults for Mongo, if not set
-    if (! nconf.get('database:host')) {
+    if (!nconf.get('database:host')) {
       nconf.set('database:host', '127.0.0.1');
     }
-    if (! nconf.get('database:port')) {
+    if (!nconf.get('database:port')) {
       nconf.set('database:port', 27017);
     }
-    if (! nconf.get('database:name')) {
+    if (!nconf.get('database:name')) {
       nconf.set('database:name', '0');
     }
 
@@ -100,10 +106,10 @@
     var hosts = nconf.get('database:host').split(',');
 
     // grab database port(s)
-    var ports = nconf.get('database:port').toString().split(',');
+    var ports   = nconf.get('database:port').toString().split(',');
     var servers = [];
 
-    for (var i = 0; i < hosts.length; i ++) {
+    for (var i = 0; i < hosts.length; i++) {
       servers.push(hosts[ i ] + ':' + ports[ i ]);
     }
 

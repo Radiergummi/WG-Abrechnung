@@ -1,29 +1,30 @@
+'use strict';
+
 /*
  global module,
  require
  */
 
-'use strict';
-
-var nconf       = require('nconf'),
-    url         = require('url'),
+var express     = require('express'),
     fs          = require('fs'),
-    path        = require('path'),
-    https       = require('https'),
     http        = require('http'),
+    https       = require('https'),
+    nconf       = require('nconf'),
+    path        = require('path'),
+    url         = require('url'),
     winston     = require('winston'),
-    express     = require('express'),
 
     app         = express(),
 
-    middleware  = require('./middleware'),
     controllers = require('./controllers'),
+    mailer      = require('./mailer'),
+    middleware  = require('./middleware'),
     routes      = require('./routes'),
     server;
 
 if (useSSL()) {
   try {
-    var key = fs.readFileSync(path.join(nconf.get('path'), 'ssl', 'private_key.pem'));
+    var key  = fs.readFileSync(path.join(nconf.get('path'), 'ssl', 'private_key.pem'));
     var cert = fs.readFileSync(path.join(nconf.get('path'), 'ssl', 'certificate.pem'));
   } catch (fsError) {
     winston.error('[webserver]'.white + ' SSL certificate files could not be loaded:');
@@ -55,7 +56,7 @@ server.on('error', function(error) {
       bind = typeof port === 'string'
         ? 'Pipe ' + port
         : 'Port ' + port;
-  
+
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
@@ -87,8 +88,18 @@ server.on('listening', function() {
 
 });
 
+/**
+ * expose the webserver
+ */
 module.exports.server = server;
+
+/**
+ * the listener function
+ *
+ * @param port
+ */
 module.exports.listen = function(port) {
+
   // initialize the app
   initialize();
 
@@ -115,6 +126,10 @@ module.exports.listen = function(port) {
 };
 
 function initialize () {
+
+  // register mailer
+  mailer.initialize(app);
+
   // register middleware
   middleware = middleware(app);
 

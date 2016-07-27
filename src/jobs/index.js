@@ -5,7 +5,7 @@
  require
  */
 
-(function (module) {
+(function(module) {
   var Agenda  = require('agenda'),
       colors  = require('colors'),
       nconf   = require('nconf'),
@@ -29,14 +29,14 @@
    * @param   {function} [callback]  an optional callback to execute once agenda is ready
    * @returns {boolean}
    */
-  module.initialize = function (callback) {
-    callback = callback || function () {
+  module.initialize = function(callback) {
+    callback = callback || function() {
       };
 
     try {
 
       // try to connect to the jobs collection
-      this.db = db.collection('jobs').conn.db;
+      this.db = db.nativeClient();
     }
     catch (error) {
       winston.error('[jobs]'.red + ' Could not retrieve mongoose collection "jobs":');
@@ -45,20 +45,21 @@
     }
 
     // ensure indexes on the database collection
-    this.db.ensureIndex({
+    this.db.collection('jobs').ensureIndex({
       nextRunAt: 1,
       lockedAt:  1,
       name:      1,
       priority:  1
-    }, function () {
+    }, function() {
     });
 
     // create a new instance
-    this.instance = new Agenda().mongo(this.db, 'jobs', this.databaseConnectionError);
+    this.instance = new Agenda({
+      processEvery: '2 seconds'
+    }).mongo(this.db, 'jobs');
+
     this.instance.on('error', this.databaseConnectionError);
     this.instance.on('ready', this.start.bind(this, callback));
-
-    console.log('initialized', this.instance.jobs({}, function(e, d) {console.log(arguments)}))
   };
 
   /**
@@ -67,8 +68,7 @@
    * @param callback
    * @returns {*}
    */
-  module.start = function (callback) {
-    console.log('started')
+  module.start = function(callback) {
     winston.info('[jobs]'.white + ' Agenda has been initialized');
 
     // register all Agenda jobs
@@ -84,21 +84,12 @@
   };
 
   /**
-   * Error handler for logging indexing failures
-   *
-   * @param {Error} error
-   */
-  module.logIndexError = function (error) {
-    winston.warn('[jobs]'.white + ' Error ensuring indexes', error);
-  };
-
-  /**
    * Error handler for logging database connection failures
-   *
-   * @param {Error} error
+   * 
+   * @param {Error} [error]  an optional error object
    */
-  module.databaseConnectionError = function () {
-    winston.error('[jobs]'.red + ' Error connecting to database');
+  module.databaseConnectionError = function(error) {
+    winston.error('[jobs]'.red + ' Error connecting to database', error);
   };
 
   /**
@@ -106,10 +97,10 @@
    *
    * @param {object} agenda  the agenda instance
    */
-  module.registerJobs = function (agenda) {
+  module.registerJobs = function(agenda) {
 
     // iterate over all available modules
-    for (var i = 0; i < this.jobs.length; i ++) {
+    for (var i = 0; i < this.jobs.length; i++) {
 
       // require the module from the current directory, give it an agenda instance as an argument
       require('./' + this.jobs[ i ])(agenda);
