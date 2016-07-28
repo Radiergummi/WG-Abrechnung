@@ -1,13 +1,13 @@
 {
   "name": "WG-Abrechnung",
   "version": "0.0.1",
-  "url": "http://localhost",
+  "url": "http://localhost:3000",
   "port": 3000,
   "environment": "production",
   "secret": "FJFuh24if8Y9",
 
   "mail": {
-    "sender": "relay@9dev.de",
+    "sender": "noreply@9dev.de",
     "transport": "relay",
     "relay": {
       "host": "sslout.df.eu",
@@ -17,8 +17,8 @@
         "user": "relay@9dev.de",
         "pass": "yCmUncr1#dqk"
       },
-      "debug": true,
-      "logger": true
+      "debug": false,
+      "logger": false
     }
   },
 
