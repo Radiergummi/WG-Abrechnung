@@ -1,10 +1,8 @@
 <!-- IMPORT partials/header.tpl -->
 <article class="dashboard">
   <section class="introduction">
-    <h1>Hi {user.firstName}!</h1>
-    <p>
-      Hier findest du eine Übersicht über alle aktuellen Rechnungen dieses Monats.
-    </p>
+    <h1>[[dashboard:greeting, {user.firstName}]]</h1>
+    <p>[[dashboard:intro_text]]</p>
   </section>
   <section class="current-month">
     <div class="open-invoices">
@@ -12,21 +10,11 @@
       <table>
         <thead>
         <tr>
-          <th class="invoice-state">
-            Status
-          </th>
-          <th class="invoice-image">
-            Rechnung
-          </th>
-          <th class="invoice-sum">
-            Betrag
-          </th>
-          <th class="invoice-date">
-            Datum
-          </th>
-          <th class="invoice-tags">
-            Tags
-          </th>
+          <th class="invoice-state">[[dashboard:invoices.status]]</th>
+          <th class="invoice-image">[[dashboard:invoices.image]]</th>
+          <th class="invoice-sum">[[dashboard:invoices.sum]]</th>
+          <th class="invoice-date">[[dashboard:invoices.date]]</th>
+          <th class="invoice-tags">[[dashboard:invoices.tags]]</th>
         </tr>
         </thead>
         <tbody>
@@ -46,8 +34,8 @@
             <!-- IF userInvoices.sum -->
             <span>{userInvoices.sum} €</span>
             <!-- ELSE -->
-            <input type="number" placeholder="Summe" step="0.01" name="sum-{userInvoices._id}">
-            <button type="button" class="save-invoice-sum"><span class="fa fa-save"></span> Speichern</button>
+            <input type="number" placeholder="[[dashboard:invoices.sum]]" step="0.01" name="sum-{userInvoices._id}">
+            <button type="button" class="save-invoice-sum"><span class="fa fa-save"></span> [[global:do_save]]</button>
             <!-- ENDIF userInvoices.sum -->
           </td>
           <td class="invoice-date">
@@ -66,7 +54,7 @@
         </tbody>
       </table>
       <!-- ELSE -->
-      <span class="no-invoices">Noch keine Rechnungen vorhanden.</span>
+      <span class="no-invoices">[[dashboard:no_invoices]]</span>
       <!-- ENDIF userInvoices.length -->
     </div>
   </section>

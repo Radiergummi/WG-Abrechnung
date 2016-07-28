@@ -28,6 +28,8 @@ appSockets.getConfig = function(socket, callback) {
       return callback(error);
     }
 
+    config.debug = (nconf.get('environment') === 'development');
+    config.language = data.language || nconf.get('language');
     config.user                   = JSON.parse(JSON.stringify(data));
     config.user.hasProfilePicture = file.existsSync('public/images/users/' + socket._id + '.jpg');
 

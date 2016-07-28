@@ -10,6 +10,7 @@ var userSchema = mongoose.Schema({
   lastName: String,
 
   email: String,
+  language: { type: String, default: 'de_DE' },
 
   creationDate: { type: Date, required: true },
 

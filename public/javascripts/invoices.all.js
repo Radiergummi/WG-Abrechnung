@@ -144,7 +144,7 @@ if (! app) {
           '</section>' +
           '<section class="invoice-actions">' +
           '<a class="button" href="/invoices/' + invoice._id + '"><span class="fa fa-eye"></span> Ansehen</a>';
-console.log(invoice.ownInvoice);
+
         if (invoice.ownInvoice) {
 
           template += '<a class="button" href="/invoices/' + invoice._id + '/edit"><span class="fa fa-edit"></span> Bearbeiten</a>' +

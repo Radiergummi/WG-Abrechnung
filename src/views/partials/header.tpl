@@ -1,4 +1,4 @@
-<html lang="de">
+<html lang="{language}">
   <head>
     <title>{pageTitle}</title>
     <meta charset="utf-8">

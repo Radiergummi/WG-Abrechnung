@@ -98,7 +98,6 @@ if (! app) {
 
           var results = data.results;
 
-
           /**
            * remove all child nodes
            */
@@ -113,21 +112,36 @@ if (! app) {
            * if there are no results, just append the banner
            */
           if (results.length === 0) {
-            app.elements.searchResultsContainer.appendChild(app.templates.noSearchResults(query));
+            app.templates.noSearchResults(query).then(function (element) {
+              app.elements.searchResultsContainer.appendChild(element);
+            }).then(function () {
 
-            return callback();
+              return callback();
+            });
           }
 
           app.elements.searchResultsContainer.appendChild(app.helpers.createNode('ul', { class: 'invoices' }));
           app.elements.searchResultList = app.elements.searchResultsContainer.getElementsByTagName('ul') [ 0 ];
-          app.elements.searchResultsContainer.insertBefore(app.templates.nSearchResults(results.length, query), app.elements.searchResultsContainer.firstChild);
 
-          /**
-           * iterate over search results, append the result template for each
-           */
-          for (var i = 0; i < results.length; i ++) {
-            app.elements.searchResultList.appendChild(app.templates.searchResult(results[ i ]));
-          }
+          app.templates.nSearchResults(results.length, query).then(function (element) {
+            app.elements.searchResultsContainer.insertBefore(element, app.elements.searchResultsContainer.firstChild);
+          }).then(function () {
+            var resultPromises = [];
+
+            /**
+             * iterate over search results, append the result template for each
+             */
+            for (var i = 0; i < results.length; i ++) {
+              resultPromises.push(app.templates.searchResult(results[ i ]).then(function (element) {
+                  app.elements.searchResultList.appendChild(element);
+                })
+              );
+            }
+
+            return Promise.all(resultPromises).then(function (results) {
+              console.log(results);
+            });
+          });
         });
       };
 
@@ -137,15 +151,15 @@ if (! app) {
        * @param {string} query  the original search query
        */
       app.templates.noSearchResults = function (query) {
-        return app.helpers.createElement('<h2 class="no-results">Keine Ergebnisse für <span class="search-query">' + query + '</span></h2>');
+        return app.helpers.createTranslatedElement('<h2 class="no-results">Keine Ergebnisse für <span class="search-query">' + query + '</span></h2>');
       };
 
       app.templates.nSearchResults = function (resultCount, query) {
         if (resultCount === 1) {
-          return app.helpers.createElement('<h2>Ein Ergebnis für <span class="search-query">' + query + '</span></h2>');
+          return app.helpers.createTranslatedElement('<h2>Ein Ergebnis für <span class="search-query">' + query + '</span></h2>');
         }
 
-        return app.helpers.createElement('<h2>' + resultCount + ' Ergebnisse für <span class="search-query">' + query + '</span></h2>');
+        return app.helpers.createTranslatedElement('<h2>' + resultCount + ' Ergebnisse für <span class="search-query">' + query + '</span></h2>');
       };
 
       /**
@@ -194,7 +208,7 @@ if (! app) {
 
         template += '</section></li>';
 
-        return app.helpers.createElement(template);
+        return app.helpers.createTranslatedElement(template);
       };
 
       /**

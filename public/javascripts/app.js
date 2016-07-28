@@ -14,7 +14,7 @@ var app = {
   config:     {}
 };
 
-app.helpers.createNode = function(tagName, attributes, content) {
+app.helpers.createNode = function (tagName, attributes, content) {
   var node = document.createElement(tagName);
 
   attributes = attributes || {};
@@ -34,10 +34,21 @@ app.helpers.createNode = function(tagName, attributes, content) {
   return node;
 };
 
-app.helpers.createElement = function(elementString) {
+app.helpers.createElement = function (elementString) {
   var parser = new DOMParser();
 
   return parser.parseFromString(elementString, 'text/html').body.childNodes[ 0 ];
+};
+
+app.helpers.createTranslatedElement = function (elementString) {
+  var parser = new DOMParser();
+
+  return new Promise(function (resolve) {
+    console.log('indeed! we are actually working with promises!');
+    app.translator.translate(elementString, app.config.language, function (translatedElementString) {
+      resolve(parser.parseFromString(translatedElementString, 'text/html').body.childNodes[ 0 ]);
+    });
+  });
 };
 
 /**
@@ -47,23 +58,23 @@ app.helpers.createElement = function(elementString) {
  * @param immediate
  * @returns {Function}
  */
-app.helpers.debounce = function(func, wait, immediate) {
+app.helpers.debounce = function (func, wait, immediate) {
   var timeout;
-  return function() {
+  return function () {
     var context = this, args = arguments;
-    var later   = function() {
+    var later   = function () {
       timeout = null;
-      if (!immediate) func.apply(context, args);
+      if (! immediate) func.apply(context, args);
     };
-    var callNow = immediate && !timeout;
+    var callNow = immediate && ! timeout;
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
 };
 
-app.connectors.getConfig = function(callback) {
-  app.io.emit('app.getConfig', function(error, data) {
+app.connectors.getConfig = function (callback) {
+  app.io.emit('app.getConfig', function (error, data) {
     if (error) {
       return console.error(error);
     }
@@ -74,7 +85,7 @@ app.connectors.getConfig = function(callback) {
   });
 };
 
-app.events.imageError = function(image) {
+app.events.imageError = function (image) {
   image.onerror = '';
   image.src     = '/images/noImage.svg';
   image.classList.add('image-error');
@@ -84,7 +95,7 @@ app.events.imageError = function(image) {
 };
 
 app.charts = {
-  configure: function() {
+  configure: function () {
     app.Charts.defaults.global.spanGaps                            = true;
     app.Charts.defaults.global.defaultFontFamily                   = "'Brandon Grotesque', 'Roboto', 'Lucida Grande', 'Verdana', sans-serif";
     app.Charts.defaults.global.defaultFontSize                     = 14;
@@ -110,7 +121,7 @@ app.charts = {
     app.Charts.defaults.global.tooltips.yPadding                   = 10;
   },
 
-  prepare: function(container, id, data) {
+  prepare: function (container, id, data) {
     var canvas;
 
     /**
@@ -135,7 +146,7 @@ app.charts = {
     return new app.Charts(canvas.getContext('2d'), data);
   },
 
-  line: function(container, id, data) {
+  line: function (container, id, data) {
     return this.prepare(container, id, {
       type:    'line',
       data:    data,
@@ -152,15 +163,18 @@ app.charts = {
   }
 };
 
-app.init = function() {
-  app.io     = io();
-  app.Charts = Chart;
+app.init = function () {
+  app.io         = io();
+  app.Charts     = Chart;
   app.charts.configure();
   app.elements.overlay = document.getElementById('overlay');
-  app.connectors.getConfig(function() {
+
+  app.connectors.getConfig(function () {
+    window.debug = app.config.debug;
+    app.translator = translator;
 
     // call all startup scripts
-    for (var i = 0; i < app.startup.length; i++) {
+    for (var i = 0; i < app.startup.length; i ++) {
       app.startup[ i ].call(app);
     }
   });

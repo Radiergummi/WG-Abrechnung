@@ -1,3 +1,56 @@
 {
+  "dashboard": {
+    "greeting": "Hi %1!",
+    "intro_text": "Hier findest du eine Übersicht über alle aktuellen Rechnungen dieses Monats.",
+    "no_invoices": "Noch keine Rechnungen vorhanden.",
+    "invoices.status": "Status",
+    "invoices.image": "Rechnung",
+    "invoices.sum": "Summe",
+    "invoices.date": "Datum",
+    "invoices.tags": "Tags"
+  },
 
+  "spending": {
+    "debt.you_owe": "Du schuldest %1 %2€. Das sind %3% des Gesambetrages."
+  },
+
+  "global": {
+    "months.january":   "Januar",
+    "months.february":  "Februar",
+    "months.march":     "März",
+    "months.april":     "April",
+    "months.may":       "Mai",
+    "months.june":      "Juni",
+    "months.july":      "Juli",
+    "months.august":    "August",
+    "months.september": "September",
+    "months.october":   "Oktober",
+    "months.november":  "November",
+    "months.december":   "Dezember",
+
+    "login": "Anmeldung",
+    "do_login": "Anmelden",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "logout": "Abmelden",
+    "do_logout": "Abmelden",
+
+    "do_save": "Speichern"
+  },
+
+  "menu": {
+    "dashboard": "Übersicht",
+    "invoices": "Rechnungen",
+    "statistics": "Statistiken",
+    "balance": "Abrechnung",
+    "admin": "Verwaltung"
+  },
+
+  "error": {
+    "title": "Fehler %1",
+    "500.text": "Hoppla! Der Server hat Schluckauf.",
+    "500.description": "Sieht so aus, als läuft hier was schief. Versuche es noch einmal. Wenn es dann immer noch nicht funktioniert, muss jemand (<a href=\"mailto:m@9dev.de?subject=Fehler in Flatm8 unter {url}\">schick ihm &#39;ne Mail</a>) das Problem reparieren.<br> Hrmpf.",
+    "404.text": "Hoppla! Die Seite <code>%1</code> gibt es nicht.",
+    "404.description": "Sieht so aus, als wärst du zu doof zum tippen. Oder ich hab einen Fehler gemacht.<br>Das ist ziemlich unwahrscheinlich, also nehmen wir an, du bist zu doof."
+  }
 }

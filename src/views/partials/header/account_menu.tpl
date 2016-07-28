@@ -7,5 +7,5 @@
     <!-- ENDIF user.hasProfilePicture -->
   </div>
   <span class="username">{user.name}</span>
-  <a href="/logout" class="logout button"><i class="fa fa-sign-out"></i> Abmelden</a>
+  <a href="/logout" class="logout button"><i class="fa fa-sign-out"></i> [[global:do_logout]]</a>
 </div>

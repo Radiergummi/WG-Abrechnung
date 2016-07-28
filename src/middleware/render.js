@@ -4,23 +4,25 @@
  global module,
  require
  */
-var deepExtend = require('deep-extend'),
+var debug      = require('debug')('flatm8:render'),
+    deepExtend = require('deep-extend'),
     nconf      = require('nconf');
 
-var file = require('../meta/file');
+var file       = require('../meta/file'),
+    translator = require('../../public/javascripts/modules/translator');
 
 /**
  * Override res.render to do any pre/post processing
  */
-module.exports = function(middleware) {
-  middleware.processRender = function(req, res, next) {
+module.exports = function (middleware) {
+  middleware.processRender = function (req, res, next) {
     var render = res.render;
 
-    res.render = function(template, variables, callback) {
+    res.render = function (template, variables, callback) {
       var self = this;
       var req  = this.req;
 
-      var defaultCallback = function(error, string) {
+      var defaultCallback = function (error, string) {
         if (error) {
           return next(error);
         }
@@ -39,6 +41,7 @@ module.exports = function(middleware) {
       }
 
 
+      debug('creating base view variables');
       var baseVariables                  = {};
       baseVariables.loggedIn             = req.hasOwnProperty('user');
       baseVariables.template             = { name: template };
@@ -47,38 +50,54 @@ module.exports = function(middleware) {
       baseVariables._locals              = undefined;
 
       if (baseVariables.loggedIn) {
+        debug('adding user to view variables');
         baseVariables.user                   = JSON.parse(JSON.stringify(req.user));
         baseVariables.user.loggedIn          = true;
         baseVariables.user.id                = req.user.id;
         baseVariables.user.name              = req.user.firstName + ' ' + req.user.lastName;
+        baseVariables.user.language          = req.user.language;
+        baseVariables.user.email             = req.user.email;
         baseVariables.user.isAdmin           = (req.user.admin);
         baseVariables.user.hasProfilePicture = file.existsSync('public/images/users/' + req.user.id + '.jpg');
         baseVariables.user.color             = req.user.color;
       }
 
+      baseVariables.language    = (req.hasOwnProperty('user') ? baseVariables.user.language : nconf.get('language'));
       baseVariables.bodyClass   = buildBodyClass(req);
       baseVariables.url         = (req.baseUrl + req.path).replace(/^\/api/, '');
       baseVariables.cacheBuster = Date.now();
 
+      debug('merging view variables');
       deepExtend(variables, baseVariables);
       variables.pageTitle = (variables.pageTitle ? variables.pageTitle + ' | ' : '') + nconf.get('name');
 
-      return render.call(self, template, variables, function(error, str) {
+      debug('rendering view');
+      return render.call(self, template, variables, function (error, str) {
         if (error) {
+
+          debug('view renderer encountered an error: ' + error.message);
           return callback(error);
         }
 
-        return callback(error, str);
+        var language = req.query.lang || variables.language || nconf.get('language');
+        debug('set template language to %s', language);
+
+        debug('translating template');
+        translator.translate(str, language, function (translatedStr) {
+
+          debug('template translated. calling callback');
+          return callback(error, translatedStr);
+        });
       });
     };
 
     next();
   };
 
-  function buildBodyClass (req) {
+  function buildBodyClass(req) {
     var clean = req.path.replace(/^\/|\/$/g, '');
     var parts = clean.split('/').slice(0, 3);
-    parts.forEach(function(part, index) {
+    parts.forEach(function (part, index) {
       parts[ index ] = index ? parts[ 0 ] + '-' + part : 'page-' + (part || 'home');
     });
     return parts.join(' ');

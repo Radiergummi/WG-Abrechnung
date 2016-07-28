@@ -6,6 +6,8 @@
   "environment": "production",
   "secret": "FJFuh24if8Y9",
 
+  "language": "de_DE",
+
   "mail": {
     "sender": "noreply@9dev.de",
     "transport": "relay",

@@ -1,0 +1,56 @@
+{
+  "dashboard": {
+    "greeting":        "Hi %1!",
+    "intro_text":      "Here, you'll find an overview over this month's invoices.",
+    "no_invoices":     "No receipts yet",
+    "invoices.status": "status",
+    "invoices.image":  "receipt",
+    "invoices.sum":    "sum",
+    "invoices.date":   "date",
+    "invoices.tags":   "tags"
+  },
+
+  "spending":  {
+    "debt.you_owe": "You owe %2€ to %1. That is %3% of the total sum."
+  },
+
+  "global":    {
+    "months.january":   "january",
+    "months.february":  "february",
+    "months.march":     "march",
+    "months.april":     "april",
+    "months.may":       "may",
+    "months.june":      "june",
+    "months.july":      "july",
+    "months.august":    "august",
+    "months.september": "september",
+    "months.october":   "october",
+    "months.november":  "november",
+    "months.december":  "december",
+
+    "login":            "Login",
+    "do_login":         "login",
+    "username":         "username",
+    "password":         "password",
+    "logout":           "Logout",
+    "do_logout":        "logout",
+
+    "do_save":          "save"
+  },
+
+  "menu":      {
+    "dashboard":  "dashboard",
+    "invoices":   "invoices",
+    "statistics": "statistics",
+    "balance":    "balance",
+    "admin":      "admin"
+  },
+
+  "error": {
+    "title": "Error %1",
+    "500.text": "Whoops! Looks like the server did not like your request.",
+    "500.description": "Seems like something does not quite work. Try to repeat whatever you did. If that doesn&#39;t help, somebody has to fix this (<a href=\"mailto:m@9dev.de?subject=error in Flatm8 at {url}\">send him a mail</a>).",
+    "404.text": "Whoops! The page <code>%1</code> doesn&#39;t exist.",
+    "404.description": "Looks like you were too stoopid to type. Or I&#39;ve made a mistake.<br>That&#39;s pretty unlikely though, so let&#39;s just assume this is your fault."
+  }
+}
