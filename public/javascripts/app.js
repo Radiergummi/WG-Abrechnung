@@ -44,7 +44,6 @@ app.helpers.createTranslatedElement = function (elementString) {
   var parser = new DOMParser();
 
   return new Promise(function (resolve) {
-    console.log('indeed! we are actually working with promises!');
     app.translator.translate(elementString, app.config.language, function (translatedElementString) {
       resolve(parser.parseFromString(translatedElementString, 'text/html').body.childNodes[ 0 ]);
     });
@@ -96,7 +95,7 @@ app.events.imageError = function (image) {
 
 app.charts = {
   configure: function () {
-    app.Charts.defaults.global.spanGaps                            = true;
+    app.Charts.defaults.global.spanGaps                            = false;
     app.Charts.defaults.global.defaultFontFamily                   = "'Brandon Grotesque', 'Roboto', 'Lucida Grande', 'Verdana', sans-serif";
     app.Charts.defaults.global.defaultFontSize                     = 14;
     app.Charts.defaults.global.elements.line.tension               = 0;

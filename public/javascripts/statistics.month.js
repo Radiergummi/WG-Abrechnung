@@ -8,20 +8,20 @@ if (! app) {
 
 (function () {
   app.startup.push(function () {
-    app.elements.ownInvoiceStatistics = document.getElementsByClassName('flat-spending') [ 0 ];
+    app.elements.ownInvoiceStatistics = document.getElementsByClassName('flat-spending-by-month') [ 0 ];
 
     app.listeners.addLoadStatistics = function () {
       app.events.createCharts();
     };
 
     app.events.createCharts = function () {
-      app.connectors.getInvoiceSum(function (error, data) {
+      app.connectors.getSpendingStatisticsByMonth(new Date(2016, 4, 0), function (error, data) {
         if (error) {
           // TODO: Render error image
           console.error(error);
         }
         console.log(data);
-        app.charts.line(app.elements.ownInvoiceStatistics, 'flat-spending', data);
+        app.charts.line(app.elements.ownInvoiceStatistics, 'flat-spending-by-month', data);
       });
     };
 
@@ -33,8 +33,9 @@ if (! app) {
       return app.io.emit('statistics.getInvoiceSumByUser', callback);
     };
 
-    app.connectors.getInvoiceSum = function (callback) {
-      return app.io.emit('statistics.getInvoiceStatistics', callback);
+    app.connectors.getSpendingStatisticsByMonth = function (month, callback) {
+      console.log('emitting getSpendingStatisticsByMonth');
+      return app.io.emit('statistics.getSpendingStatisticsByMonth', month, callback);
     };
 
     app.listeners.addLoadStatistics();
