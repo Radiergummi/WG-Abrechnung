@@ -33,11 +33,15 @@
     "do_logout":        "logout",
     "do_save":          "save",
     "do_create":        "new",
+    "do_upload":        "upload",
     "details":          "details",
     "edit":             "edit",
     "delete":           "delete",
     "back":             "back",
     "advanced":         "advanced"
+  },
+  "account":   {
+    "upload_profile_picture": "Change profile picture"
   },
   "menu":      {
     "dashboard":  "dashboard",
@@ -51,7 +55,9 @@
     "500.text":        "Whoops! Looks like the server did not like your request.",
     "500.description": "Seems like something does not quite work. Try to repeat whatever you did. If that doesn&#39;t help, somebody has to fix this (<a href=\"mailto:m@9dev.de?subject=error in Flatm8 at {url}\">send him a mail</a>).",
     "404.text":        "Whoops! The page <code>%1</code> doesn&#39;t exist.",
-    "404.description": "Looks like you were too stoopid to type. Or I&#39;ve made a mistake.<br>That&#39;s pretty unlikely though, so let&#39;s just assume this is your fault."
+    "404.description": "Looks like you were too stoopid to type. Or I&#39;ve made a mistake.<br>That&#39;s pretty unlikely though, so let&#39;s just assume this is your fault.",
+    "403.text":        "You have no access to <code>{url}</code>.",
+    "403.description": "You lack the permissions to access or edit this resource."
   },
   "search":    {
     "title":                  "Search for invoices",
@@ -74,8 +80,9 @@
     "title":               "invoice %1",
     "new_title":           "create new invoice",
     "search":              "search",
-    "no_invoices": "There are no invoices yet.",
-    "no_more_recent": "No more up to date",
+    "no_invoices":         "There are no invoices yet.",
+    "no_more_recent":      "No more recent data",
+    "no_older":            "No older data",
     "date":                "date",
     "sum":                 "sum",
     "no_sum":              "no sum available yet.",

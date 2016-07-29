@@ -1,9 +1,7 @@
 <!-- IMPORT partials/header.tpl -->
   <article class="page-error error-404">
-    <h1>Fehler 403</h1>
-    <h2>Du hast keinen Zugriff auf die Seite <code>{url}</code>.</h2>
-    <p>
-      Dir fehlt die Berechtigung, diesen Inhalt anzuzeigen oder zu bearbeiten.
-    </p>
+    <h1>[[error:title, 403]]</h1>
+    <h2>[[error:403.text, {url}]]</h2>
+    <p>[[error:403.description]]</p>
   </article>
 <!-- IMPORT partials/footer.tpl -->

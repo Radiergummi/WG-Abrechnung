@@ -87,6 +87,8 @@ if (! app) {
 
           if (invoices.length > 0) {
 
+            var invoicePromises = [];
+
             // iterate over invoices
             for (var i = 0; i < invoices.length; i ++) {
 
@@ -94,15 +96,20 @@ if (! app) {
               app.elements.invoicesContainer.appendChild(app.templates.invoiceTimelineSeparator());
 
               // insert the invoice
-              app.elements.invoicesContainer.appendChild(app.templates.invoiceCard(invoices[ i ]));
+              invoicePromises.push(app.templates.invoiceCard(invoices[ i ]).then(function(element) {
+                app.elements.invoicesContainer.appendChild(element);
+              }));
             }
 
-            history.pushState(null, 'Rechnungen | Seite' + page, '/invoices/page/' + page);
-
-            app.elements.invoicesContainer.appendChild(app.templates.invoiceTimelineAvailabilityIndicator);
+            Promise.all(invoicePromises).then(function() {
+              history.pushState(null, 'Rechnungen | Seite' + page, '/invoices/page/' + page);
+              app.elements.invoicesContainer.appendChild(app.templates.invoiceTimelineAvailabilityIndicator);
+            });
           } else {
             app.listeners.removeInvoiceEvents();
-            app.elements.invoicesContainer.appendChild(app.templates.invoiceTimelineEnd);
+            app.templates.invoiceTimelineEnd.then(function(element) {
+              app.elements.invoicesContainer.appendChild(element);
+            });
           }
 
         }, 1000);
@@ -125,9 +132,9 @@ if (! app) {
           '</div>' +
           '<span class="owner-name">' + invoice.user.firstName + ' ' + invoice.user.lastName + '</span>' +
           '</div>' +
-          'Datum: <span class="invoice-creation-date">' + invoice.creationDate + '</span><br>' +
-          'Summe: <span class="invoice-sum">' + invoice.sum + '</span>€<br>' +
-          '<div class="tags-label">Tags: </div>' +
+          '[[invoices:date]]: <span class="invoice-creation-date">' + invoice.creationDate + '</span><br>' +
+          '[[invoices:sum]]: <span class="invoice-sum">' + invoice.sum + '</span>€<br>' +
+          '<div class="tags-label">[[invoices:tags]]: </div>' +
           '<div class="invoice-tags">';
 
         if (invoice.tags.length) {
@@ -137,24 +144,24 @@ if (! app) {
               '</div>';
           }
         } else {
-          template += '<span class="no-tags">Es wurden keine Tags angegeben.</span>';
+          template += '<span class="no-tags">[[invoices:no_tags]]</span>';
         }
 
         template += '</div>' +
           '</section>' +
           '<section class="invoice-actions">' +
-          '<a class="button" href="/invoices/' + invoice._id + '"><span class="fa fa-eye"></span> Ansehen</a>';
+          '<a class="button" href="/invoices/' + invoice._id + '"><span class="fa fa-eye"></span> [[global:details]]</a>';
 
         if (invoice.ownInvoice) {
 
-          template += '<a class="button" href="/invoices/' + invoice._id + '/edit"><span class="fa fa-edit"></span> Bearbeiten</a>' +
-            '<a class="button danger" href="/invoices/' + invoice._id + '/delete"><span class="fa fa-trash-o"></span> Löschen</a>';
+          template += '<a class="button" href="/invoices/' + invoice._id + '/edit"><span class="fa fa-edit"></span> [[global:edit]]</a>' +
+            '<a class="button danger" href="/invoices/' + invoice._id + '/delete"><span class="fa fa-trash-o"></span> [[global:delete]]</a>';
         }
 
         template += '</section>' +
           '</article>';
 
-        return app.helpers.createElement(template);
+        return app.helpers.createTranslatedElement(template);
       }
     })();
 
@@ -167,7 +174,7 @@ if (! app) {
     })();
 
     app.templates.invoiceTimelineEnd = (function () {
-      return app.helpers.createElement('<div class="timeline-item timeline-last" data-timeline-description="Keine älteren Daten"></div>');
+      return app.helpers.createTranslatedElement('<div class="timeline-item timeline-last" data-timeline-description="[[invoices:no_older]]"></div>');
     })();
 
     app.templates.invoiceTimelineAvailabilityIndicator = (function () {

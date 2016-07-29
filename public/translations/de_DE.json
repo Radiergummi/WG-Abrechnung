@@ -33,11 +33,15 @@
     "do_logout":        "Abmelden",
     "do_save":          "Speichern",
     "do_create":        "Neu",
+    "do_upload":        "Hochladen",
     "details":          "Ansehen",
     "edit":             "Bearbeiten",
     "delete":           "Löschen",
     "back":             "Zurück",
     "advanced":         "Erweitert"
+  },
+  "account":   {
+    "upload_profile_picture": "Profilbild ändern"
   },
   "menu":      {
     "dashboard":  "Übersicht",
@@ -52,6 +56,8 @@
     "500.description": "Sieht so aus, als läuft hier was schief. Versuche es noch einmal. Wenn es dann immer noch nicht funktioniert, muss jemand (<a href=\"mailto:m@9dev.de?subject=Fehler in Flatm8 unter {url}\">schick ihm &#39;ne Mail</a>) das Problem reparieren.<br> Hrmpf.",
     "404.text":        "Hoppla! Die Seite <code>%1</code> gibt es nicht.",
     "404.description": "Sieht so aus, als wärst du zu doof zum tippen. Oder ich hab einen Fehler gemacht.<br>Das ist ziemlich unwahrscheinlich, also nehmen wir an, du bist zu doof."
+    "403.text":        "Du hast keinen Zugriff auf die Seite <code>{url}</code>.",
+    "403.description": "Dir fehlt die Berechtigung, diesen Inhalt anzuzeigen oder zu bearbeiten."
   },
   "search":    {
     "title":                  "Suche nach Rechnungen",
@@ -76,6 +82,7 @@
     "search":              "Suche",
     "no_invoices":         "Es sind noch keine Rechnungen vorhanden.",
     "no_more_recent":      "Keine aktuelleren Daten",
+    "no_older":            "Keine älteren Daten",
     "date":                "Datum",
     "sum":                 "Summe",
     "no_sum":              "Noch keine Summe angegeben.",
