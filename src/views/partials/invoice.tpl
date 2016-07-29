@@ -1,7 +1,7 @@
 <article class="invoice<!-- IF userInvoices.ownInvoice --> own-invoice<!-- ENDIF userInvoices.ownInvoice -->" id="{userInvoices._id}">
   <section class="invoice-image">
     <img src="/images/invoices/{user._id}/{userInvoices._id}.jpg"
-         alt="Rechnung {userInvoices._id}"
+         alt="[[invoices:title, {userInvoices._id}]]"
          onerror="app.events.imageError(this)"
     >
   </section>
@@ -12,9 +12,9 @@
         <img src="/images/users/{userInvoices.user._id}.jpg" alt>
       </div><span class="owner-name">{userInvoices.user.firstName} {userInvoices.user.lastName}</span>
     </div>
-    Datum: <span class="invoice-creation-date">{userInvoices.creationDate}</span><br>
-    Summe: <!-- IF userInvoices.sum --><span class="invoice-sum">{userInvoices.sum}</span>€<!-- ELSE -->Noch keine Summe angegeben<!-- ENDIF userInvoices.sum --><br>
-    <div class="tags-label">Tags:</div>
+    [[invoices:date]]: <span class="invoice-creation-date">{userInvoices.creationDate}</span><br>
+    [[invoices:sum]]: <!-- IF userInvoices.sum --><span class="invoice-sum">{userInvoices.sum}</span>€<!-- ELSE -->[[invoices:no_sum]]<!-- ENDIF userInvoices.sum --><br>
+    <div class="tags-label">[[invoices:tags]]:</div>
     <div class="invoice-tags">
       <!-- IF userInvoices.tags.length -->
       <!-- BEGIN userInvoices.tags -->
@@ -23,16 +23,16 @@
       </div>
       <!-- END userInvoices.tags -->
       <!-- ELSE -->
-      <span class="no-tags">Es wurden keine Tags angegeben.</span>
+      <span class="no-tags">[[invoices:no_tags]]</span>
       <!-- ENDIF userInvoices.tags.length -->
     </div>
   </section>
   <section class="invoice-actions">
     <a class="button" href="/invoices/{userInvoices._id}"><span class="fa fa-eye"></span>
-      Ansehen</a><!-- IF userInvoices.ownInvoice --><a class="button" href="/invoices/{userInvoices._id}/edit"><span class="fa fa-edit"></span>
-      Bearbeiten</a><a class="button danger" href="/invoices/{userInvoices._id}/delete"><span
+      [[global:details]]</a><!-- IF userInvoices.ownInvoice --><a class="button" href="/invoices/{userInvoices._id}/edit"><span class="fa fa-edit"></span>
+      [[global:edit]]</a><a class="button danger" href="/invoices/{userInvoices._id}/delete"><span
         class="fa fa-trash-o"></span>
-      Löschen</a>
+      [[global:delete]]</a>
     <!-- ENDIF userInvoices.ownInvoice -->
   </section>
 </article>

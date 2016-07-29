@@ -1,14 +1,14 @@
 'use strict';
 
-if (! app) {
+if (!app) {
   var app = require('./app');
 }
 
-(function () {
+(function() {
   /**
    * push the code into the app startup stack
    */
-  app.startup.push(function () {
+  app.startup.push(function() {
 
       /**
        * register all required elements
@@ -29,13 +29,13 @@ if (! app) {
       /**
        * Adds all invoice search page event listener to their targets
        */
-      app.listeners.addInvoiceSearchEvents = function () {
+      app.listeners.addInvoiceSearchEvents = function() {
         app.elements.advancedSearchControlsToggle.addEventListener('click', app.events.toggleAdvancedSearchControls);
         app.elements.searchInput.addEventListener('keydown', app.events.checkInputKeypress);
         app.elements.searchSubmit.addEventListener('click', app.events.submitSearch);
       };
 
-      app.events.checkInputKeypress = function (event) {
+      app.events.checkInputKeypress = function(event) {
         if (event.keyCode === 13) {
           event.preventDefault();
           app.elements.searchSubmit.click();
@@ -47,11 +47,11 @@ if (! app) {
        *
        * @param {Event} event
        */
-      app.events.submitSearch = function (event) {
+      app.events.submitSearch = function(event) {
         var options = {}; // TODO: Parse advanced search options
 
         event.target.classList.add('search-in-progress');
-        app.connectors.searchInvoice(app.elements.searchInput.value, options, function () {
+        app.connectors.searchInvoice(app.elements.searchInput.value, options, function() {
           event.target.classList.remove('search-in-progress');
         });
       };
@@ -61,7 +61,7 @@ if (! app) {
        *
        * @param {Event} event
        */
-      app.events.toggleAdvancedSearchControls = function (event) {
+      app.events.toggleAdvancedSearchControls = function(event) {
         event.preventDefault();
         event.target.classList.toggle('control-active');
         app.elements.advancedSearchControls.classList.toggle('active');
@@ -76,11 +76,11 @@ if (! app) {
        *   processed
        * @returns {*}
        */
-      app.connectors.searchInvoice = function (query, options, callback) {
+      app.connectors.searchInvoice = function(query, options, callback) {
         console.log('starting search for %s', query);
         app.io.emit('invoices.search', {
           query: query
-        }, function (error, data) {
+        }, function(error, data) {
 
           /**
            * push the search results page into history
@@ -112,9 +112,9 @@ if (! app) {
            * if there are no results, just append the banner
            */
           if (results.length === 0) {
-            app.templates.noSearchResults(query).then(function (element) {
+            app.templates.noSearchResults(query).then(function(element) {
               app.elements.searchResultsContainer.appendChild(element);
-            }).then(function () {
+            }).then(function() {
 
               return callback();
             });
@@ -123,23 +123,23 @@ if (! app) {
           app.elements.searchResultsContainer.appendChild(app.helpers.createNode('ul', { class: 'invoices' }));
           app.elements.searchResultList = app.elements.searchResultsContainer.getElementsByTagName('ul') [ 0 ];
 
-          app.templates.nSearchResults(results.length, query).then(function (element) {
+          app.templates.nSearchResults(results.length, query).then(function(element) {
             app.elements.searchResultsContainer.insertBefore(element, app.elements.searchResultsContainer.firstChild);
-          }).then(function () {
+          }).then(function() {
             var resultPromises = [];
 
             /**
              * iterate over search results, append the result template for each
              */
-            for (var i = 0; i < results.length; i ++) {
-              resultPromises.push(app.templates.searchResult(results[ i ]).then(function (element) {
+            for (var i = 0; i < results.length; i++) {
+              resultPromises.push(app.templates.searchResult(results[ i ]).then(function(element) {
                   app.elements.searchResultList.appendChild(element);
                 })
               );
             }
 
-            return Promise.all(resultPromises).then(function (results) {
-              console.log(results);
+            return Promise.all(resultPromises).then(function() {
+              return callback();
             });
           });
         });
@@ -150,16 +150,16 @@ if (! app) {
        *
        * @param {string} query  the original search query
        */
-      app.templates.noSearchResults = function (query) {
-        return app.helpers.createTranslatedElement('<h2 class="no-results">Keine Ergebnisse für <span class="search-query">' + query + '</span></h2>');
+      app.templates.noSearchResults = function(query) {
+        return app.helpers.createTranslatedElement('<h2 class="no-results">[[search:no_results, ' + query + ']]</h2>');
       };
 
-      app.templates.nSearchResults = function (resultCount, query) {
+      app.templates.nSearchResults = function(resultCount, query) {
         if (resultCount === 1) {
-          return app.helpers.createTranslatedElement('<h2>Ein Ergebnis für <span class="search-query">' + query + '</span></h2>');
+          return app.helpers.createTranslatedElement('<h2>[[search:single_result, ' + query + ']]</h2>');
         }
 
-        return app.helpers.createTranslatedElement('<h2>' + resultCount + ' Ergebnisse für <span class="search-query">' + query + '</span></h2>');
+        return app.helpers.createTranslatedElement('<h2>[[search:multiple_results, ' + resultCount + ', ' + query + ']]</h2>');
       };
 
       /**
@@ -167,7 +167,7 @@ if (! app) {
        *
        * @param {object} result            an object containing all result data
        */
-      app.templates.searchResult = function (result) {
+      app.templates.searchResult = function(result) {
         var template = '<li class="search-result invoice' + (result.ownInvoice ? ' own-invoice' : '') + '" id="' + result._id + '">' +
           '<section class="invoice-image">' +
           '<img src="/images/invoices/' + result.user._id + '/' + result._id + '.jpg" alt="Rechnung ' + result._id + '" onerror="app.events.imageError(this)">' +
@@ -180,30 +180,30 @@ if (! app) {
           '</div>' +
           '<span class="owner-name">' + result.user.firstName + ' ' + result.user.lastName + '</span>' +
           '</div>' +
-          'Datum: <span class="invoice-creation-date">' + result.creationDate + '</span><br>' +
-          'Summe:' + (result.sum ? '<span class="invoice-sum">' + result.sum + '</span>€' : 'Noch keine Summe angegeben') +
+          '[[invoices:date]]: <span class="invoice-creation-date">' + result.creationDate + '</span><br>' +
+          '[[invoices:sum]]:' + (result.sum ? '<span class="invoice-sum">' + result.sum + '</span>€' : '[[invoices:no_sum]]') +
           '<br>' +
-          '<div class="tags-label">Tags:</div>' +
+          '<div class="tags-label">[[invoices:tags]]:</div>' +
           '<div class="invoice-tags">';
 
         if (result.tags.length) {
-          for (var i = 0; i < result.tags.length; i ++) {
+          for (var i = 0; i < result.tags.length; i++) {
             template += '<div class="tag tag-' + result.tags[ i ].color + '" id="' + result.tags[ i ]._id + '">' +
               '<span>' + result.tags[ i ].name + '</span>' +
               '</div>';
           }
         } else {
-          template += '<span class="no-tags">Es wurden keine Tags angegeben.</span>';
+          template += '<span class="no-tags">[[invoices:no_tags]]</span>';
         }
 
         template += '</div>' +
           '</section>' +
           '<section class="invoice-actions" data-own="' + result.ownInvoice + '">' +
-          '<a class="button" href="/invoices/' + result._id + '"><span class="fa fa-eye"></span> Ansehen</a>';
+          '<a class="button" href="/invoices/' + result._id + '"><span class="fa fa-eye"></span> [[global:details]]</a>';
 
         if (result.ownInvoice) {
-          template += '<a class="button" href="/invoices/' + result._id + '/edit"><span class="fa fa-edit"></span> Bearbeiten</a>' +
-            '<a class="button danger" href="/invoices/' + result._id + '/delete"><span class="fa fa-trash-o"></span> Löschen</a>';
+          template += '<a class="button" href="/invoices/' + result._id + '/edit"><span class="fa fa-edit"></span> [[global:edit]]</a>' +
+            '<a class="button danger" href="/invoices/' + result._id + '/delete"><span class="fa fa-trash-o"></span> [[global:delete]]</a>';
         }
 
         template += '</section></li>';

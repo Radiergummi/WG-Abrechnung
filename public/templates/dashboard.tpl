@@ -1,4 +1,4 @@
-<html lang="de">
+<html lang="{language}">
   <head>
     <title>{pageTitle}</title>
     <meta charset="utf-8">
@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/stylesheets/style.css" rel="stylesheet"/>
 <script src="/javascripts/chart.bundle.min.js"></script>
+<script src="/javascripts/modules/translator.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/app.js"></script>
 
@@ -17,20 +18,20 @@
 <nav role="navigation" class="main-navigation">
   <ul>
     <li class="menu-dashboard">
-      <a href="/dashboard"><span class="fa fa-circle-o"></span> Übersicht</a>
+      <a href="/dashboard"><span class="fa fa-circle-o"></span> [[menu:dashboard]]</a>
     </li>
     <li class="menu-invoices">
-      <a href="/invoices"><span class="fa fa-inbox"></span> Rechnungen</a>
+      <a href="/invoices"><span class="fa fa-inbox"></span> [[menu:invoices]]</a>
     </li>
     <li class="menu-statistics">
-      <a href="/statistics"><span class="fa fa-bar-chart"></span> Statistiken</a>
+      <a href="/statistics"><span class="fa fa-bar-chart"></span> [[menu:statistics]]</a>
     </li>
     <li class="menu-balance">
-      <a href="/balance"><span class="fa fa-calculator"></span> Abrechnung</a>
+      <a href="/balance"><span class="fa fa-calculator"></span> [[menu:balance]]</a>
     </li>
     <!-- IF user.isAdmin -->
     <li class="menu-admin">
-      <a href="/admin/dashboard" title="Admin"><span class="fa fa-cogs"></span> Verwaltung</a>
+      <a href="/admin/dashboard" title="Admin"><span class="fa fa-cogs"></span> [[menu:admin]]</a>
     </li>
     <!-- ENDIF user.isAdmin -->
   </ul>
@@ -45,7 +46,7 @@
     <!-- ENDIF user.hasProfilePicture -->
   </div>
   <span class="username">{user.name}</span>
-  <a href="/logout" class="logout button"><i class="fa fa-sign-out"></i> Abmelden</a>
+  <a href="/logout" class="logout button"><i class="fa fa-sign-out"></i> [[global:do_logout]]</a>
 </div>
 
       <!-- ENDIF user.loggedIn -->
@@ -55,10 +56,8 @@
 
 <article class="dashboard">
   <section class="introduction">
-    <h1>Hi {user.firstName}!</h1>
-    <p>
-      Hier findest du eine Übersicht über alle aktuellen Rechnungen dieses Monats.
-    </p>
+    <h1>[[dashboard:greeting, {user.firstName}]]</h1>
+    <p>[[dashboard:intro_text]]</p>
   </section>
   <section class="current-month">
     <div class="open-invoices">
@@ -66,21 +65,11 @@
       <table>
         <thead>
         <tr>
-          <th class="invoice-state">
-            Status
-          </th>
-          <th class="invoice-image">
-            Rechnung
-          </th>
-          <th class="invoice-sum">
-            Betrag
-          </th>
-          <th class="invoice-date">
-            Datum
-          </th>
-          <th class="invoice-tags">
-            Tags
-          </th>
+          <th class="invoice-state">[[dashboard:invoices.status]]</th>
+          <th class="invoice-image">[[dashboard:invoices.image]]</th>
+          <th class="invoice-sum">[[dashboard:invoices.sum]]</th>
+          <th class="invoice-date">[[dashboard:invoices.date]]</th>
+          <th class="invoice-tags">[[dashboard:invoices.tags]]</th>
         </tr>
         </thead>
         <tbody>
@@ -100,8 +89,8 @@
             <!-- IF userInvoices.sum -->
             <span>{userInvoices.sum} €</span>
             <!-- ELSE -->
-            <input type="number" placeholder="Summe" step="0.01" name="sum-{userInvoices._id}">
-            <button type="button" class="save-invoice-sum"><span class="fa fa-save"></span> Speichern</button>
+            <input type="number" placeholder="[[dashboard:invoices.sum]]" step="0.01" name="sum-{userInvoices._id}">
+            <button type="button" class="save-invoice-sum"><span class="fa fa-save"></span> [[global:do_save]]</button>
             <!-- ENDIF userInvoices.sum -->
           </td>
           <td class="invoice-date">
@@ -120,7 +109,7 @@
         </tbody>
       </table>
       <!-- ELSE -->
-      <span class="no-invoices">Noch keine Rechnungen vorhanden.</span>
+      <span class="no-invoices">[[dashboard:no_invoices]]</span>
       <!-- ENDIF userInvoices.length -->
     </div>
   </section>

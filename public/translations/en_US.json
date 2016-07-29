@@ -9,11 +9,9 @@
     "invoices.date":   "date",
     "invoices.tags":   "tags"
   },
-
   "spending":  {
     "debt.you_owe": "You owe %2€ to %1. That is %3% of the total sum."
   },
-
   "global":    {
     "months.january":   "january",
     "months.february":  "february",
@@ -27,17 +25,20 @@
     "months.october":   "october",
     "months.november":  "november",
     "months.december":  "december",
-
     "login":            "Login",
     "do_login":         "login",
     "username":         "username",
     "password":         "password",
     "logout":           "Logout",
     "do_logout":        "logout",
-
-    "do_save":          "save"
+    "do_save":          "save",
+    "do_create":        "new",
+    "details":          "details",
+    "edit":             "edit",
+    "delete":           "delete",
+    "back":             "back",
+    "advanced":         "advanced"
   },
-
   "menu":      {
     "dashboard":  "dashboard",
     "invoices":   "invoices",
@@ -45,12 +46,41 @@
     "balance":    "balance",
     "admin":      "admin"
   },
-
-  "error": {
-    "title": "Error %1",
-    "500.text": "Whoops! Looks like the server did not like your request.",
+  "error":     {
+    "title":           "Error %1",
+    "500.text":        "Whoops! Looks like the server did not like your request.",
     "500.description": "Seems like something does not quite work. Try to repeat whatever you did. If that doesn&#39;t help, somebody has to fix this (<a href=\"mailto:m@9dev.de?subject=error in Flatm8 at {url}\">send him a mail</a>).",
-    "404.text": "Whoops! The page <code>%1</code> doesn&#39;t exist.",
+    "404.text":        "Whoops! The page <code>%1</code> doesn&#39;t exist.",
     "404.description": "Looks like you were too stoopid to type. Or I&#39;ve made a mistake.<br>That&#39;s pretty unlikely though, so let&#39;s just assume this is your fault."
+  },
+  "search":    {
+    "title":                  "Search for invoices",
+    "input.placeholder":      "id, sum or date",
+    "input.id_label":         "id",
+    "input.id_placeholder":   "invoice id",
+    "input.sum_label":        "sum",
+    "input.sum_below":        "below %1€",
+    "input.sum_above":        "above %1€",
+    "input.tag_label":        "id",
+    "input.tag_placeholder":  "tag name",
+    "input.date_label":       "date",
+    "input.date_placeholder": "date",
+    "advanced_controls":      "advanced controls",
+    "no_results":             "No results for <span class=\"search-query\">%1</span>",
+    "single_result":          "One result for <span class=\"search-query\">%1</span>",
+    "multiple_results":       "%1 results for <span class=\"search-query\">%2</span>"
+  },
+  "invoices":  {
+    "title":               "invoice %1",
+    "new_title":           "create new invoice",
+    "search":              "search",
+    "no_invoices": "There are no invoices yet.",
+    "no_more_recent": "No more up to date",
+    "date":                "date",
+    "sum":                 "sum",
+    "no_sum":              "no sum available yet.",
+    "tags":                "tags",
+    "no_tags":             "no tags available yet.",
+    "input:picture_label": "invoice image:"
   }
 }
