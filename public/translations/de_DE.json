@@ -89,5 +89,8 @@
     "tags":                "Tags",
     "no_tags":             "Es wurden keine Tags angegeben.",
     "input:picture_label": "Bild der Rechnung:"
+  },
+  "statistics": {
+    "month_dropdown_title": "Monat auswählen"
   }
 }

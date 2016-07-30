@@ -3065,24 +3065,36 @@ article {
   margin: 20px auto 15px;
   padding: 0;
   text-align: center; }
-  .sub-navigation ul {
+  .sub-navigation > ul {
     display: inline-block;
     border: 1px solid #03a9f4;
     border-radius: 4px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
-    .sub-navigation ul li {
+    .sub-navigation > ul li {
       display: inline-block; }
-      .sub-navigation ul li a {
+      .sub-navigation > ul li a {
         display: block;
         padding: 10px 20px;
         text-decoration: none;
         color: #1e88e5;
         transition: all .125s; }
-        .sub-navigation ul li a.control-active, .sub-navigation ul li a:hover {
+        .sub-navigation > ul li a.control-active, .sub-navigation > ul li a:hover {
           background: #03a9f4;
           color: #fff; }
-      .sub-navigation ul li + li a {
+      .sub-navigation > ul li + li a {
         border-left: 1px solid #03a9f4; }
+      .sub-navigation > ul li .select-box {
+        margin: 0; }
+        .sub-navigation > ul li .select-box .select-toggle {
+          color: #1e88e5;
+          cursor: pointer;
+          padding: 10px 20px; }
+          .sub-navigation > ul li .select-box .select-toggle span {
+            padding-right: 8px;
+            margin-right: 8px;
+            border-right: 1px solid #1e88e5; }
+        .sub-navigation > ul li .select-box ul {
+          display: none; }
 
 .login-container {
   width: 100%;

@@ -47,7 +47,7 @@ input[type="submit"],
   line-height:     16px;
   cursor:          pointer;
   transition:      all .12s;
-  font-family: $font-family-interactive;
+  font-family:     $font-family-interactive;
 
   &:hover {
     background: #0277bd;
@@ -122,7 +122,7 @@ img.image-error {
   padding:    0;
   text-align: center;
 
-  ul {
+  & > ul {
     display:       inline-block;
     border:        1px solid #03a9f4;
     border-radius: 4px;
@@ -147,6 +147,27 @@ img.image-error {
 
       & + li a {
         border-left: 1px solid #03a9f4;
+      }
+
+      .select-box {
+        margin:  0;
+
+        .select-toggle {
+          color: #1e88e5;
+          cursor: pointer;
+          padding: 10px 20px;
+
+          span {
+            padding-right: 8px;
+            margin-right: 8px;
+            border-right: 1px solid #1e88e5;
+          }
+        }
+
+
+        ul {
+          display: none;
+        }
       }
     }
   }

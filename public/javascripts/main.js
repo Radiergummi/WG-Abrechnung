@@ -11,6 +11,7 @@ if (! app) {
     app.elements.profilePicture = document.getElementsByClassName('profile-picture')[ 0 ];
     app.elements.backLinks      = document.getElementsByClassName('back-link');
     app.elements.inputElements  = document.getElementsByTagName('input');
+    app.elements.selectBoxes    = document.getElementsByClassName('select-box');
 
     app.listeners.addLinkEvents = function () {
       Array.prototype.slice.call(app.elements.backLinks).map(function (backLink) {
@@ -22,6 +23,12 @@ if (! app) {
       Array.prototype.slice.call(app.elements.inputElements).map(function (inputElement) {
         inputElement.addEventListener('focus', app.events.toggleInputLabelHighlight);
         inputElement.addEventListener('blur', app.events.toggleInputLabelHighlight);
+      });
+    };
+
+    app.listeners.addSelectBoxEvents = function () {
+      Array.prototype.slice.call(app.elements.selectBoxes).map(function (selectBox) {
+        selectBox.addEventListener('click', app.events.toggleSelectBox);
       });
     };
 
@@ -37,12 +44,22 @@ if (! app) {
       return false;
     };
 
-    app.events.toggleInputLabelHighlight = function(event) {
-
-
+    app.events.toggleInputLabelHighlight = function (event) {
       if (event.target.previousElementSibling.tagName == 'LABEL') {
         event.target.previousElementSibling.classList.toggle('in-focus');
       }
+    };
+
+    app.events.toggleSelectBox = function(event) {
+      if (document.querySelector('.select-box.visible').length > 0) {
+        for (var i = 0; i < app.elements.selectBoxes.length; i++) {
+          app.elements.selectBoxes[i].classList.remove('visible');
+        }
+
+        return;
+      }
+
+      event.target.classList.add('visible');
     };
 
     app.events.toggleProfilePictureUploadModal = function (event) {
@@ -59,9 +76,9 @@ if (! app) {
 
       app.elements.overlay.classList.remove('disabled');
       app.elements.profilePicture.classList.add('upload-visible');
-      app.templates.profilePictureUploadModal().then(function(element) {
+      app.templates.profilePictureUploadModal().then(function (element) {
         app.elements.profilePicture.appendChild(element);
-      }).then(function() {
+      }).then(function () {
         app.elements.profilePicture.querySelector('.save-picture').addEventListener('click', function () {
           var file = document.getElementById('file-input').files[ 0 ];
 
@@ -94,7 +111,7 @@ if (! app) {
 
     app.templates.profilePictureUploadModal = (function () {
       var profilePicturePath = '/images/users/' + (app.config.user.hasProfilePicture ? app.config.user._id : 'default') + '.jpg',
-          userPrimaryColor = app.config.user.color,
+          userPrimaryColor   = app.config.user.color,
           userSecondaryColor = app.config.user.color.replace(/, 1\)$/, ', .2)');
 
       return app.helpers.createTranslatedElement('<div class="upload-modal">' +
