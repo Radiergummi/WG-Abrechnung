@@ -3,7 +3,7 @@
   <ul>
     <li>
       <div class="select-box">
-        <div class="select-toggle"><span class="fa fa-angle-down"></span>[[statistics:month_dropdown_title]]</div>
+        <div class="select-toggle"><span class="fa fa-angle-down"></span><span class="select-title">[[statistics:month_dropdown_title]]</span></div>
         <ul>
           <li><a href="/statistics/january">[[global:months.january]]</a></li>
           <li><a href="/statistics/february">[[global:months.february]]</a></li>
@@ -19,7 +19,9 @@
           <li><a href="/statistics/december">[[global:months.december]]</a></li>
         </ul>
       </div>
-    </li>
+    </li><li>
+    <a href="/statistics/user">[[statistics:user_statistics]]</a>
+  </li>
   </ul>
 </nav>
 <article class="statistics-main">

@@ -91,6 +91,8 @@
     "input:picture_label": "invoice image:"
   },
   "statistics": {
-    "month_dropdown_title": "Choose month"
+    "month_title": "Statistics for %1",
+    "month_dropdown_title": "Choose month",
+    "user_statistics": "user statistics"
   }
 }

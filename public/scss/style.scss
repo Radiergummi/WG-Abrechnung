@@ -129,7 +129,9 @@ img.image-error {
     box-shadow:    0 2px 5px rgba(0, 0, 0, .1);
 
     li {
-      display: inline-block;
+      display:        inline-block;
+      vertical-align: top;
+      height:         36px;
 
       a {
         display:         block;
@@ -145,28 +147,80 @@ img.image-error {
         }
       }
 
-      & + li a {
+      & + li > :first-child {
         border-left: 1px solid #03a9f4;
       }
 
       .select-box {
-        margin:  0;
+        position:            relative;
+        height:              36px;
+        margin:              0;
+        -webkit-user-select: none;
+        -moz-user-select:    none;
+        user-select:         none;
+        cursor:              pointer;
+        min-width:           180px;
+        text-align:          center;
+        transition: background .125s;
 
-        .select-toggle {
-          color: #1e88e5;
-          cursor: pointer;
-          padding: 10px 20px;
+        &:hover:not(.visible) {
+          background: #03a9f4;
 
-          span {
-            padding-right: 8px;
-            margin-right: 8px;
-            border-right: 1px solid #1e88e5;
+          .select-toggle {
+            color: #fff;
           }
         }
 
+        .select-toggle {
+          color:          #03a9f4;
+          cursor:         pointer;
+          padding:        10px 20px 9px;
+          pointer-events: none;
+          transition: color .125s;
+
+          .select-title {
+            margin-left:  8px;
+            padding-left: 8px;
+          }
+
+          .fa {
+            transition: transform .2s;
+          }
+        }
+
+        &.visible .select-toggle .fa {
+          transform: rotate(180deg);
+        }
 
         ul {
-          display: none;
+          max-height:    0;
+          overflow:      hidden;
+          opacity:       0;
+          position:      absolute;
+          width:         calc(100% + 2px);
+          left:          -1px;
+          top:           100%;
+          padding-top:   2px;
+          background:    #fff;
+          border:        1px solid #03a9f4;
+          border-top:    0;
+          border-radius: 0 0 4px 4px;
+          transition:    max-height .3s, opacity .1s linear, top 0 linear .3s;
+
+          li {
+            display: block;
+
+            a {
+              border: 0;
+            }
+          }
+        }
+
+        &.visible ul {
+          max-height: 1000px;
+          top:        calc(100% - 2px);
+          opacity:    1;
+          transition: top 0 linear 0;
         }
       }
     }

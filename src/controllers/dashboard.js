@@ -12,7 +12,8 @@ var dashboard = module.exports = {};
 
 dashboard.dash = function (req, res, next) {
   var vars = {
-    user: {}
+    user: {},
+    dashboardActive: true
   };
 
   Invoice.getOwn(req.user._id, function (error, invoices) {

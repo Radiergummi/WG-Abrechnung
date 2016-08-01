@@ -7,8 +7,10 @@ That way, everyone pays the same amount and you get some neat stats about your m
 This is a project intended to ease the way me and the people I'm sharing a flat with calculate their share in our monthly grocery shopping calculation. Up until now, we just went through all the receipts at the end of the month, while those having spent less than the others paid their difference. Obviously, this is a time consuming activity, so we thought *how could we possibly nerd the hell out of this?*
 
 ## Current state
-Apart from the base structure and working Mongo models as well as a functioning login system, there is not much to do yet. I'm actively working on this, though, so I'd expect an example implementation up and running in about a month.  
-Language is german right now, though most of the strings are in the view files - you should have no problem modifying these.
+~~~Apart from the base structure and working Mongo models as well as a functioning login system, there is not much to do yet. I'm actively working on this, though, so I'd expect an example implementation up and running in about a month.  
+Language is german right now, though most of the strings are in the view files - you should have no problem modifying these.~~~
+
+Much has changed over the last course of weeks! Dynamic data loading as well as a proper translation system has been implemented. A server-side statistics API is in the making, the mailer is set up and working (both local and relay works) and cron job handling (for monthly calculations and so on) works using [agenda](https://github.com/rschmukler/agenda). More to come.
 
 Once the current way of handling receipts works, I'm planning to integrate OCR (using tesseract, maybe) somehow, so the receipts get parsed automatically. That would eliminate the need to enter the sum manually and allow to create detailed product statistics. As far as I've seen, though, that is a non-trivial task which'd require some serious engineering.  
 
@@ -26,8 +28,8 @@ Once the current way of handling receipts works, I'm planning to integrate OCR (
 - [ ] develop the core algorithms for the calculations
 - [ ] set up monthly statements
 - [ ] set up gifting, negative invoices (for private product shopping etc.)
-- [ ] implement statistics generation and rendering
-- [ ] set up mail server with payment notifications
+- [x] implement statistics generation and rendering
+- [x] set up mail server with payment notifications
 - [ ] set up tests
 - [ ] set up PayPal.me integration for instant payments
 - [ ] ... more to come
@@ -37,7 +39,7 @@ So far, there are view routes implemented. I'll try to describe the existing her
 
 ### Dashboard
 - `/dashboard` - Home page after login. Shows the five first own invoices for the current month
-  and the current cumulated sum until now as well as a diagram
+  and the current cummulated sum until now as well as a diagram
 
 ### Invoices
 - `/invoices` - Shows all invoices in descending order (by date)

@@ -10,12 +10,14 @@ var User    = require('../user'),
 
 var invoices = module.exports = {};
 
-invoices.redirectToInvoices = (req, res, next)  => res.redirect('/invoices');
+invoices.redirectToInvoices = (req, res, next) => res.redirect('/invoices');
 
-invoices.viewSingle = function (req, res, next) {
-  var vars = {};
+invoices.viewSingle = function(req, res, next) {
+  var vars = {
+    invoicesActive: true
+  };
 
-  Invoice.getById(req.params.id, function (error, data) {
+  Invoice.getById(req.params.id, function(error, data) {
     if (error) {
       return next(error);
     }
@@ -29,18 +31,20 @@ invoices.viewSingle = function (req, res, next) {
   });
 };
 
-invoices.viewAll = function (req, res, next) {
-  var vars  = {},
+invoices.viewAll = function(req, res, next) {
+  var vars  = {
+        invoicesActive: true
+      },
       limit = (req.params.pageNum ? (Math.floor(req.params.pageNum) * 2 + 3) : 4);
 
-  Invoice.getPaginated(0, limit, function (error, data) {
+  Invoice.getPaginated(0, limit, function(error, data) {
     if (error) {
       return next(error);
     }
 
     vars.userInvoices = JSON.parse(JSON.stringify(data));
-    
-    for (var i = 0; i < vars.userInvoices.length; i ++) {
+
+    for (var i = 0; i < vars.userInvoices.length; i++) {
       vars.userInvoices[ i ].creationDate = data[ i ].getFormattedDate();
       vars.userInvoices[ i ].ownInvoice   = (vars.userInvoices[ i ].user._id == req.user._id);
     }
@@ -51,46 +55,53 @@ invoices.viewAll = function (req, res, next) {
   });
 };
 
-invoices.create = function (req, res, next) {
-  var vars = {};
-
-  vars.todayDate = new Date().toISOString().substring(0, 10);
-  vars.pageTitle = 'Neu';
+invoices.create = function(req, res, next) {
+  var vars = {
+    invoicesActive: true,
+    todayDate:      new Date().toISOString().substring(0, 10),
+    pageTitle:      'Neu'
+  };
 
   return res.render('invoices/create', vars);
 };
 
-invoices.delete = function (req, res, next) {
-  var vars = {};
+invoices.delete = function(req, res, next) {
+  var vars = {
+    invoicesActive: true,
+    pageTitle: 'Rechnung löschen'
+  };
 
-  vars.pageTitle = 'Rechnung löschen';
   return res.render('invoices/delete', vars);
 };
 
-invoices.edit = function (req, res, next) {
-  var vars = {};
+invoices.edit = function(req, res, next) {
+  var vars = {
+    invoicesActive: true,
+    pageTitle: 'Rechnung bearbeiten'
+  };
 
-  Invoice.getById(req.params.id, function (error, invoice) {
+  Invoice.getById(req.params.id, function(error, invoice) {
     if (error) {
       return next(error);
     }
 
     vars.invoice           = JSON.parse(JSON.stringify(invoice));
     vars.invoice.inputDate = invoice.getHTMLInputDate();
-    vars.pageTitle         = 'Rechnung bearbeiten';
 
     return res.render('invoices/edit', vars);
   });
 };
 
-invoices.search = function (req, res, next) {
-  var vars       = {};
-  vars.pageTitle = 'Suche';
+invoices.search = function(req, res, next) {
+  var vars       = {
+    invoicesActive: true,
+    pageTitle:'Suche'
+  };
 
   if (req.params.query) {
     return Invoice.find({
       query: req.params.query
-    }, function (error, invoices) {
+    }, function(error, invoices) {
       if (error) {
         return next(error);
       }
@@ -99,7 +110,7 @@ invoices.search = function (req, res, next) {
       vars.singleResult = (invoices.length === 1);
       vars.query        = req.params.query;
 
-      for (var i = 0; i < invoices.length; i ++) {
+      for (var i = 0; i < invoices.length; i++) {
         vars.results[ i ].creationDate = invoices[ i ].getFormattedDate();
         vars.results[ i ].ownInvoice   = (invoices[ i ].user._id == req.user._id.toString());
       }

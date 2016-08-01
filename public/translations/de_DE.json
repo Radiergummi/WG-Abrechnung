@@ -91,6 +91,8 @@
     "input:picture_label": "Bild der Rechnung:"
   },
   "statistics": {
-    "month_dropdown_title": "Monat auswählen"
+    "month_title": "Statistiken für %1",
+    "month_dropdown_title": "Monat auswählen",
+    "user_statistics": "Benutzerstatistiken"
   }
 }

@@ -51,7 +51,8 @@ if (! app) {
     };
 
     app.events.toggleSelectBox = function(event) {
-      if (document.querySelector('.select-box.visible').length > 0) {
+      console.log('select clicked');
+      if (document.querySelectorAll('.select-box.visible').length > 0) {
         for (var i = 0; i < app.elements.selectBoxes.length; i++) {
           app.elements.selectBoxes[i].classList.remove('visible');
         }
@@ -59,7 +60,19 @@ if (! app) {
         return;
       }
 
-      event.target.classList.add('visible');
+      if (! event.target.classList.contains('select-box')) {
+        var selectBox = event.target;
+
+        while (selectBox.parentNode) {
+          selectBox = selectBox.parentNode;
+
+          if (selectBox.classList.contains('select-box')) {
+            return selectBox.classList.add('visible');
+          }
+        }
+      }
+
+      return event.target.classList.add('visible');
     };
 
     app.events.toggleProfilePictureUploadModal = function (event) {
@@ -76,7 +89,7 @@ if (! app) {
 
       app.elements.overlay.classList.remove('disabled');
       app.elements.profilePicture.classList.add('upload-visible');
-      app.templates.profilePictureUploadModal().then(function (element) {
+      app.templates.profilePictureUploadModal.then(function (element) {
         app.elements.profilePicture.appendChild(element);
       }).then(function () {
         app.elements.profilePicture.querySelector('.save-picture').addEventListener('click', function () {
@@ -130,6 +143,7 @@ if (! app) {
 
     app.listeners.addLinkEvents();
     app.listeners.addInputEvents();
+    app.listeners.addSelectBoxEvents();
     app.listeners.addProfilePictureEvents();
   });
 })();

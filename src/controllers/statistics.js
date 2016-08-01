@@ -11,7 +11,8 @@ var statistics = module.exports = {};
 
 statistics.overview = function(req, res, next) {
   var vars = {
-    pageTitle: 'Statistiken - Übersicht'
+    pageTitle: 'Statistiken - Übersicht',
+    statisticsActive: true
   };
 
   res.render('statistics/overview', vars);
@@ -33,10 +34,16 @@ statistics.month = function(req, res, next) {
         'december':  'Dezember'
       },
       vars   = {
-        pageTitle: 'Statistik - ' + months[ req.params.month ],
-        month: req.params.month,
-        monthName: months[ req.params.month ]
+        pageTitle:   'Statistik - ' + months[ req.params.month ],
+        statisticsActive: true,
+        month:       req.params.month,
+        monthName:   months[ req.params.month ],
+        monthNumber: Object.keys(months).indexOf(req.params.month) + 1
       };
+
+  if (!months[ req.params.month ]) {
+     next('not found')
+  }
 
   res.render('statistics/month', vars);
 };
