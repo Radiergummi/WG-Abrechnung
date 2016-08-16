@@ -122,7 +122,6 @@ module.exports.listen = function(port) {
 
   // listen on the given port
   server.listen(/*bind*/port); // TODO: Implement correct socket handling. Disabled for now.
-  require('./socket.io').server.sockets.emit('app.updated', { date: Date.now() });
 };
 
 function initialize () {

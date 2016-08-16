@@ -5,7 +5,9 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/stylesheets/style.css" rel="stylesheet"/>
-<script src="/javascripts/chart.bundle.min.js"></script>
+<script src="/javascripts/libraries/Chart.bundle.min.js"></script>
+<script src="/javascripts/libraries/vanilla-modal.min.js"></script>
+<script src="/javascripts/modules/notifications.js"></script>
 <script src="/javascripts/modules/translator.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/app.js"></script>
@@ -38,6 +40,7 @@
 </nav>
 
 <div class="current-user" id="{user.id}">
+  <a href="/settings" class="settings button seamless"><span class="fa fa-gears"></span></a>
   <div class="profile-picture">
     <!-- IF user.hasProfilePicture -->
     <img src="/images/users/{user.id}.jpg?cacheBuster={cacheBuster}" alt="">
@@ -46,7 +49,7 @@
     <!-- ENDIF user.hasProfilePicture -->
   </div>
   <span class="username">{user.name}</span>
-  <a href="/logout" class="logout button"><i class="fa fa-sign-out"></i> [[global:do_logout]]</a>
+  <a href="/logout" class="logout button seamless"><span class="fa fa-sign-out"></span> [[global:do_logout]]</a>
 </div>
 
       <!-- ENDIF user.loggedIn -->
@@ -115,13 +118,11 @@
   </section>
 </article>
 <script src="/javascripts/dashboard.js"></script>
-    </main>
-    <script src="/javascripts/main.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function(event) {
-        app.init();
-      });
-    </script>
-  </body>
+</main>
+<script src="/javascripts/main.js"></script>
+<script>
+  app.init();
+</script>
+</body>
 </html>
 

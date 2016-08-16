@@ -160,6 +160,10 @@
 
       debug('loaded language %s', language);
 
+      if (! languageData.hasOwnProperty(category)) {
+        return callback(key);
+      }
+
       // retrieve the translation string from the languages object
       var string = languageData[ category ][ value ];
 
@@ -184,7 +188,7 @@
         });
       } else {
         string    = key.split(':');
-        data.text = data.text.replace(key, string[ string.length - 1 ].replace(translationRegex, ''))
+        data.text = data.text.replace(key, string[ string.length - 1 ].replace(']]', ''))
       }
 
       // return the callback with the updated reference
@@ -279,8 +283,8 @@
       languages[ language ] = require('../../translations/' + language + '.json');
     }
     catch (error) {
-      debug ('could not require language file for %s (%s). defaulting to "de_DE"', language, error.message);
-      languages[ language ] = require('../../translations/de_DE.json');
+      debug ('could not require language file for %s (%s)', language, error.message);
+      throw new Error('Language file could not be loaded. Shutting down.');
     }
 
     return callback(languages[ language ]);

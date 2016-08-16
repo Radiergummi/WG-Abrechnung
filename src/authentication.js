@@ -69,7 +69,7 @@
   };
 
   Auth.login = passport.authenticate('local-login', {
-    successRedirect: '/dashboard',
+    successReturnToOrRedirect: '/dashboard',
     failureRedirect: '/login',
     failureFlash:    true
   });

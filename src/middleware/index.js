@@ -34,7 +34,7 @@ var db     = require('../database').initialize(),
 
 var middleware = {};
 
-module.exports = function (app) {
+module.exports = function(app) {
   middleware = require('./middleware')(app);
 
   // register templates.js
@@ -60,7 +60,7 @@ module.exports = function (app) {
   // the server to the winston log using a custom WinstonStream object.
   if (nconf.get('environment') === 'development') {
     var winstonStream = {
-      write: function (message) {
+      write: function(message) {
         winston.verbose('[request] ' + message.replace(/\n$/, ''));
       }
     };
@@ -100,23 +100,25 @@ module.exports = function (app) {
     saveUninitialized: true
   }));
 
-  app.use(flash());
-
+  app.use(flash({ locals: 'messages' }));
   auth.initialize(app, middleware);
-
   app.use(middleware.processRender);
-
   jobs.initialize();
-  console.log(jobs.instance.start());
+  
+  setTimeout(function() {
+    require('../socket.io').server.sockets.emit('app.updated', {
+      date: Date.now()
+    });
+  }, 2000);
 
   return middleware;
 };
 
-function registerTemplateHelpers() {
+function registerTemplateHelpers () {
   var moment = require('moment');
   moment.locale('de');
 
-  templates.registerHelper('format_date_string', function (data) {
+  templates.registerHelper('format_date_string', function(data) {
     return moment(data).format('LLLL:SS');
   });
 }

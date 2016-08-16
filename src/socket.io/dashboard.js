@@ -12,6 +12,16 @@ var Invoice = require('../invoice'),
 
 var dashboardSockets = module.exports = {};
 
+dashboardSockets.getTag = function(socket, tagName, callback) {
+  Tag.getByName(tagName, function(error, tag) {
+    if (error) {
+      return callback(error);
+    }
+    
+    return callback(null, tag);
+  });
+};
+
 /**
  * socket handler to save a new tag
  *

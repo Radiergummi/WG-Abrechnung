@@ -27,6 +27,8 @@ dashboard.dash = function (req, res, next) {
       vars.userInvoices[ i ].creationDate = invoices[ i ].getFormattedDate();
     }
 
+    vars.userInvoices.reverse();
+
     return res.render('dashboard', vars);
   });
 };

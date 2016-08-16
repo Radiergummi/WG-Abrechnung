@@ -1,10 +1,12 @@
 @import "reset";
+@import "notifications";
 @import "typography";
 @import "animations";
 @import "font-awesome/font-awesome";
 @import "navigation";
 @import "dashboard";
 @import "invoices";
+@import "settings";
 
 textarea,
 select,
@@ -14,17 +16,18 @@ input[type="password"],
 input[type="date"],
 input[type="number"],
 input[type="email"] {
-  width:         100%;
-  margin:        5px 0;
-  padding:       8px 12px 6px;
-  border:        1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  font-size:     16px;
-  color:         #000;
-  background:    white;
-  line-height:   16px;
-  cursor:        pointer;
-  transition:    all .12s;
+  -webkit-appearance: none;
+  width:              100%;
+  margin:             5px 0;
+  padding:            8px 12px 6px;
+  border:             1px solid rgba(0, 0, 0, 0.1);
+  border-radius:      4px;
+  font-size:          16px;
+  color:              #000;
+  background:         white;
+  line-height:        16px;
+  cursor:             pointer;
+  transition:         all .12s;
 
   &:focus {
     border:  1px solid #03a9f4;
@@ -37,17 +40,20 @@ button,
 input[type="button"],
 input[type="submit"],
 .button {
-  text-decoration: none;
+  display:         inline-block;
+  margin:          0;
   padding:         6px 12px;
   border:          1px solid rgba(0, 0, 0, 0);
   border-radius:   4px;
   font-size:       16px;
   color:           #fff;
   background:      #03a9f4;
+  text-decoration: none;
   line-height:     16px;
-  cursor:          pointer;
   transition:      all .12s;
   font-family:     $font-family-interactive;
+  font-weight:     $font-weight-thin;
+  cursor:          pointer;
 
   &:hover {
     background: #0277bd;
@@ -61,10 +67,16 @@ input[type="submit"],
   &.danger {
     background: #f47575;
   }
+
+  &.seamless {
+    border:     0;
+    background: none;
+
+  }
 }
 
 label.in-focus {
-  color: #03a9f4;
+  color: #03a9f4 !important;
 }
 
 textarea {
@@ -161,7 +173,7 @@ img.image-error {
         cursor:              pointer;
         min-width:           180px;
         text-align:          center;
-        transition: background .125s;
+        transition:          background .125s;
 
         &:hover:not(.visible) {
           background: #03a9f4;
@@ -176,7 +188,7 @@ img.image-error {
           cursor:         pointer;
           padding:        10px 20px 9px;
           pointer-events: none;
-          transition: color .125s;
+          transition:     color .125s;
 
           .select-title {
             margin-left:  8px;

@@ -14,7 +14,8 @@ invoices.redirectToInvoices = (req, res, next) => res.redirect('/invoices');
 
 invoices.viewSingle = function(req, res, next) {
   var vars = {
-    invoicesActive: true
+    invoicesActive: true,
+    success: req.query.success
   };
 
   Invoice.getById(req.params.id, function(error, data) {
@@ -68,7 +69,7 @@ invoices.create = function(req, res, next) {
 invoices.delete = function(req, res, next) {
   var vars = {
     invoicesActive: true,
-    pageTitle: 'Rechnung löschen'
+    pageTitle:      'Rechnung löschen'
   };
 
   return res.render('invoices/delete', vars);
@@ -77,7 +78,7 @@ invoices.delete = function(req, res, next) {
 invoices.edit = function(req, res, next) {
   var vars = {
     invoicesActive: true,
-    pageTitle: 'Rechnung bearbeiten'
+    pageTitle:      'Rechnung bearbeiten'
   };
 
   Invoice.getById(req.params.id, function(error, invoice) {
@@ -93,9 +94,9 @@ invoices.edit = function(req, res, next) {
 };
 
 invoices.search = function(req, res, next) {
-  var vars       = {
+  var vars = {
     invoicesActive: true,
-    pageTitle:'Suche'
+    pageTitle:      'Suche'
   };
 
   if (req.params.query) {

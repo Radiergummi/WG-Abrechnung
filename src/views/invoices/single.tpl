@@ -25,7 +25,7 @@
         </div>
         <!-- END userInvoices.tags -->
         <!-- ELSE -->
-        <span class="no-tags">[[invoices:no_tags]]</span>
+          <span class="no-tags">[[invoices:no_tags]]</span>
         <!-- ENDIF userInvoices.tags.length -->
       </div>
     </section>
@@ -35,4 +35,13 @@
     </section>
   </article>
 </div>
+<!-- IF success -->
+<script>
+window.addEventListener('app:ready', function(event) {
+  app.notifications.success('[[invoices:create_success]]');
+});
+</script>
+<!-- ELSE -->
+<div class="no-success-msg"></div>
+<!-- ENDIF success -->
 <!-- IMPORT partials/footer.tpl -->

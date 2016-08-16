@@ -37,4 +37,5 @@ var helper         = require('./helper'),
 
 module.exports = function(router, middleware, controllers) {
   router.post('/api/user/picture/upload', upload.single('profilePicture'), controllers.saveProfilePicture);
+  router.post('/api/invoices/create', upload.single('invoicePicture'), controllers.createNewInvoice);
 };

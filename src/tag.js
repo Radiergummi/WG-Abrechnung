@@ -41,10 +41,6 @@ Tag.getById = function(id, callback) {
       return callback(error);
     }
 
-    if (!tag) {
-      return callback(new Error('Das angegebene Tag mit der ID ' + id + ' existiert nicht'));
-    }
-
     callback(null, tag);
   });
 };

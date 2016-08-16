@@ -1,18 +1,20 @@
 var mongoose = require('mongoose'),
-    bcrypt = require('bcrypt-nodejs');
+    bcrypt   = require('bcrypt-nodejs');
 
 var Invoice = require('./invoice');
-    ObjectId = mongoose.Schema.Types.ObjectId;
+ObjectId    = mongoose.Schema.Types.ObjectId;
 
 var userSchema = mongoose.Schema({
   // _id: ObjectID(),
   firstName: String,
-  lastName: String,
+  lastName:  String,
 
-  email: String,
+  email:    String,
   language: { type: String, default: 'de_DE' },
 
   creationDate: { type: Date, required: true },
+
+  role: { type: String, default: 'normal' },
 
   /**
    * user authentication data. password is stored as a hashed and
@@ -34,7 +36,7 @@ var userSchema = mongoose.Schema({
  * @param password
  * @returns {*}
  */
-userSchema.methods.validPassword = function (password) {
+userSchema.methods.validPassword = function(password) {
   return bcrypt.compareSync(password, this.authentication.password);
 };
 

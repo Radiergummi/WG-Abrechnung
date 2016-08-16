@@ -1,6 +1,6 @@
 {
   "name": "WG-Abrechnung",
-  "version": "0.0.0",
+  "version": "0.0.5",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -13,6 +13,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.13.2",
     "colors": "^1.1.2",
+    "commander": "^2.9.0",
     "compression": "^1.6.2",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^1.2.1",

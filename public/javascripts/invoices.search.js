@@ -5,6 +5,7 @@ if (!app) {
 }
 
 (function() {
+  
   /**
    * push the code into the app startup stack
    */

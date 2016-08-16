@@ -45,6 +45,7 @@ Sockets.initialize = function (server) {
   Sockets.server = io;
 
   winston.info('[socket.io]'.white + ' Socket.io-Server has been initialized.');
+  winston.info('[socket.io]'.white + ' Socket.io emitted ready event');
 };
 
 function requireModules() {

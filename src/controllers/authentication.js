@@ -8,11 +8,9 @@
 var async = require('async'),
     passport = require('passport'),
     validator = require('validator'),
-    _ = require('underscore'),
     winston = require('winston'),
-    db = require('../database');
 
-var User = require('../user'),
+    User = require('../user'),
     Event = require('../event'),
     auth = require('../authentication');
 

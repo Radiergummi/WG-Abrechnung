@@ -13,8 +13,8 @@ var Invoice = require('../invoice'),
 
 var statisticsSockets = module.exports = {};
 
-statisticsSockets.getInvoiceSumByUser = function (socket, id, callback) {
-  return Invoice.getSums(id, function (error, data) {
+statisticsSockets.getInvoiceSumByUser = function(socket, id, callback) {
+  return Invoice.getSums(id, function(error, data) {
     if (error) {
       return callback(error);
     }
@@ -23,8 +23,8 @@ statisticsSockets.getInvoiceSumByUser = function (socket, id, callback) {
   });
 };
 
-statisticsSockets.getOwnInvoiceSum = function (socket, callback) {
-  return Invoice.getSums(socket._id, function (error, data) {
+statisticsSockets.getOwnInvoiceSum = function(socket, callback) {
+  return Invoice.getSums(socket._id, function(error, data) {
     if (error) {
       return callback(error);
     }
@@ -34,16 +34,16 @@ statisticsSockets.getOwnInvoiceSum = function (socket, callback) {
 };
 
 
-statisticsSockets.getInvoiceStatistics = function (socket, callback) {
-  new Promise(function (resolve, reject) {
-    User.getAll(function (error, data) {
+statisticsSockets.getInvoiceStatistics = function(socket, callback) {
+  new Promise(function(resolve, reject) {
+    User.getAll(function(error, data) {
       if (error) {
         return reject(error);
       }
 
       var dataSets = {};
 
-      data.forEach(function (user) {
+      data.forEach(function(user) {
         var userColor = JSON.parse(JSON.stringify(user.color));
 
         dataSets[ user._id ] = {
@@ -55,7 +55,7 @@ statisticsSockets.getInvoiceStatistics = function (socket, callback) {
           pointBorderColor:      userColor.replace(/, 1\)$/, ', .75)'),
           pointHoverBorderColor: userColor,
           spanGaps:              true,
-          afterLabel:            function (tooltipItem, data) {
+          afterLabel:            function(tooltipItem, data) {
             console.log(tooltipItem);
             console.log(data);
           }
@@ -64,18 +64,18 @@ statisticsSockets.getInvoiceStatistics = function (socket, callback) {
 
       return resolve(dataSets);
     });
-  }).then(function (dataSets) {
-    Invoice.getAll(function (error, invoices) {
+  }).then(function(dataSets) {
+    Invoice.getAll(function(error, invoices) {
       if (error) {
         throw error;
       }
 
       var dates = {};
 
-      for (var i = 0; i < invoices.length; i ++) {
+      for (var i = 0; i < invoices.length; i++) {
         var date = invoices[ i ].creationDate;
 
-        if (! dates.hasOwnProperty(date)) {
+        if (!dates.hasOwnProperty(date)) {
           dates[ date ] = [];
         }
 
@@ -96,7 +96,7 @@ statisticsSockets.getInvoiceStatistics = function (socket, callback) {
         }
 
         // iterate over all invoices in the current date
-        for (var j = 0; j < dates[ date ].length; j ++) {
+        for (var j = 0; j < dates[ date ].length; j++) {
           var currentInvoice = dates[ date ][ j ],
               currentDataSet = dataSets[ currentInvoice.user._id ];
 
@@ -120,12 +120,12 @@ statisticsSockets.getInvoiceStatistics = function (socket, callback) {
 };
 
 
-statisticsSockets.getSpendingStatisticsByMonth = function (socket, month, callback) {
+statisticsSockets.getSpendingStatisticsByMonth = function(socket, month, callback) {
   month = new Date(month);
 
   debug('Called spending statistics by month: %s', month.toLocaleDateString());
-  new Promise(function (resolve, reject) {
-    User.getAll(function (error, data) {
+  new Promise(function(resolve, reject) {
+    User.getAll(function(error, data) {
       if (error) {
         return reject(error);
       }
@@ -134,7 +134,7 @@ statisticsSockets.getSpendingStatisticsByMonth = function (socket, month, callba
 
       var dataSets = {};
 
-      data.forEach(function (user) {
+      data.forEach(function(user) {
         var userColor = JSON.parse(JSON.stringify(user.color));
 
         dataSets[ user._id ] = {
@@ -145,17 +145,14 @@ statisticsSockets.getSpendingStatisticsByMonth = function (socket, month, callba
           pointBackgroundColor:  userColor,
           pointBorderColor:      userColor.replace(/, 1\)$/, ', .75)'),
           pointHoverBorderColor: userColor,
-          spanGaps:              true,
-          afterLabel:            function (tooltipItem, data) {
-            console.log(tooltipItem);
-            console.log(data);
-          }
+          spanGaps:              true
         };
       });
 
       return resolve(dataSets);
     });
-  }).then(function (dataSets) {
+  }).then(function(dataSets) {
+
     /**
      * Create a date array for a month
      */
@@ -176,7 +173,7 @@ statisticsSockets.getSpendingStatisticsByMonth = function (socket, month, callba
 
     // foreach dataset, fill the data point array with null for each month day
     for (var set in dataSets) {
-      dataSets[ set ].data = Array.apply(null, new Array(days.length)).map(function () {
+      dataSets[ set ].data = Array.apply(null, new Array(days.length)).map(function() {
         return null;
       });
 
@@ -187,7 +184,7 @@ statisticsSockets.getSpendingStatisticsByMonth = function (socket, month, callba
       dataSets: dataSets,
       days:     days
     };
-  }).then(function (results) {
+  }).then(function(results) {
     var dataSets  = results.dataSets,
         monthDays = results.days,
         labels    = monthDays;
@@ -198,23 +195,29 @@ statisticsSockets.getSpendingStatisticsByMonth = function (socket, month, callba
     Invoice.getDateRangeByDate(
       new Date(month.getFullYear(), month.getMonth(), 1),
       new Date(month.getFullYear(), month.getMonth() + 1, 0),
-      function (error, datesWithInvoices) {
+      function(error, datesWithInvoices) {
         if (error) {
           throw error;
         }
 
         // iterate over all days of the month
-        for (var i = 0; i < monthDays.length; i ++) {
+        for (var i = 0; i < monthDays.length; i++) {
 
           // whether the current day is a day invoices were generated at
           if (datesWithInvoices.hasOwnProperty(monthDays[ i ])) {
             debug('At %s, %s invoice(s) have been generated.', monthDays[ i ], datesWithInvoices[ monthDays[ i ] ].length);
 
             // iterate over all invoices in the current day
-            for (var j = 0; j < datesWithInvoices[ monthDays[ i ] ].length; j ++) {
+            for (var j = 0; j < datesWithInvoices[ monthDays[ i ] ].length; j++) {
+              var sum = (isNaN(datesWithInvoices[ monthDays[ i ] ][ j ].sum)
+                  ? 0
+                  : datesWithInvoices[ monthDays[ i ] ][ j ].sum
+              );
+
+              debug("data point value: %s\tnew value: %s", dataSets[ datesWithInvoices[ monthDays[ i ] ][ j ].user._id ].data[ i ], sum);
 
               // set the current day's data point to the invoice sum. since we filled the user data
-              dataSets[ datesWithInvoices[ monthDays[ i ] ][ j ].user._id ].data[ i ] = datesWithInvoices[ monthDays[ i ] ][ j ].sum;
+              dataSets[ datesWithInvoices[ monthDays[ i ] ][ j ].user._id ].data[ i ] = dataSets[ datesWithInvoices[ monthDays[ i ] ][ j ].user._id ].data[ i ] + sum;
             }
           } else {
             debug('At %s, no invoices have been generated.', monthDays[ i ]);

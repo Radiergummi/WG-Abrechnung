@@ -1,0 +1,371 @@
+#!/usr/bin/env node
+
+'use strict';
+
+/*
+ global module,
+ require,
+ process
+ */
+
+/**
+ * Launcher script for flatm8
+ *
+ * This script will allow you to control the flatm8 process
+ * via shell input:
+ *
+ *   ./flatm8 start:   will start a new flatm8 process, if there is no running one
+ *   ./flatm8 stop:    will stop a running flatm8 process, if there is any
+ *   ./flatm8 restart: will restart a running flatm8 process, if there is any
+ *   ./flatm8 reload:  will reload all dependencies for a running flatm8 process [not implemented yet]
+ *   ./flatm8 update:  will update flatm8 from Github and renew all npm dependencies [not implemented yet]
+ *   ./flatm8 log:     will show and follow the current flatm8 logs
+ *   ./flatm8 debug:   will start flatm8 in debug mode
+ *   ./flatm8 status:  will show whether flatm8 is running or not
+ *   ./flatm8 pid:     will show the current PID of the flatm8 process
+ *   ./flatm8 version: will show all version information for the current flatm8 installation
+ *   ./flatm8 help:    will show this help text
+ */
+
+var flatm8       = require('commander'),
+    colors       = require('colors'),
+    childProcess = require('child_process'),
+    path         = require('path'),
+    fs           = require('fs'),
+    fork         = childProcess.fork,
+    exec         = childProcess.exec,
+    spawn        = childProcess.spawn,
+    instance;
+
+/**
+ * starts a new flatm8 process
+ *
+ * @param {string} [debugLevel] optional debug level to start the process with
+ * @returns {*}
+ */
+function start (debugLevel) {
+  var environmentVariables = {};
+
+  if (flatm8.config) {
+    console.log('[init]'.white + ' loading config from %s', flatm8.config);
+    environmentVariables.CONFIG = flatm8.config;
+  }
+
+  if (debugLevel) {
+    console.log('[init]'.white + ' starting in debug mode');
+    environmentVariables.DEBUG  = debugLevel;
+    environmentVariables.OUTPUT = 'stdout';
+
+    // fork the worker process with debugging enabled
+    instance = fork(path.join(__dirname, 'app.js'), [], {
+      env: environmentVariables
+    }).on('error', function(error) {
+      console.error('[init]'.white + ' could not fork worker: ', error);
+    });
+  } else {
+    environmentVariables.OUTPUT = 'file';
+
+    // fork the worker process and detach it from the launcher process
+    instance = fork(path.join(__dirname, 'app.js'), [], {
+      env:      environmentVariables,
+      detached: true,
+      stdio:    [ 'ignore', 'ignore', 'ignore' ]
+    }).on('error', function(error) {
+      console.error('[init]'.white + ' could not fork worker: ', error);
+    });
+
+    instance.disconnect();
+    instance.unref();
+
+    process.exitCode = 0;
+    return instance;
+  }
+
+  return instance;
+}
+
+/**
+ * stops the current flatm8 process
+ *
+ * @returns {*}
+ */
+function stop () {
+  var signal = 'SIGINT';
+
+  // if the instance was started from this init script, kill the child process
+  if (instance) {
+    console.log('[init]'.white + ' killing flatm8 process with PID %s', instance.pid);
+    return instance.kill(signal);
+  }
+
+  // if the instance was not started from this init script, try to read the pidfile
+  // and kill the according process
+  fs.readFile('./pidfile', function(error, pid) {
+
+    // if we get an error the pidfile does not exist or is not readable. Either way
+    // that means there should not be a running process at all.
+    if (error) {
+      return console.error('[init]'.white + ' pidfile could not be read - it seems like there is no running instance yet?'.red);
+    }
+
+    // if the pidfile can be read, kill the according process
+    console.log('[init]'.white + ' killing flatm8 process with PID %s', pid);
+    process.kill(pid, signal);
+
+    setTimeout(function() {
+
+      // if it is still running, the app seems to have hung up, so force quit it.
+      try {
+
+        // test if the process is running (https://nodejs.org/api/process.html#process_process_kill_pid_signal)
+        process.kill(pid, 0);
+      } catch (error) {
+
+        // he's dead, jim.
+        return true;
+      }
+
+      console.log('[init]'.white + ' the app does not respond. force-quitting...'.red);
+
+      // kill it with fire!
+      process.kill(pid, 'SIGKILL');
+
+      // remove the pidfile
+      fs.unlink(path.join('__dirname', 'pidfile'), function(error) {
+
+        // seems like it doesn't exists anymore. good to go!
+        return true;
+      });
+    }, 500);
+  });
+}
+
+/**
+ * reloads all dependencies and static assets
+ *
+ * @dummy
+ */
+function reload () {
+}
+
+/**
+ * Updates flatm8 from Github, updates node modules
+ */
+function update () {
+  new Promise(function(resolve, reject) {
+    fs.readFile(path.join(__dirname, 'pidfile'), function(error, pid) {
+      if (!error) {
+        console.log('[init]'.white + ' flatm8 is still running (PID: %s). Please stop it using '.red + './flatm8 stop'.bold.yellow + ' before updating.'.red, pid);
+
+        reject('flatm8 is still running');
+      }
+
+      resolve(pid);
+    });
+  }).then(function(pid) {
+    return new Promise(function(resolve, reject) {
+      exec('git --version', function(error, stdout, stderr) {
+        if (error && error.code === 127) {
+          console.log('[init]'.white + ' Git is not available on your system. Please install it to enable update functionality.'.red);
+          console.log('[init]'.white + ' Otherwise, you will have to download the current version manually from '.red + 'https://github.com/Radiergummi/flatm8'.bold.yellow + '.'.red);
+
+          reject('Git is not available');
+        }
+
+        resolve();
+      });
+    });
+  }).then(function() {
+    return new Promise(function(resolve, reject) {
+      exec('git stash && git fetch origin && git pull', function(error, stdin, stdout) {
+        if (error) {
+          console.log('[init]'.white + ' an error occurred while trying to fetch the current version from Github: %s'.red + "\n", error.message);
+          console.log('');
+          console.log('Error output:'.bold.red + "\n");
+          console.log(stderr);
+          console.log('');
+          console.log('Output:'.bold.white + "\n");
+          console.log(stdout);
+
+          reject('Error in git pull');
+        }
+
+        console.log('[init]'.white + ' git: ', stdout);
+        resolve();
+      });
+    });
+  }).then(function() {
+    return new Promise(function(resolve, reject) {
+      exec('npm -v', function(error) {
+        if (error && error.code === 127) {
+          console.log('[init]'.white + ' npm is not available on your system. Please install it to enable update functionality.'.red);
+
+          reject('npm is not available');
+        }
+
+        resolve();
+      });
+    });
+  }).then(function() {
+    exec('npm update', function(error, stdout, stderr) {
+      if (error) {
+        console.log('[init]'.white + ' an error occurred while trying to fetch package updates: %s'.red + "\n", error.message);
+        console.log('');
+        console.log('Error output:'.bold.red + "\n");
+        console.log(stderr);
+        console.log('');
+        console.log('Output:'.bold.white + "\n");
+        console.log(stdout);
+      }
+
+      console.log('[init]'.white + ' npm: ', stdout);
+    });
+  }).catch(function(results) {
+    console.log('[init]'.white + ' Errors occurred while updating the app:'.red);
+    console.log(results);
+  });
+}
+
+/**
+ * Spawns tail on the logfile
+ */
+function tailLog () {
+  console.log('Type ' + 'CTRL + C'.bold.yellow + ' to exit' + "\n\n");
+  spawn('tail', [ '-f', './logs/output.log' ], {
+    cwd:   __dirname,
+    stdio: 'inherit'
+  });
+}
+
+/**
+ * Retrieves the current PID
+ */
+function getRunningPid () {
+  fs.readFile(path.join(__dirname, 'pidfile'), function(error, pid) {
+    if (error) {
+      return console.error('[init]'.white + ' pidfile could not be read - it seems like there is no running instance yet?'.red);
+    }
+
+    return console.log('[init]'.white + ' flatm8 is running with PID %s', pid);
+  });
+}
+
+function getStatus (callback) {
+  fs.readFile(path.join(__dirname, 'pidfile'), function(error, pid) {
+    if (error) {
+      return callback(false);
+    }
+
+    return callback(true);
+  });
+}
+
+/**
+ * Set up the commander application
+ */
+flatm8
+  .version('0.0.5')
+  .description('Personal project to organize monthly grocery spending with my flatmates.')
+  .option('-c, --config <file>', 'set config file. defaults to config.json');
+
+flatm8.command('start')
+  .description('will start a new flatm8 process, if there is no running one')
+  .option('-d, --debug [level]', 'start in debug mode', /^(.*?):?(.*)?/)
+  .action(function(options) {
+    if (options.debug && typeof options.debug !== 'string') {
+      options.debug = 'flatm8:*';
+    }
+
+    getStatus(function(running) {
+      if (!running) {
+        return start(options.debug);
+      } else {
+        console.log('[init]'.white + ' flatm8 is already running.'.red);
+      }
+    });
+  });
+
+flatm8.command('stop')
+  .description('will stop a running flatm8 process, if there is any')
+  .action(function() {
+    stop();
+  });
+
+flatm8.command('restart')
+  .description('will restart a running flatm8 process, if there is any')
+  .action(function() {
+    stop();
+    start();
+  });
+
+flatm8.command('reload')
+  .description('will reload all dependencies for a running flatm8 process [not implemented yet]')
+  .action(function() {
+    console.log('[init]'.white + ' This command is not implemented yet. Will exit now.'.yellow);
+
+    return reload();
+  });
+
+flatm8.command('update')
+  .description('will update flatm8 from Github and renew all npm dependencies')
+  .action(function() {
+    return update();
+  });
+
+flatm8.command('log')
+  .description('will show and follow the current flatm8 logs')
+  .action(function() {
+    return tailLog();
+  });
+
+flatm8.command('debug [level]')
+  .description('will start flatm8 in debug mode')
+  .action(function(debugLevel) {
+    debugLevel = debugLevel || '*';
+
+    return getStatus(function(running) {
+      if (!running) {
+        return start(debugLevel);
+      } else {
+        console.log('[init]'.white + ' flatm8 is already running.'.red);
+      }
+    });
+  });
+
+flatm8.command('pid')
+  .description('will show the current PID of the flatm8 process')
+  .action(function() {
+    return getRunningPid();
+  });
+
+flatm8.command('status')
+  .description('will show whether flatm8 is running or not')
+  .action(function() {
+    return getStatus(function(running) {
+      if (running) {
+        console.log('[init]'.white + ' flatm8 is running');
+      } else {
+        console.log('[init]'.white + ' flatm8 is not running');
+      }
+    });
+  });
+
+flatm8.command('help')
+  .description('output usage information')
+  .action(function() {
+    return flatm8.help();
+  });
+
+flatm8.command('version')
+  .description('output version information')
+  .action(function() {
+    return flatm8.version();
+  });
+
+// parse the arguments
+flatm8.parse(process.argv);
+
+// output help if no arguments given
+if (!process.argv.slice(2).length) {
+  return flatm8.help();
+}

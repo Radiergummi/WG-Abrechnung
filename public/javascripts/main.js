@@ -2,50 +2,50 @@
  global app
  */
 
-if (! app) {
+if (!app) {
   var app = require('./app');
 }
 
-(function () {
-  app.startup.push(function () {
+(function() {
+  app.startup.push(function() {
     app.elements.profilePicture = document.getElementsByClassName('profile-picture')[ 0 ];
     app.elements.backLinks      = document.getElementsByClassName('back-link');
     app.elements.inputElements  = document.getElementsByTagName('input');
     app.elements.selectBoxes    = document.getElementsByClassName('select-box');
 
-    app.listeners.addLinkEvents = function () {
-      Array.prototype.slice.call(app.elements.backLinks).map(function (backLink) {
-        backLink.addEventListener('click', app.events.revertLastHistoryState);
+    app.listeners.addLinkEvents = function() {
+      Array.prototype.slice.call(app.elements.backLinks).map(function(backLink) {
+        app.on('click', backLink, app.events.revertLastHistoryState);
       });
     };
 
-    app.listeners.addInputEvents = function () {
-      Array.prototype.slice.call(app.elements.inputElements).map(function (inputElement) {
-        inputElement.addEventListener('focus', app.events.toggleInputLabelHighlight);
-        inputElement.addEventListener('blur', app.events.toggleInputLabelHighlight);
+    app.listeners.addInputEvents = function() {
+      Array.prototype.slice.call(app.elements.inputElements).map(function(inputElement) {
+        app.on('focus', inputElement, app.events.toggleInputLabelHighlight);
+        app.on('blur', inputElement, app.events.toggleInputLabelHighlight);
       });
     };
 
-    app.listeners.addSelectBoxEvents = function () {
-      Array.prototype.slice.call(app.elements.selectBoxes).map(function (selectBox) {
-        selectBox.addEventListener('click', app.events.toggleSelectBox);
+    app.listeners.addSelectBoxEvents = function() {
+      Array.prototype.slice.call(app.elements.selectBoxes).map(function(selectBox) {
+        app.on('click', selectBox, app.events.toggleSelectBox);
       });
     };
 
-    app.listeners.addProfilePictureEvents = function () {
-      app.elements.profilePicture.addEventListener('click', app.events.toggleProfilePictureUploadModal);
-      app.elements.overlay.addEventListener('click', app.events.toggleProfilePictureUploadModal);
+    app.listeners.addProfilePictureEvents = function() {
+      app.on('click', app.elements.profilePicture, app.events.toggleProfilePictureUploadModal);
+      app.on('click', app.elements.overlay, app.events.toggleProfilePictureUploadModal);
     };
 
-    app.events.revertLastHistoryState = function (event) {
+    app.events.revertLastHistoryState = function(event) {
       event.preventDefault();
-      history.go(- 1);
+      history.go(-1);
 
       return false;
     };
 
-    app.events.toggleInputLabelHighlight = function (event) {
-      if (event.target.previousElementSibling.tagName == 'LABEL') {
+    app.events.toggleInputLabelHighlight = function(event) {
+      if (event.target.previousElementSibling && event.target.previousElementSibling.tagName == 'LABEL') {
         event.target.previousElementSibling.classList.toggle('in-focus');
       }
     };
@@ -54,13 +54,13 @@ if (! app) {
       console.log('select clicked');
       if (document.querySelectorAll('.select-box.visible').length > 0) {
         for (var i = 0; i < app.elements.selectBoxes.length; i++) {
-          app.elements.selectBoxes[i].classList.remove('visible');
+          app.elements.selectBoxes[ i ].classList.remove('visible');
         }
 
         return;
       }
 
-      if (! event.target.classList.contains('select-box')) {
+      if (!event.target.classList.contains('select-box')) {
         var selectBox = event.target;
 
         while (selectBox.parentNode) {
@@ -75,7 +75,7 @@ if (! app) {
       return event.target.classList.add('visible');
     };
 
-    app.events.toggleProfilePictureUploadModal = function (event) {
+    app.events.toggleProfilePictureUploadModal = function(event) {
       if (document.querySelector('.upload-modal') && document.querySelector('.upload-modal').contains(event.target)) {
         return false;
       }
@@ -89,10 +89,10 @@ if (! app) {
 
       app.elements.overlay.classList.remove('disabled');
       app.elements.profilePicture.classList.add('upload-visible');
-      app.templates.profilePictureUploadModal.then(function (element) {
+      app.templates.profilePictureUploadModal.then(function(element) {
         app.elements.profilePicture.appendChild(element);
-      }).then(function () {
-        app.elements.profilePicture.querySelector('.save-picture').addEventListener('click', function () {
+      }).then(function() {
+        app.elements.profilePicture.querySelector('.save-picture').addEventListener('click', function() {
           var file = document.getElementById('file-input').files[ 0 ];
 
           if (file.type.match('image\/jp(e)?g')) {
@@ -103,7 +103,7 @@ if (! app) {
             fetch(new Request('/api/user/picture/upload', {
               method: 'post',
               body:   data
-            })).then(function (response) {
+            })).then(function(response) {
               if (response.ok) {
                 var pictures = app.elements.profilePicture.querySelectorAll('img');
 
@@ -112,7 +112,7 @@ if (! app) {
               } else {
                 throw new Error('Response status %s indicates error', response.statusCode)
               }
-            }, function (error) {
+            }, function(error) {
               console.error('An error occurred while trying to save the image.', error);
             });
           } else {
@@ -122,7 +122,7 @@ if (! app) {
       });
     };
 
-    app.templates.profilePictureUploadModal = (function () {
+    app.templates.profilePictureUploadModal = (function() {
       var profilePicturePath = '/images/users/' + (app.config.user.hasProfilePicture ? app.config.user._id : 'default') + '.jpg',
           userPrimaryColor   = app.config.user.color,
           userSecondaryColor = app.config.user.color.replace(/, 1\)$/, ', .2)');

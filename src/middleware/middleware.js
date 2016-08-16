@@ -6,10 +6,11 @@
  */
 
 var async = require('async'),
+    debug = require('debug'),
     nconf = require('nconf');
 
 var app,
-    User = require('../user'),
+    User    = require('../user'),
     Invoice = require('../invoice');
 
 var controllers = {
@@ -25,11 +26,11 @@ var controllers = {
  * @param next
  * @returns {*}
  */
-middleware.checkAuth = function (req, res, next) {
+middleware.checkAuth = function(req, res, next) {
   if (req.user) {
     return next();
   } else {
-    console.log(req.user);
+    debug('no user in request');
   }
 
   return controllers.helpers.notAllowed(req, res);
@@ -42,8 +43,8 @@ middleware.checkAuth = function (req, res, next) {
  * @param res
  * @param next
  */
-middleware.isAdmin = function (req, res, next) {
-  if (! req.user) {
+middleware.isAdmin = function(req, res, next) {
+  if (!req.user) {
     return controllers.helpers.notAllowed(req, res);
   }
 
@@ -61,7 +62,7 @@ middleware.isAdmin = function (req, res, next) {
  * @param res
  * @param next
  */
-middleware.addExpiresHeaders = function (req, res, next) {
+middleware.addExpiresHeaders = function(req, res, next) {
   if (app.enabled('cache')) {
     res.setHeader("Cache-Control", "public, max-age=5184000");
     res.setHeader("Expires", new Date(Date.now() + 5184000000).toUTCString());
@@ -81,7 +82,7 @@ middleware.addExpiresHeaders = function (req, res, next) {
  * @param res
  * @param next
  */
-middleware.addHeaders = function (req, res, next) {
+middleware.addHeaders = function(req, res, next) {
   var headers = {
     'X-Powered-By':                'Mo-Express-Framework',
     'X-Frame-Options':             'SAMEORIGIN',
@@ -99,7 +100,7 @@ middleware.addHeaders = function (req, res, next) {
 
 /**
  * checks if a user owns an invoice
- * 
+ *
  * @param req
  * @param res
  * @param next

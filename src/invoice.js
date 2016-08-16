@@ -10,7 +10,8 @@ var debug    = require('debug')('flatm8:invoice'),
     mongoose = require('mongoose'),
     moment   = require('moment');
 
-var invoiceModel = require('./models/invoice');
+var invoiceModel = require('./models/invoice'),
+    Tag          = require('./tag');
 
 var Invoice = module.exports = {};
 
@@ -28,14 +29,14 @@ var Invoice = module.exports = {};
  * @param {invoiceCallback} callback  a callback to run on the invoice object
  * @returns {object}
  */
-Invoice.getById = function (id, callback) {
+Invoice.getById = function(id, callback) {
   invoiceModel
     .findOne({ '_id': id })
     .populate([
       { path: 'tags', model: 'tag' },
       { path: 'user', model: 'user' }
     ])
-    .exec(function (error, invoice) {
+    .exec(function(error, invoice) {
       if (error) {
         return callback(error);
       }
@@ -49,7 +50,7 @@ Invoice.getById = function (id, callback) {
  * @param date
  * @param callback
  */
-Invoice.getByDay = function (date, callback) {
+Invoice.getByDay = function(date, callback) {
   debug('retrieving invoices from ' + date.year + '-' + date.month + '-' + date.day);
 
   var startDate = new Date(date.year, date.month, date.day),
@@ -68,7 +69,7 @@ Invoice.getByDay = function (date, callback) {
       { path: 'tags', model: 'tag' },
       { path: 'user', model: 'user' }
     ])
-    .exec(function (error, invoices) {
+    .exec(function(error, invoices) {
       if (error) {
         return callback(error);
       }
@@ -83,7 +84,7 @@ Invoice.getByDay = function (date, callback) {
  * @param date
  * @param callback
  */
-Invoice.getByMonth = function (monthDate, callback) {
+Invoice.getByMonth = function(monthDate, callback) {
 
   var startDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1),
       endDate   = (monthDate.getMonth() === 11
@@ -104,7 +105,7 @@ Invoice.getByMonth = function (monthDate, callback) {
       { path: 'tags', model: 'tag' },
       { path: 'user', model: 'user' }
     ])
-    .exec(function (error, invoices) {
+    .exec(function(error, invoices) {
       if (error) {
         return callback(error);
       }
@@ -114,16 +115,17 @@ Invoice.getByMonth = function (monthDate, callback) {
     });
 };
 
-Invoice.getAll = function (callback) {
+Invoice.getAll = function(callback) {
   debug('getAll invoices');
 
   invoiceModel
     .find({})
+    .sort({ creationDate: 'descending' })
     .populate([
       { path: 'tags', model: 'tag' },
       { path: 'user', model: 'user' }
     ])
-    .exec(function (error, invoices) {
+    .exec(function(error, invoices) {
       if (error) {
         debug('error getting all invoices');
         return callback(error);
@@ -134,14 +136,14 @@ Invoice.getAll = function (callback) {
     });
 };
 
-Invoice.getOwn = function (id, callback) {
+Invoice.getOwn = function(id, callback) {
   invoiceModel
     .find({ 'user': id })
     .populate([
       { path: 'tags', model: 'tag' },
       { path: 'user', model: 'user' }
     ])
-    .exec(function (error, invoices) {
+    .exec(function(error, invoices) {
       if (error) {
         return callback(error);
       }
@@ -150,8 +152,8 @@ Invoice.getOwn = function (id, callback) {
     });
 };
 
-Invoice.getManuallyPaginated = function (skip, limit, callback) {
-  this.getAll(function (error, invoices) {
+Invoice.getManuallyPaginated = function(skip, limit, callback) {
+  this.getAll(function(error, invoices) {
     if (error) {
       return callback(error);
     }
@@ -160,16 +162,17 @@ Invoice.getManuallyPaginated = function (skip, limit, callback) {
   });
 };
 
-Invoice.getPaginated = function (skip, limit, callback) {
+Invoice.getPaginated = function(skip, limit, callback) {
   invoiceModel
     .find({})
+    .sort({ creationDate: 'descending' })
     .skip(skip)
     .limit(limit)
     .populate([
       { path: 'tags', model: 'tag' },
       { path: 'user', model: 'user' }
     ])
-    .exec(function (error, invoices) {
+    .exec(function(error, invoices) {
       if (error) {
         return callback(error);
       }
@@ -178,7 +181,7 @@ Invoice.getPaginated = function (skip, limit, callback) {
     });
 };
 
-Invoice.getOwnPaginated = function (id, skip, limit, callback) {
+Invoice.getOwnPaginated = function(id, skip, limit, callback) {
   invoiceModel
     .find({ 'user': id })
     .skip(skip)
@@ -187,7 +190,7 @@ Invoice.getOwnPaginated = function (id, skip, limit, callback) {
       { path: 'tags', model: 'tag' },
       { path: 'user', model: 'user' }
     ])
-    .exec(function (error, invoices) {
+    .exec(function(error, invoices) {
       if (error) {
         return callback(error);
       }
@@ -196,30 +199,50 @@ Invoice.getOwnPaginated = function (id, skip, limit, callback) {
     });
 };
 
-Invoice.createNew = function (data, callback) {
-  var newInvoice = new invoiceModel();
+Invoice.createNew = function(data, callback) {
+  new Promise(function(resolve) {
+    if (data.tags.length !== 0) {
+      var tagPromises = [];
 
-  newInvoice.creationDate = Date.now();
+      for (var i = 0; i < data.tags.length; i++) {
+        var tagName = data.tags[ i ];
+        tagPromises.push(new Promise(function(resolve, reject) {
+          Tag.getByName(tagName, function(error, tag) {
+            if (error) {
+              return reject(error);
+            }
 
-  if (data.hasOwnProperty('sum')) {
-    newInvoice.sum = data.sum;
-  }
+            return resolve(tag);
+          });
+        }));
+      }
 
-  if (data.hasOwnProperty('tags')) {
-    newInvoice.tags = data.tags;
-  }
-
-  newInvoice.save(function (error) {
-    if (error) {
-      return callback(error);
+      return resolve(Promise.all(tagPromises));
     }
 
-    return callback(null, newInvoice);
-  })
+    return resolve([]);
+  }).then(function(tags) {
+    return new invoiceModel({
+      user:         data.user,
+      creationDate: data.creationDate || new Date(),
+      sum:          data.sum * 100 || undefined,
+      tags:         tags
+    });
+  }).then(function(newInvoice) {
+    newInvoice.save(function(error) {
+      if (error) {
+        return callback(error);
+      }
+
+      return callback(null, newInvoice);
+    });
+  }).catch(function(error) {
+    return callback(error);
+  });
 };
 
-Invoice.remove = function (id, callback) {
-  this.getById(id, function (error, invoice) {
+Invoice.remove = function(id, callback) {
+  this.getById(id, function(error, invoice) {
     if (error) {
       return callback(error);
     }
@@ -231,15 +254,15 @@ Invoice.remove = function (id, callback) {
   });
 };
 
-Invoice.addTag = function (id, tagId, callback) {
-  this.getById(id, function (error, invoice) {
+Invoice.addTag = function(id, tagId, callback) {
+  this.getById(id, function(error, invoice) {
     if (error) {
       return callback(error);
     }
 
     invoice.tags.push(mongoose.Schema.Types.ObjectId(tagId));
 
-    invoice.save(function (error) {
+    invoice.save(function(error) {
       if (error) {
         return callback(error);
       }
@@ -249,8 +272,8 @@ Invoice.addTag = function (id, tagId, callback) {
   });
 };
 
-Invoice.checkOwnership = function (userId, invoiceId, callback) {
-  invoiceModel.findOne({ '_id': invoiceId }).exec(function (error, invoice) {
+Invoice.checkOwnership = function(userId, invoiceId, callback) {
+  invoiceModel.findOne({ '_id': invoiceId }).exec(function(error, invoice) {
 
     if (invoice.user.toString() == userId) {
       return callback(true);
@@ -273,7 +296,7 @@ Invoice.checkOwnership = function (userId, invoiceId, callback) {
  * @param {string} parameters.query      the original search query
  * @param {function} callback
  */
-Invoice.find = function (parameters, callback) {
+Invoice.find = function(parameters, callback) {
   debug('find method');
 
   if (parameters.query) {
@@ -284,7 +307,7 @@ Invoice.find = function (parameters, callback) {
     if (parameters.query === '*') {
       debug('search for wildcard query');
 
-      return this.getAll(function (error, data) {
+      return this.getAll(function(error, data) {
         if (error) {
           debug('error getting all invoices');
           return callback(error);
@@ -301,7 +324,7 @@ Invoice.find = function (parameters, callback) {
     if (mongoose.Types.ObjectId.isValid(parameters.query)) {
       debug('query for valid Mongo ID');
 
-      return this.getById(parameters.query, function (error, data) {
+      return this.getById(parameters.query, function(error, data) {
         if (error) {
           return callback(error);
         }
@@ -329,7 +352,7 @@ Invoice.find = function (parameters, callback) {
         year:  year,
         month: month,
         day:   day
-      }, function (error, data) {
+      }, function(error, data) {
         if (error) {
           return callback(error);
         }
@@ -364,7 +387,7 @@ Invoice.find = function (parameters, callback) {
         year:  year,
         month: month,
         day:   day
-      }, function (error, data) {
+      }, function(error, data) {
         if (error) {
           return callback(error);
         }
@@ -374,7 +397,7 @@ Invoice.find = function (parameters, callback) {
     }
   }
 
-  if (! parameters.filters) {
+  if (!parameters.filters) {
     return callback('invalid search query');
   }
 
@@ -382,7 +405,7 @@ Invoice.find = function (parameters, callback) {
    * filter by ID
    */
   if (parameters.filters.byId) {
-    this.getById(parameters.filters.byId.invoiceId, function (error, data) {
+    this.getById(parameters.filters.byId.invoiceId, function(error, data) {
       if (error) {
         return callback(error);
       }
@@ -425,14 +448,14 @@ Invoice.find = function (parameters, callback) {
     query.populate([
       { path: 'tags', model: 'tag' },
       { path: 'user', model: 'user' }
-    ]).exec(function (error, data) {
+    ]).exec(function(error, data) {
       if (error) {
         return callback(error);
       }
 
       // filter the invoice data and iterate over tags
-      var filteredInvoices = data.filter(function (invoice) {
-        for (var i = 0; i < invoice.tags.length; i ++) {
+      var filteredInvoices = data.filter(function(invoice) {
+        for (var i = 0; i < invoice.tags.length; i++) {
           if (invoice.tags[ i ].name === parameters.filters.byTag.tagName) {
             return true;
           }
@@ -446,7 +469,7 @@ Invoice.find = function (parameters, callback) {
   }
 
 
-  return query.exec(function (error, data) {
+  return query.exec(function(error, data) {
     if (error) {
       return callback(error);
     }
@@ -455,22 +478,22 @@ Invoice.find = function (parameters, callback) {
   });
 };
 
-Invoice.getSums = function (id, callback) {
+Invoice.getSums = function(id, callback) {
   invoiceModel
     .find({})
     .populate([
       { path: 'user', model: 'user' }
     ])
-    .exec(function (error, data) {
+    .exec(function(error, data) {
       if (error) {
         return callback(error);
       }
 
-      data = data.filter(function (invoice) {
-        if (! id) return true;
+      data = data.filter(function(invoice) {
+        if (!id) return true;
 
         return (invoice.user._id.toString() !== id);
-      }).map(function (invoice) {
+      }).map(function(invoice) {
         return invoice.sum;
       });
 
@@ -478,18 +501,18 @@ Invoice.getSums = function (id, callback) {
     });
 };
 
-Invoice.sortByUser = function (callback) {
-  this.getAll(function (error, data) {
+Invoice.sortByUser = function(callback) {
+  this.getAll(function(error, data) {
     if (error) {
       return callback(error);
     }
 
     var users = {};
 
-    for (var i = 0; i < data.length; i ++) {
+    for (var i = 0; i < data.length; i++) {
       var userId = data[ i ].user._id;
 
-      if (! users.hasOwnProperty(userId)) {
+      if (!users.hasOwnProperty(userId)) {
         users[ userId ] = [];
       }
 
@@ -500,18 +523,18 @@ Invoice.sortByUser = function (callback) {
   });
 };
 
-Invoice.getAllByDate = function (callback) {
-  this.getAll(function (error, data) {
+Invoice.getAllByDate = function(callback) {
+  this.getAll(function(error, data) {
     if (error) {
       return callback(error);
     }
 
     var dates = {};
 
-    for (var i = 0; i < data.length; i ++) {
+    for (var i = 0; i < data.length; i++) {
       var date = data[ i ].creationDate;
 
-      if (! dates.hasOwnProperty(date)) {
+      if (!dates.hasOwnProperty(date)) {
         dates[ date ] = [];
       }
 
@@ -522,7 +545,7 @@ Invoice.getAllByDate = function (callback) {
   });
 };
 
-Invoice.getDateRangeByDate = function (startDate, endDate, callback) {
+Invoice.getDateRangeByDate = function(startDate, endDate, callback) {
   endDate = (endDate.getMonth() === 11
       ? new Date(endDate.getFullYear() + 1, 0, 0)
       : new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0)
@@ -541,17 +564,17 @@ Invoice.getDateRangeByDate = function (startDate, endDate, callback) {
       { path: 'tags', model: 'tag' },
       { path: 'user', model: 'user' }
     ])
-    .exec(function (error, invoices) {
+    .exec(function(error, invoices) {
       if (error) {
         return callback(error);
       }
 
       var dates = {};
 
-      for (var i = 0; i < invoices.length; i ++) {
+      for (var i = 0; i < invoices.length; i++) {
         var date = (moment(invoices[ i ].creationDate).format('Do MMMM YYYY'));
 
-        if (! dates.hasOwnProperty(date)) {
+        if (!dates.hasOwnProperty(date)) {
           dates[ date ] = [];
         }
 
