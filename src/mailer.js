@@ -65,7 +65,7 @@ var colors            = require('colors'),
      */
     app;
 
-(function (mailer) {
+(function(mailer) {
 
   /**
    * initializes the mailer
@@ -73,9 +73,9 @@ var colors            = require('colors'),
    * @param expressApp
    * @returns {*}
    */
-  mailer.initialize = function (expressApp) {
+  mailer.initialize = function(expressApp) {
 
-    if ((! nconf.get('mail:transport'))) {
+    if ((!nconf.get('mail:transport'))) {
       transport = transports.local;
     } else {
 
@@ -96,11 +96,11 @@ var colors            = require('colors'),
    * @param {string}   userId      the ID of the user to send an email to
    * @param {function} [callback]  an optional callback to run after the email has been sent
    */
-  mailer.send = function (template, data, userId, callback) {
-    new Promise(function (resolve, reject) {
+  mailer.send = function(template, data, userId, callback) {
+    new Promise(function(resolve, reject) {
 
       // find the user to send an email to
-      User.getById(userId, function (error, user) {
+      User.getById(userId, function(error, user) {
         if (error) {
           return reject(error);
         }
@@ -109,24 +109,24 @@ var colors            = require('colors'),
         return resolve(JSON.parse(JSON.stringify(user)));
       });
     })
-      .then(function (userData) {
+      .then(function(userData) {
 
         // if the selected user has no email address available, abort here
-        if (! userData.email) {
+        if (!userData.email) {
           return new Error('User %s %s (%s) has no email address. Cannot send mail.' + userData.firstName, userData.lastName, userData._id);
         }
 
         data.user = userData;
 
         // add a placeholder subject if none present
-        if (! data.subject) {
+        if (!data.subject) {
           data.subject = '[ missing subject - new email from flatm8 ]';
         }
 
-        return new Promise(function (resolve, reject) {
+        return new Promise(function(resolve, reject) {
 
           // render the email using the app's render method
-          app.render(template, data, function (error, html) {
+          app.render(template, data, function(error, html) {
             if (error) {
               return reject(error);
             }
@@ -136,18 +136,18 @@ var colors            = require('colors'),
           })
         })
       })
-      .then(function (html) {
+      .then(function(html) {
         var language = data.user.language || nconf.get('language') || 'en_US';
 
-        return new Promise(function (resolve) {
+        return new Promise(function(resolve) {
 
           // translate the email
-          Translator.translate(html, 'de_DE', function (translated) {
+          Translator.translate(html, 'de_DE', function(translated) {
             resolve(translated);
           });
         });
       })
-      .then(function (html) {
+      .then(function(html) {
 
         // create a config object for the mailer
         var mailerConfig = {
@@ -166,7 +166,59 @@ var colors            = require('colors'),
         // send the email
         mailer.transmit(mailerConfig, callback);
       })
-      .catch(function (error) {
+      .catch(function(error) {
+        winston.error('[mailer]'.red + ' Could not send email: %s', error.message);
+        winston.error(error.stack);
+      });
+  };
+
+  mailer.sendToEmail = function(template, data, emailAddress, callback) {
+    var language = nconf.get('language') || 'en_US';
+
+    return new Promise(function(resolve, reject) {
+      // render the email using the app's render method
+      app.render(template, data, function(error, html) {
+        if (error) {
+          return reject(error);
+        }
+
+        winston.info('[mailer]'.white + ' Rendered template %s, now sending as an email', template);
+        return resolve(html);
+      })
+    })
+      .then(function(html) {
+        return new Promise(function(resolve) {
+
+          // translate the email
+          Translator.translate(html, language, function(translated) {
+            resolve(translated);
+          });
+        });
+      })
+      .then(function(html) {
+        return new Promise(function(resolve) {
+
+          // create a config object for the mailer
+          Translator.translate(data.subject, language, function(translatedSubject) {
+            resolve({
+              _raw:     data,
+              to:       emailAddress,
+              from:     nconf.get('name') + ' <' + nconf.get('mail:sender') + '>',
+              subject:  translatedSubject,
+              html:     html,
+              text:     htmlToText.fromString(html, {
+                ignoreImage: true
+              }),
+              template: template
+            });
+          });
+        });
+      }).then(function(mailerConfig) {
+
+        // send the email
+        mailer.transmit(mailerConfig, callback);
+      })
+      .catch(function(error) {
         winston.error('[mailer]'.red + ' Could not send email: %s', error.message);
         winston.error(error.stack);
       });
@@ -178,10 +230,10 @@ var colors            = require('colors'),
    * @param {object}   data        the mail data
    * @param {function} [callback]  an optional callback to execute
    */
-  mailer.transmit = function (data, callback) {
+  mailer.transmit = function(data, callback) {
 
     // transmit the email using nodeMailer
-    transport.sendMail(data, function (error, response) {
+    transport.sendMail(data, function(error, response) {
       if (error) {
         winston.error('[mailer]'.red + ' Could not send email: %s', error.message);
         return callback(error);

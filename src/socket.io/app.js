@@ -21,14 +21,22 @@ var appSockets = module.exports = {};
  * @returns {null|error|object}
  */
 appSockets.getConfig = function(socket, callback) {
-  var config = {};
+  var config = {
+    debug: (nconf.get('environment') === 'development')
+  };
+
+  if (socket._id === 0) {
+    config.language = nconf.get('language');
+    config.user = {};
+
+    return callback(null, config);
+  }
 
   User.getById(socket._id, function(error, data) {
     if (error) {
       return callback(error);
     }
 
-    config.debug = (nconf.get('environment') === 'development');
     config.language = data.language || nconf.get('language');
     config.user                   = JSON.parse(JSON.stringify(data));
     config.user.hasProfilePicture = file.existsSync('public/images/users/' + socket._id + '.jpg');

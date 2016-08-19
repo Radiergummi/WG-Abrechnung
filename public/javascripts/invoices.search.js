@@ -1,8 +1,6 @@
 'use strict';
 
-if (!app) {
-  var app = require('./app');
-}
+var app = app || {};
 
 (function() {
   

@@ -57,12 +57,15 @@ module.exports = function (middleware) {
         baseVariables.user.name              = req.user.firstName + ' ' + req.user.lastName;
         baseVariables.user.language          = req.user.language;
         baseVariables.user.email             = req.user.email;
-        baseVariables.user.isAdmin           = (req.user.admin);
+        baseVariables.user.isAdmin           = (req.user.role === 'admin');
         baseVariables.user.hasProfilePicture = file.existsSync('public/images/users/' + req.user.id + '.jpg');
         baseVariables.user.color             = req.user.color;
       }
 
-      baseVariables.language    = (req.hasOwnProperty('user') ? baseVariables.user.language : nconf.get('language'));
+      baseVariables.language    = (req.hasOwnProperty('user')
+        ? baseVariables.user.language
+        : req.query.lang || nconf.get('language')
+      );
       baseVariables.bodyClass   = buildBodyClass(req);
       baseVariables.url         = (req.baseUrl + req.path).replace(/^\/api/, '');
       baseVariables.cacheBuster = Date.now();
@@ -79,11 +82,10 @@ module.exports = function (middleware) {
           return callback(error);
         }
 
-        var language = req.query.lang || variables.language || nconf.get('language');
-        debug('set template language to %s', language);
+        debug('set template language to %s', baseVariables.language);
 
         debug('translating template');
-        translator.translate(str, language, function (translatedStr) {
+        translator.translate(str, baseVariables.language, function (translatedStr) {
 
           debug('template translated. calling callback');
           return callback(error, translatedStr);

@@ -1,5 +1,7 @@
 'use strict';
 
+var app = app || {};
+
 (function() {
   app.startup.push(function() {
 

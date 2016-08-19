@@ -89,7 +89,7 @@
   translator.translateKeys = function (keys, text, language, callback) {
     var keyCount = keys.length;
 
-    debug('translating %i keys', keyCount);
+    debug('translating %s keys', keyCount);
 
     if (! keyCount) {
       debug('got no more keys');
@@ -139,7 +139,7 @@
     key           = '' + key;
     var variables = key.split(/[,][\s]*/);
 
-    debug('key "%s" contains %i variables', key, variables.length - 1);
+    debug('key "%s" contains %s variable(s)', key, variables.length - 1);
 
     // remove indicator signs, split by category separator
     var parsedKey = key.replace('[[', '').replace(']]', '').split(':');

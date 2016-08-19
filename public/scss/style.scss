@@ -3,6 +3,7 @@
 @import "typography";
 @import "animations";
 @import "font-awesome/font-awesome";
+@import "modals";
 @import "navigation";
 @import "dashboard";
 @import "invoices";
@@ -34,6 +35,11 @@ input[type="email"] {
     outline: 0;
     cursor:  text;
   }
+
+  &:disabled {
+    color:  rgba(0, 0, 0, .5);
+    cursor: default;
+  }
 }
 
 button,
@@ -55,7 +61,12 @@ input[type="submit"],
   font-weight:     $font-weight-thin;
   cursor:          pointer;
 
-  &:hover {
+  &:disabled {
+
+    cursor: default;
+  }
+
+  &:hover:not(:disabled) {
     background: #0277bd;
   }
 
@@ -92,7 +103,7 @@ select {
   }
 }
 
-article {
+main article {
   max-width: 80%;
   margin:    50px auto;
 
@@ -239,14 +250,25 @@ img.image-error {
   }
 }
 
+.page-register .site-header,
+.page-login .site-header {
+  display: none;
+}
+
+.registration-container,
 .login-container {
-  width:         100%;
+  width:         calc(100% - 10px);
   max-width:     400px;
   padding:       25px;
   text-align:    center;
+  color:         #fff;
   background:    #03a9f4;
   border-radius: 4px;
   box-shadow:    0 2px 5px rgba(0, 0, 0, .2);
+
+  p {
+    line-height: 1.4;
+  }
 
   form {
     text-align: left;
@@ -258,7 +280,6 @@ img.image-error {
   }
 
   input {
-    width:      calc(100% - 30px);
     background: #03a9f4;
     border:     2px solid #fff;
     cursor:     text;
@@ -273,6 +294,16 @@ img.image-error {
 
     &::-webkit-input-placeholder {
       color: rgba(255, 255, 255, 0.5);
+    }
+
+    &#user,
+    &#pass {
+      width: calc(100% - 30px);
+    }
+
+    &#invitation-token {
+      width:      100%;
+      margin-top: 50px
     }
   }
 
@@ -293,17 +324,20 @@ img.image-error {
   label {
     display:        inline-block;
     vertical-align: middle;
-    width:          30px;
     color:          #fff;
+
+    &[for="user"],
+    &[for="pass"] {
+      width: 30px;
+    }
   }
 }
 
-.page-login {
-  .site-header {
-    display: none;
-  }
+.registration-container {
+  text-align: left;
 }
 
+q
 .page-error {
   max-width:     600px;
   margin:        100px auto;
@@ -329,5 +363,30 @@ img.image-error {
     margin:      50px auto 0;
     color:       #666;
     line-height: 1.6
+  }
+}
+
+html {
+  &[lang="en_US"] {
+    .language-switcher a[data-language="en_US"] {
+      display: none;
+    }
+  }
+
+  &[lang="de_DE"] {
+    .language-switcher a[data-language="de_DE"] {
+      display: none;
+    }
+  }
+}
+
+.language-switcher {
+  text-align: center;
+
+  a {
+    display:    block;
+    margin-top: 25px;
+    color:      #fff;
+    font-size:  18px;
   }
 }

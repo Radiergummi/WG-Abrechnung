@@ -7,7 +7,7 @@
 
 var mongo = require('mongodb');
 
-var userModel = require('./models/user'),
+var userModel    = require('./models/user'),
     invoiceModel = require('./models/invoice');
 
 var User = module.exports = {};
@@ -15,41 +15,9 @@ var User = module.exports = {};
 /**
  * @callback userCallback
  *
- * @param {Error} [error]  an error object, if one occurred
- * @param {*} [data]       user data, if any
+ * @param {Error} error  an error object, if one occurred
+ * @param {*} [data]     user data, if any
  */
-
-/**
- * retrieves user data from the database by ID
- *
- * @param {string} id  the ID to find a user for
- * @param {userCallback} callback  a callback to run on the user object
- * @returns {object}
- */
-User.getById = function(id, callback) {
-  userModel.findOne({ '_id': id }).populate('invoices').exec(function(error, user) {
-    if (error) {
-      return callback(error);
-    }
-
-    invoiceModel.populate(user.invoices, {
-      path: 'tags'
-    }, function(error, invoices) {
-      if (error) {
-        return callback(error);
-      }
-
-      if (!user) {
-        return callback(new Error('Der angegebene Mitbewohner mit der ID ' + id + ' existiert nicht'));
-      }
-
-      user.invoices = invoices;
-
-      callback(null, user);
-    });
-  });
-};
-
 
 User.getAll = function(callback) {
   userModel.find({}).exec(function(error, user) {
@@ -60,16 +28,60 @@ User.getAll = function(callback) {
   });
 };
 
+/**
+ * retrieves user data from the database by ID
+ *
+ * @param {string} id  the ID to find a user for
+ * @param {userCallback} callback  a callback to run on the user object
+ * @returns {object}
+ */
+User.getById = function(id, callback) {
+  return userModel.findOne({ '_id': id }).exec(function(error, user) {
+    if (error) {
+      return callback(error);
+    }
+
+    return callback(null, user);
+  });
+};
+
+User.getByEmail = function(emailAddress, callback) {
+  return userModel.findOne({ 'email': emailAddress }, function(error, user) {
+    if (error) {
+      return callback(error);
+    }
+
+    return callback(null, user);
+  });
+};
+
+User.getByUsername = function(username, callback) {
+  return userModel.findOne({ 'authentication.username': username }, function(error, user) {
+    if (error) {
+      return callback(error);
+    }
+
+    return callback(null, user);
+  });
+};
+
+User.getByLanguage = function(language, callback) {
+};
+
+User.getByName = function(name, callback) {
+};
 
 User.createNew = function(data, callback) {
   var newUser = new userModel();
 
-  newUser.firstName = data.firstName;
-  newUser.lastName = data.lastName;
+  newUser.firstName               = data.firstName;
+  newUser.lastName                = data.lastName;
+  newUser.email                   = data.email;
+  newUser.language                = data.language;
+  newUser.color                   = data.color;
   newUser.authentication.username = data.username;
   newUser.authentication.password = data.password;
-  newUser.role = data.role;
-  newUser.workHoursPerWeek = data.workHoursPerWeek;
+  newUser.role                    = data.role;
 
   newUser.save(function(error) {
     if (error) {
@@ -79,7 +91,6 @@ User.createNew = function(data, callback) {
     return callback(null, newUser);
   })
 };
-
 
 User.remove = function(id, callback) {
   this.getById(id, function(error, user) {
@@ -94,6 +105,9 @@ User.remove = function(id, callback) {
   });
 };
 
+/**
+ * Arbitrary methods to work with user data
+ */
 
 User.getInvoices = function(id, callback) {
   this.getById(id, function(error, user) {
@@ -106,13 +120,12 @@ User.getInvoices = function(id, callback) {
   });
 };
 
-
 User.getPaginatedInvoices = function(id, skip, limit, callback) {
   this.getInvoices(id, function(error, invoices) {
     if (error) {
       return callback(error);
     }
-    
+
     return callback(null, invoices.slice(skip, limit));
   });
 };

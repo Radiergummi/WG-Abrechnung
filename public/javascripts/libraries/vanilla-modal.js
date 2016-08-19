@@ -44,9 +44,11 @@
     value: true
   });
 
-  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(obj) {
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol"
+    ? function(obj) {
     return typeof obj;
-  } : function(obj) {
+  }
+    : function(obj) {
     return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
   };
 
@@ -79,7 +81,6 @@
     /**
      * @param {Object} [userSettings]
      */
-
     function VanillaModal (userSettings) {
       _classCallCheck(this, VanillaModal);
 
@@ -112,7 +113,9 @@
       this.$                = this._setupDomNodes();
 
       if (!this.error) {
-        this._addLoadedCssClass();
+        this.$.page.classList.add(this.$$.loadClass);
+
+
         this._events().add();
       } else {
         console.error('Please fix errors before proceeding.');
@@ -122,8 +125,6 @@
     /**
      * @param {Object} userSettings
      */
-
-
     _createClass(VanillaModal, [ {
       key:   '_applyUserSettings',
       value: function _applyUserSettings (userSettings) {
@@ -155,12 +156,18 @@
     }, {
       key:   '_getNode',
       value: function _getNode (selector, parent) {
+        if (selector instanceof HTMLElement) {
+          return selector;
+        }
+
         var targetNode = parent || document;
         var node       = targetNode.querySelector(selector);
         if (!node) {
           this.error = true;
+
           return console.error(selector + ' not found in document.');
         }
+
         return node;
       }
     }, {
@@ -172,31 +179,6 @@
         $.modalInner   = this._getNode(this.$$.modalInner, this.modal);
         $.modalContent = this._getNode(this.$$.modalContent, this.modal);
         return $;
-      }
-    }, {
-      key:   '_addLoadedCssClass',
-      value: function _addLoadedCssClass () {
-        this._addClass(this.$.page, this.$$.loadClass);
-      }
-    }, {
-      key:   '_addClass',
-      value: function _addClass (el, className) {
-        if (el instanceof HTMLElement === false) return;
-        var cssClasses = el.className.split(' ');
-        if (cssClasses.indexOf(className) === -1) {
-          cssClasses.push(className);
-        }
-        el.className = cssClasses.join(' ');
-      }
-    }, {
-      key:   '_removeClass',
-      value: function _removeClass (el, className) {
-        if (el instanceof HTMLElement === false) return;
-        var cssClasses = el.className.split(' ');
-        if (cssClasses.indexOf(className) > -1) {
-          cssClasses.splice(cssClasses.indexOf(className), 1);
-        }
-        el.className = cssClasses.join(' ');
       }
     }, {
       key:   '_setOpenId',
@@ -228,7 +210,7 @@
         if (this.current instanceof HTMLElement === false) return console.error('VanillaModal target must exist on page.');
         if (typeof this.$$.onBeforeOpen === 'function') this.$$.onBeforeOpen.call(this, e);
         this._captureNode();
-        this._addClass(this.$.page, this.$$.class);
+        this.$.page.classList.add(this.$$.class);
         this._setOpenId();
         this.isOpen = true;
         if (typeof this.$$.onOpen === 'function') this.$$.onOpen.call(this, e);
@@ -251,7 +233,7 @@
         if (this.isOpen === true) {
           this.isOpen = false;
           if (typeof this.$$.onBeforeClose === 'function') this.$$.onBeforeClose.call(this, e);
-          this._removeClass(this.$.page, this.$$.class);
+          this.$.page.classList.remove(this.$$.class);
           var transitions = this._detectTransition();
           if (this.$$.transitions && this.$$.transitionEnd && transitions) {
             this._closeModalWithTransition(e);

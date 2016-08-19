@@ -246,30 +246,44 @@ app.charts = {
   }
 };
 
-app.modals = {};
-
 /**
- * modal abstraction. retrieves a named modal from the modals object or creates a new one.
+ * modal abstraction
  *
- * @param {string} name       the modal name
- * @param {object} [options]  optional object with modal creation objects
- * @returns {VanillaModal}    the modal instance
+ * @returns {VanillaModal}  the modal instance
  */
-app.modal  = function(name, options) {
+app.modals = {
+  instance: null,
 
-  // look up the name in the modal storage
-  if (app.modals.hasOwnProperty(name)) {
+  configure: function() {
+    // append the modal template, if not yet present
+    if (!document.querySelector('.modal-overlay')) {
+      document.body.appendChild(app.templates.baseModalTemplate);
+    }
 
-    // if found, return the instance
-    return app.modals.modals[ name ];
+    // create a new modal with the merged configuration data and store it
+    return app.modals.instance = new app.Modals({
+      modal:        '.modal-overlay',
+      modalInner:   '.modal',
+      modalContent: '.modal-content',
+      open:         '[data-open-modal]',
+      close:        '[data-close-modal]',
+      page:         'body',
+      loadClass:    'modal-root',
+      onOpen:       function(event) {
+        if (app.events.hasOwnProperty(event.target.dataset.onModalOpenEvent)) {
+          app.events[ event.target.dataset.onModalOpenEvent ](event);
+        }
+      }
+    });
   }
-
-  // create a new modal and store it
-  app.modals[ name ] = new app.Modals(options);
-
-  // return the stored instance
-  return app.modals[ name ];
 };
+
+app.templates.baseModalTemplate = app.helpers.createElement('<div class="modal-overlay">' +
+  '<div class="modal">' +
+  '<button type="button" class="seamless" data-close-modal><span class="fa fa-times"></span></button>' +
+  '<article class="modal-content"></article>' +
+  '</div>' +
+  '</div>');
 
 app.events.onServerUpdate = function() {
   app.translator.translate('[[global:server_updated.message]]|[[global:server_updated.reload]]|[[global:server_updated.later]]', document.documentElement.lang, function(translated) {
@@ -308,9 +322,13 @@ app.init = function() {
       };
 
       app.io     = io();
+
       app.Charts = Chart;
-      app.Modals = VanillaModal;
       app.charts.configure();
+
+      app.Modals = VanillaModal;
+      app.modals.configure();
+
       app.elements.overlay = document.getElementById('overlay');
       app.connectors.getConfig(function() {
         window.debug   = app.config.debug;

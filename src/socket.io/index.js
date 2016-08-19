@@ -54,7 +54,8 @@ function requireModules() {
     'user',
     'invoices',
     'statistics',
-    'dashboard'
+    'dashboard',
+    'settings'
   ];
 
   modules.forEach(function (module) {

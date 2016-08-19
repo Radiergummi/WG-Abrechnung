@@ -1,7 +1,6 @@
 .settings {
   position: relative;
 
-
   @media screen and (max-width: 900px) {
     margin: 0 10px;
   }
@@ -12,8 +11,8 @@
 
   .settings-category {
     .settings-header {
-      float: left;
-      width: 20%;
+      float:      left;
+      width:      20%;
       text-align: center;
 
       .settings-category-title {
@@ -24,8 +23,8 @@
       }
 
       @media screen and (max-width: 900px) {
-        float: none;
-        width: initial;
+        float:      none;
+        width:      initial;
         text-align: left;
 
         .settings-category-title {
@@ -92,13 +91,14 @@
   }
 }
 
-.settings-group {
-  .setting {
-    & + .setting {
-      margin-top: 25px;
-    }
+.setting {
+  & + .setting,
+  & + .settings-group {
+    margin-top: 25px;
   }
+}
 
+.settings-group {
   & + .setting,
   & + .settings-group {
     margin-top: 25px;
@@ -109,16 +109,16 @@
   width: 100%;
 
   th {
-    padding: 10px;
-    border-bottom: 2px solid rgba(0,0,0,.1);
-    text-align: center;
-    font-weight: $font-weight-bold;
+    padding:       10px;
+    border-bottom: 2px solid rgba(0, 0, 0, .1);
+    text-align:    center;
+    font-weight:   $font-weight-bold;
   }
 
   td {
-    padding: 10px;
+    padding:        10px;
     vertical-align: middle;
-    text-align: center;
+    text-align:     center;
   }
 
   .actions {
@@ -126,20 +126,64 @@
   }
 
   .profile-picture {
-    width: 50px;
-    height: 50px;
-    margin: 0 auto;
+    width:         50px;
+    height:        50px;
+    margin:        0 auto;
     border-radius: 25px;
-    overflow: hidden;
+    overflow:      hidden;
 
     img {
-      max-width: 100%;
-      height: auto;
+      max-width:  100%;
+      height:     auto;
       min-height: 100%;
+    }
+  }
+
+  @media screen and (max-width: 630px) {
+    .last-name,
+    .role {
+      display: none;
     }
   }
 }
 
-.user-actions{
-  margin-top: 25px;
+.user-actions {
+  margin: 25px 0;
+}
+
+.modal-content-wrapper {
+  width: 400px;
+
+  .modal-body {
+    padding: 25px;
+
+    p {
+      margin-bottom: 25px;
+      line-height:   1.4;
+      font-size:     18px;
+    }
+
+    label {
+      display: block;
+    }
+
+    input + label,
+    select + label {
+      margin-top: 15px;
+    }
+  }
+
+  .actions {
+    margin-top: 25px;
+  }
+}
+
+.send-invite {
+  &.sending {
+    background-image:    url(/images/loading-inverted.svg);
+    background-size:     20px;
+    background-repeat:   no-repeat;
+    background-position: center center;
+    color:               transparent;
+  }
 }

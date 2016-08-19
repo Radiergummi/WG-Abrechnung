@@ -69,3 +69,8 @@ table {
     clear:   both;
   }
 }
+
+.hidden {
+  position: absolute;
+  left: -99999em;
+}

@@ -2,38 +2,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="uil-ring-alt">
     <defs>
         <style type="text/css">
-            @-webkit-keyframes rotation {
-                0% {
-                    stroke-dashoffset: 0;
-                    stroke-dasharray:  150.6 100.4;
-                }
-
-                50% {
-                    stroke-dasharray:  1 250;
-                }
-
-                100% {
-                    stroke-dashoffset: 502;
-                    stroke-dasharray:  150.6 100.4;
-                }
-            }
-
-            @-moz-keyframes rotation {
-                0% {
-                    stroke-dashoffset: 0;
-                    stroke-dasharray:  150.6 100.4;
-                }
-
-                50% {
-                    stroke-dasharray:  1 250;
-                }
-
-                100% {
-                    stroke-dashoffset: 502;
-                    stroke-dasharray:  150.6 100.4;
-                }
-            }
-
             @keyframes rotation {
                 0% {
                     stroke-dashoffset: 0;
@@ -48,8 +16,8 @@
                     stroke-dashoffset: 502;
                     stroke-dasharray:  150.6 100.4;
                 }
-            }
 
+            }
 
             svg {
                 width: 120px;
@@ -67,18 +35,17 @@
             }
 
             svg > #outer-circle {
-                stroke:         rgba(0, 0, 0, 0.1);
+                stroke:         rgba(0, 0, 0, 0.05);
                 fill:           none;
                 stroke-linecap: round;
             }
 
             svg > #inner-circle {
-                stroke:            #03a9f4;
+                stroke:            #fff;
                 fill:              none;
                 stroke-linecap:    round;
 
                 -webkit-animation: rotation 2s linear infinite both;
-                -moz-animation:    rotation 2s linear infinite both;
                 animation:         rotation 2s linear infinite both;
             }
 

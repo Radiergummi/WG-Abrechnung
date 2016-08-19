@@ -14,6 +14,7 @@ module.exports = function(router, middleware, controllers) {
 
   setupPageRoute(router, '/', middleware, middlewares, controllers.home);
   setupPageRoute(router, '/settings', middleware, middlewares, controllers.settings);
+  setupPageRoute(router, '/register/:token?', middleware, [], controllers.register);
   setupPageRoute(router, '/login', middleware, [], controllers.login);
   setupPageRoute(router, '/logout', middleware, [], controllers.authentication.logout);
 };

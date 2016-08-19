@@ -8,7 +8,8 @@
 var fs      = require('fs'),
     path    = require('path'),
     nconf   = require('nconf'),
-    winston = require('winston');
+    winston = require('winston'),
+    moment  = require('moment');
 
 /**
  * Middleware modules
@@ -31,6 +32,11 @@ var db     = require('../database').initialize(),
     jobs   = require('../jobs'),
     auth   = require('../authentication'),
     render = require('./render');
+
+/**
+ * load the moment.js locale
+ */
+moment.locale(nconf.get('language'));
 
 var middleware = {};
 
@@ -71,7 +77,7 @@ module.exports = function(app) {
   }
 
   app.use(bodyParser.urlencoded({
-    extended: false,
+    extended: true,
     limit:    '8mb'
   }));
 
@@ -104,7 +110,7 @@ module.exports = function(app) {
   auth.initialize(app, middleware);
   app.use(middleware.processRender);
   jobs.initialize();
-  
+
   setTimeout(function() {
     require('../socket.io').server.sockets.emit('app.updated', {
       date: Date.now()
@@ -115,9 +121,6 @@ module.exports = function(app) {
 };
 
 function registerTemplateHelpers () {
-  var moment = require('moment');
-  moment.locale('de');
-
   templates.registerHelper('format_date_string', function(data) {
     return moment(data).format('LLLL:SS');
   });

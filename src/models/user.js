@@ -9,7 +9,7 @@ var userSchema = mongoose.Schema({
   firstName: String,
   lastName:  String,
 
-  email:    String,
+  email:    { type: String, unique: true, required: true },
   language: { type: String, default: 'de_DE' },
 
   creationDate: { type: Date, required: true },
@@ -22,11 +22,11 @@ var userSchema = mongoose.Schema({
    * used to log in to the system.
    */
   authentication: {
-    username: { type: String, required: true },
+    username: { type: String, unique: true, required: true },
     password: { type: String, required: true }
   },
 
-  color: { type: String, required: true }
+  color: { type: String, default: 'rgba(150,150,150,1.0)'}
 });
 
 
@@ -38,6 +38,10 @@ var userSchema = mongoose.Schema({
  */
 userSchema.methods.validPassword = function(password) {
   return bcrypt.compareSync(password, this.authentication.password);
+};
+
+userSchema.methods.isAdmin = function() {
+  return (this.role === 'admin');
 };
 
 

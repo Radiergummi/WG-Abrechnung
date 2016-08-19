@@ -31,11 +31,6 @@
     <li class="menu-balance<!-- IF balanceActive --> current-item<!-- ENDIF balanceActive -->">
       <a href="/balance"><span class="fa fa-calculator"></span> [[menu:balance]]</a>
     </li>
-    <!-- IF user.isAdmin -->
-    <li class="menu-admin">
-      <a href="/admin/dashboard" title="Admin"><span class="fa fa-cogs"></span> [[menu:admin]]</a>
-    </li>
-    <!-- ENDIF user.isAdmin -->
   </ul>
 </nav>
 
@@ -119,7 +114,9 @@
 </article>
 <script src="/javascripts/dashboard.js"></script>
 </main>
+<!-- IF user.loggedIn -->
 <script src="/javascripts/main.js"></script>
+<!-- ENDIF user.loggedIn -->
 <script>
   app.init();
 </script>
