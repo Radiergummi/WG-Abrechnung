@@ -12,6 +12,8 @@ Language is german right now, though most of the strings are in the view files -
 
 *Update 2016/08/01:* Much has changed over the last course of weeks! Dynamic data loading as well as a proper translation system has been implemented. A server-side statistics API is in the making, the mailer is set up and working (both local and relay works) and cron job handling (for monthly calculations and so on) works using [agenda](https://github.com/rschmukler/agenda). More to come.
 
+*Update 2016/08/16:* Localization is finally working - flatm8 can be completely translated using JSON translation files. The module works on both server as well as client side. I will put a complete documentation in the wiki pages as soon as I'm ready.
+
 *Update 2016/08/22:* In the mean time, I built a settings page for both global and user specific settings (depending on the users role) including full CRUD user management with an invitation system to add new users via expiring invitation tokens. Additionally, the clientside framework has received a lot of love: there are toast notifications and try-catch abstractions to prevent uncaught exceptions, even for event callbacks. There is a HTTP request abstraction layer that uses the fetch API if available or falls back to XHR; and lastly I included a globally available (`app.debug()`) function that works like the server side debug module.
 
 Once the current way of handling receipts works, I'm planning to integrate OCR (using tesseract, maybe) somehow, so the receipts get parsed automatically. That would eliminate the need to enter the sum manually and allow to create detailed product statistics. As far as I've seen, though, that is a non-trivial task which'd require some serious engineering.  
