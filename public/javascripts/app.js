@@ -14,7 +14,7 @@ var app = {
   config:     {}, // app config data from the server
   data:       {}  // arbitrary data to access globally
 };
-
+console.log('started app', app);
 /**
  * default error handler that logs errors to the console. can be replaced
  * with more sophisticated handlers, as long as they take an error object
@@ -27,7 +27,7 @@ var app = {
 app.error = function(error, friendlyMessage) {
   if (friendlyMessage) {
     try {
-      app.translator.translate(friendlyMessage, document.documentElement.lang, function(translated) {
+      app.translate(friendlyMessage, function(translated) {
         return console.error(translated, error);
       });
     } catch (error) {
@@ -92,6 +92,98 @@ app.on = function(eventNames, target, callback, debounce) {
       }
     }, false);
   }
+};
+
+/**
+ * opens an HTTP request. uses the fetch API if available or falls back to XHR.
+ * 
+ * @param {string}   method           the HTTP method
+ * @param {string}   url              the request URL
+ * @param {object}   [data]           a set of key-value pairs for GET requests or the body object
+ * @param {function} [success]        a success callback
+ * @param {function} [failure]        a failure callback
+ * @param {object}   [events]         an object containing named events to attach to the request
+ * @returns {XMLHttpRequest|Promise}  the request object. either a promise or the XHR
+ */
+app.httpRequest = function(method, url, data, success, failure, events) {
+  method  = method.toUpperCase();
+  data    = data || undefined;
+  success = success || function() {
+    };
+  failure = failure || function() {
+    };
+  events = events || {};
+
+  if (window[ 'fetch' ]) {
+    return fetch(new Request(url, {
+      method: method,
+      body:   data
+    })).then(function(response) {
+      if (response.ok) {
+        success.call(this, response);
+      } else {
+        failure.call(this, response);
+      }
+
+      return response;
+    }, function(error) {
+      failure.call(this, error);
+
+      return error;
+    });
+  } else {
+    var XHR = new XMLHttpRequest();
+    XHR.open(method, url, true);
+
+    XHR.onreadystatechange = function() {
+
+      // when the data is available, fire the callback
+      if (XHR.readyState == 4) {
+        if (XHR.status == "200") {
+          success.call(this, XHR);
+        } else {
+          failure.call(this, XHR);
+        }
+      }
+
+    };
+
+    for (var i in events) {
+      if (events.hasOwnProperty(i)) {
+        XHR[ i ] = events[ i ];
+      }
+    }
+
+    XHR.send(data);
+    return XHR;
+  }
+};
+
+app.get = function(url, data, success, failure, events) {
+  if (data) {
+    url = url + '?';
+
+    var parameters = [];
+
+    for (var i in data) {
+      if (data.hasOwnProperty(i)) {
+        parameters.push(i + '=' + data[ i ]);
+      }
+    }
+
+    url = url + parameters.join('&');
+  }
+
+  return app.httpRequest('get', url, null, success, failure, events);
+};
+
+app.post = function(url, data, success, failure, events) {
+  if (data) {
+    if (data instanceof FormData) {
+      
+    }
+  }
+  return app.httpRequest('post', data, success, failure, events);
 };
 
 app.helpers.createNode = function(tagName, attributes, content) {
@@ -163,7 +255,7 @@ app.connectors.getConfig = function(callback) {
     }
 
     app.config = data;
-
+//    Object.freeze(app.config);
     return callback();
   });
 };
@@ -269,8 +361,9 @@ app.modals = {
       close:        '[data-close-modal]',
       page:         'body',
       loadClass:    'modal-root',
-      onOpen:       function(event) {
+      onBeforeOpen: function(event) {
         if (app.events.hasOwnProperty(event.target.dataset.onModalOpenEvent)) {
+          app.debug('modal opener has open event callback attached');
           app.events[ event.target.dataset.onModalOpenEvent ](event);
         }
       }
@@ -286,7 +379,7 @@ app.templates.baseModalTemplate = app.helpers.createElement('<div class="modal-o
   '</div>');
 
 app.events.onServerUpdate = function() {
-  app.translator.translate('[[global:server_updated.message]]|[[global:server_updated.reload]]|[[global:server_updated.later]]', document.documentElement.lang, function(translated) {
+  app.translate('[[global:server_updated.message]]|[[global:server_updated.reload]]|[[global:server_updated.later]]', function(translated) {
     var texts = translated.split('|');
     app.notifications.info(texts[ 0 ], [ {
       name: texts[ 1 ], action: function() {
@@ -321,18 +414,29 @@ app.init = function() {
         }
       };
 
-      app.io     = io();
+      app.io = io();
 
-      app.Charts = Chart;
+      app.Charts = require('./libraries/chart/chart');
       app.charts.configure();
 
-      app.Modals = VanillaModal;
+      app.Modals = require('./libraries/vanilla-modal');
       app.modals.configure();
 
       app.elements.overlay = document.getElementById('overlay');
       app.connectors.getConfig(function() {
-        window.debug   = app.config.debug;
+        window.debug = app.config.debug;
+        if (window.debug) {
+          app.debug = console.debug.bind(console);
+        } else {
+          app.debug = function() {
+            console.log('debugging disabled');
+          }
+        }
+
         app.translator = translator;
+        app.translate = function(text, callback) {
+          return app.translator.translate(text, document.documentElement.lang, callback);
+        };
 
         // call all startup scripts
         for (var i = 0; i < app.startup.length; i++) {
@@ -346,7 +450,7 @@ app.init = function() {
 
       app.io.on('app.updated', app.events.onServerUpdate);
       window.addEventListener('app:ready', function(event) {
-        console.log('app ready!')
+        console.log('app ready!');
       });
       window.dispatchEvent(new Event('app:ready'));
     } catch (error) {

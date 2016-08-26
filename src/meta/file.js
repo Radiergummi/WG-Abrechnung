@@ -82,7 +82,7 @@ File.readSync = function(file) {
  */
 File.write = function(file, data, callback, options) {
   options = options || {};
-  file = resolvePath(file);
+  file    = resolvePath(file);
 
   try {
     fs.writeFile(file, data, options, function(error, data) {
@@ -108,7 +108,7 @@ File.write = function(file, data, callback, options) {
  */
 File.writeSync = function(file, data, options) {
   options = options || {};
-  file = resolvePath(file);
+  file    = resolvePath(file);
 
   try {
     fs.writeFileSync(file, data, options);
@@ -189,6 +189,32 @@ File.move = function(file, target, callback) {
 
 File.moveSync = function(file, target) {
 
+};
+
+File.copy = function(source, target, callback) {
+  source = resolvePath(source);
+  target = resolvePath(target);
+  var callbackCalled = false;
+
+  var readStream = fs.createReadStream(source);
+  readStream.on('error', done);
+
+  var writeStream = fs.createWriteStream(target);
+  writeStream.on('error', done);
+  writeStream.on('close', function(ex) {
+    done();
+  });
+
+  readStream.pipe(writeStream);
+
+  function done (error) {
+    if (!callbackCalled) {
+      callback(error);
+      callbackCalled = true;
+    }
+
+    return callback(null);
+  }
 };
 
 
@@ -307,7 +333,7 @@ File.watch = function(file, options, listener) {
 
   if (typeof options === 'function') {
     watchOptions = {};
-    listener = options;
+    listener     = options;
   }
 
   file = resolvePath(file);

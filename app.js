@@ -150,7 +150,7 @@ function shutdown (code) {
 /**
  *
  */
-function prepareAssets () {
+function prepareAssets (callback) {
   var templates   = require('./src/meta/templates'),
       // stylesheets = require('./src/meta/stylesheets'),
       javascripts = require('./src/meta/javascripts');
@@ -168,14 +168,12 @@ function prepareAssets () {
     // stylesheets.minify();
   }
 
-  // concatenate client JS
-  //javascripts.concatenate();
-
-  if (nconf.get('assets:options:skipJSMinification') === false) {
-
-    // minify client JS
-    javascripts.minify();
-  }
+  return Promise.all([
+    templates.compile(),
+    javascripts.compile()
+  ]).then(function(results) {
+    return callback(null, results);
+  }).catch(callback);
 }
 
 /**

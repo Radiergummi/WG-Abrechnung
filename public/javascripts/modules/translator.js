@@ -1,17 +1,18 @@
 'use strict';
 
-(function (translator) {
+(function(translator) {
   var translationRegex = /\[\[\w+:[\w\.]+((?!\[\[).)*?\]\]/g,
       debug;
 
   if (typeof module !== 'undefined' && module.exports) {
-    debug          = require('debug')('flatm8:translator');
+    debug   = require('debug')('flatm8:translator');
     module.exports = translator;
   } else {
     if (window.hasOwnProperty('debug') && window.debug) {
       debug = console.debug.bind(console);
     } else {
-      debug = function() {}
+      debug = function() {
+      }
     }
 
     window[ 'translator' ] = translator;
@@ -20,23 +21,23 @@
   var languages = {};
 
 
-  translator.escape = function (text) {
+  translator.escape = function(text) {
     return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]') : text;
   };
 
-  translator.unescape = function (text) {
+  translator.unescape = function(text) {
     return typeof text === 'string' ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]') : text;
   };
 
-  translator.addLanguage = function (code, translations) {
+  translator.addLanguage = function(code, translations) {
     languages[ code ] = translations;
   };
 
-  translator.getLanguage = function (code) {
+  translator.getLanguage = function(code) {
     return languages[ code ];
   };
 
-  translator.translate = function (text, language, callback) {
+  translator.translate = function(text, language, callback) {
     debug('translating %s', (text.length > 10 ? text.substring(0, 10) + '...' : text));
 
     if (typeof language === 'function') {
@@ -45,7 +46,7 @@
     }
 
     // if we received no text, return whatever came
-    if (! text) {
+    if (!text) {
       debug('got no text, return initial value');
       return callback(text);
     }
@@ -54,7 +55,7 @@
     var keys = text.match(translationRegex);
 
     // if we have no translation indicators, return whatever came
-    if (! keys) {
+    if (!keys) {
       debug('no translation indicators, return initial value');
       return callback(text);
     }
@@ -64,10 +65,10 @@
      * text, we run a callback on finish that tries to match the indicator
      * regex again. If it matches, we run the translateKeys function again.
      */
-    return translator.translateKeys(keys, text, language, function (translated) {
+    return translator.translateKeys(keys, text, language, function(translated) {
       keys = translated.match(translationRegex);
 
-      if (! keys) {
+      if (!keys) {
         debug('got no more keys');
         return callback(translated);
       } else {
@@ -86,12 +87,12 @@
    * @param   {function} callback  a callback to run once the keys have been translated
    * @returns {*}
    */
-  translator.translateKeys = function (keys, text, language, callback) {
+  translator.translateKeys = function(keys, text, language, callback) {
     var keyCount = keys.length;
 
     debug('translating %s keys', keyCount);
 
-    if (! keyCount) {
+    if (!keyCount) {
       debug('got no more keys');
       return callback(text);
     }
@@ -101,17 +102,17 @@
     };
 
     // iterate over keys
-    keys.forEach(function (key) {
+    keys.forEach(function(key) {
       debug('processing key %s', key);
 
       // translate the key
-      translator.translateKey(key, data, language, function (translated) {
+      translator.translateKey(key, data, language, function(translated) {
 
         debug('translated %s to %s', key, (translated.text.length > 10 ? translated.text.substring(0, 10) + '...' : translated.text));
 
         // decrement the key counter to know when to run the callback on
         // the last key
-        keyCount --;
+        keyCount--;
 
         if (keyCount <= 0) {
           return callback(translated.text);
@@ -131,7 +132,7 @@
    * @param   {function} callback   a callback to apply on the translated string
    * @returns {*}
    */
-  translator.translateKey = function (key, data, language, callback) {
+  translator.translateKey = function(key, data, language, callback) {
 
     debug('translating key %s into %s', key, language);
 
@@ -146,7 +147,7 @@
     parsedKey     = [ parsedKey[ 0 ] ].concat(parsedKey.slice(1).join(':'));
 
     // if we don't have category and string name, return whatever came
-    if (! (parsedKey[ 0 ] && parsedKey[ 1 ])) {
+    if (!(parsedKey[ 0 ] && parsedKey[ 1 ])) {
       return callback(data);
     }
 
@@ -156,11 +157,11 @@
     debug('key %s indicates category "%s" and value "%s"', key, category, value);
 
     // load the language file if not available
-    return translator.loadLanguage(language, function (languageData) {
+    return translator.loadLanguage(language, function(languageData) {
 
       debug('loaded language %s', language);
 
-      if (! languageData.hasOwnProperty(category)) {
+      if (!languageData.hasOwnProperty(category)) {
         return callback(key);
       }
 
@@ -173,17 +174,17 @@
       if (string) {
 
         // iterate over variables
-        for (var i = 1; i < variables.length; i ++) {
+        for (var i = 1; i < variables.length; i++) {
           debug('replacing variable %s', variables[ i ].replace(']]', ''));
 
           // replace %i with the variable content
-          string = string.replace('%' + i, function () {
+          string = string.replace('%' + i, function() {
             return variables[ i ].replace(']]', '');
           });
         }
 
         // replace the original key with the translation
-        data.text = data.text.replace(key, function () {
+        data.text = data.text.replace(key, function() {
           return string;
         });
       } else {
@@ -203,7 +204,7 @@
    * @param   {function} callback  a callback to execute once the language is ready
    * @returns {*}
    */
-  translator.loadLanguage = function (language, callback) {
+  translator.loadLanguage = function(language, callback) {
 
     debug('loading language %s', language);
 
@@ -224,18 +225,18 @@
     }
   };
 
-  function loadLanguageFileClient(language, callback) {
+  function loadLanguageFileClient (language, callback) {
     if (window.fetch) {
       debug('fetch API is available');
 
       /**
        * Yay, fetch API is available!
        */
-      return fetch('/translations/' + language + '.json').then(function (response) {
+      return fetch('/translations/' + language + '.json').then(function(response) {
         if (response.ok) {
           debug('response is okay. parsing JSON');
 
-          return response.json().then(function (data) {
+          return response.json().then(function(data) {
             debug('received translation file for %s', language);
 
             languages[ language ] = data;
@@ -257,7 +258,7 @@
       var request = new XMLHttpRequest();
       request.overrideMimeType("application/json");
       request.open('GET', '/translations/' + language + '.json', true);
-      request.onreadystatechange = function () {
+      request.onreadystatechange = function() {
 
         // when the data is available, fire the callback
         if (request.readyState == 4 && request.status == "200") {
@@ -277,13 +278,13 @@
     }
   }
 
-  function loadLanguageFileServer(language, callback) {
+  function loadLanguageFileServer (language, callback) {
     try {
       debug('trying to require language file for %s', language);
       languages[ language ] = require('../../translations/' + language + '.json');
     }
     catch (error) {
-      debug ('could not require language file for %s (%s)', language, error.message);
+      debug('could not require language file for %s (%s)', language, error.message);
       throw new Error('Language file could not be loaded. Shutting down.');
     }
 

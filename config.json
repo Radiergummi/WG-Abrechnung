@@ -42,7 +42,7 @@
   "assets": {
     "css": "public/css",
     "sass": "public/scss",
-    "js": "public/js",
+    "js": "public/javascripts",
     "img": "public/img",
 
     "options": {

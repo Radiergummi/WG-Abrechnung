@@ -6,7 +6,7 @@
  */
 
 var templates = require('templates.js'),
-    nconf = require('nconf');
+    nconf     = require('nconf');
 
 var file = require('../meta/file'),
     User = require('../user');
@@ -27,7 +27,7 @@ appSockets.getConfig = function(socket, callback) {
 
   if (socket._id === 0) {
     config.language = nconf.get('language');
-    config.user = {};
+    config.user     = {};
 
     return callback(null, config);
   }
@@ -36,8 +36,8 @@ appSockets.getConfig = function(socket, callback) {
     if (error) {
       return callback(error);
     }
-
-    config.language = data.language || nconf.get('language');
+    
+    config.language               = data.language || nconf.get('language');
     config.user                   = JSON.parse(JSON.stringify(data));
     config.user.hasProfilePicture = file.existsSync('public/images/users/' + socket._id + '.jpg');
 
@@ -90,22 +90,22 @@ appSockets.sendTestMail = function(socket, data, callback) {
       ];
 
   mailer.send('emails/monthlyCalculation', {
-    url: nconf.get('url'),
-    subject: 'Monatsabrechnung',
-    month: months[ new Date().getMonth ],
-    ownSpendingSum: 123.45,
+    url:                   nconf.get('url'),
+    subject:               'Monatsabrechnung',
+    month:                 months[ new Date().getMonth ],
+    ownSpendingSum:        123.45,
     ownSpendingPercentage: 76,
-    debts: [
+    debts:                 [
       {
-        user: 'Ferdl',
+        user:    'Ferdl',
         debtSum: 28.99,
-        youOwe: true,
+        youOwe:  true,
         theyOwe: false
       },
       {
-        user: 'Test',
+        user:    'Test',
         debtSum: 58.12,
-        youOwe: false,
+        youOwe:  false,
         theyOwe: true
       }
     ]

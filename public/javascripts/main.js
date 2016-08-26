@@ -96,21 +96,54 @@ var app = app || {};
             data.append('profilePicture', file);
             data.append('user', app.config.user.id);
 
-            fetch(new Request('/api/user/picture/upload', {
-              method: 'post',
-              body:   data
-            })).then(function(response) {
-              if (response.ok) {
-                var pictures = app.elements.profilePicture.querySelectorAll('img');
+            if (window.fetch) {
+              fetch(new Request('/api/user/picture/upload', {
+                method: 'post',
+                body:   data
+              })).then(function(response) {
+                if (response.ok) {
+                  var pictures = app.elements.profilePicture.querySelectorAll('img');
 
-                pictures[ 0 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
-                pictures[ 1 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
-              } else {
-                throw new Error('Response status %s indicates error', response.statusCode)
-              }
-            }, function(error) {
-              console.error('An error occurred while trying to save the image.', error);
-            });
+                  pictures[ 0 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
+                  pictures[ 1 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
+                } else {
+                  throw new Error('Response status %s indicates error', response.statusCode)
+                }
+              }, function(error) {
+                console.error('An error occurred while trying to save the image.', error);
+              });
+            } else {
+              var request = new XMLHttpRequest();
+              request.open('POST', '/api/invoices/create', true);
+
+              request.onreadystatechange = function() {
+
+                // when the data is available, fire the callback
+                if (request.readyState == 4) {
+
+                  if (request.status == "200") {
+                    console.log('response is okay. invoice has been saved.', request);
+                    return window.location = request.responseURL;
+                  } else {
+                    return app.error(new Error('XMLHttpRequest failed: Error ' + request.status + ' - ' + request.statusText), '[[clientError:save_invoice_failed, ' + request.status + ']]');
+                  }
+                }
+              };
+
+              // update the progress meter
+              request.upload.onprogress = function (event) {
+                if (event.lengthComputable) {
+                  app.elements.newInvoice.uploadProgress.value = (event.loaded / event.total * 100 | 0);
+                }
+              };
+
+              // finish the progress meter
+              request.onload = function() {
+                app.elements.newInvoice.uploadProgress.value = 100;
+              };
+
+              request.send(data);
+            }
           } else {
             console.error('wrong file type: ' + file.type);
           }

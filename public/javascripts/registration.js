@@ -15,7 +15,7 @@ var app = app || {};
 
     app.events.appendTokenToUrl = function(event) {
       if (!app.elements.token.value) {
-        return app.translator.translate('[[clientErrors:empty_token_input]]', app.config.language, function(translated) {
+        return app.translate('[[clientErrors:empty_token_input]]', function(translated) {
           app.notifications.warning(translated);
         });
       }

@@ -123,7 +123,7 @@
           </thead>
           <tbody>
           <!-- BEGIN users -->
-          <tr>
+          <tr id="{users._id}">
             <td class="picture">
               <div class="profile-picture">
                 <img src="/images/users/{users._id}.jpg" title="{users._id}">
@@ -136,7 +136,7 @@
               <a href="#modal-edit-user" class="edit-user button" data-user-id="{users._id}" data-open-modal><span
                 class="fa fa-edit"></span> [[global:edit]] </a>
               <a href="#modal-delete-user" class="remove-user button danger" data-user-id="{users._id}"
-                 data-first-name="{users.firstName}" data-on-modal-open-event="deleteUser" data-open-modal><span
+                 data-first-name="{users.firstName}" data-on-modal-open-event="prepareDeleteUserModal" data-open-modal><span
                 class="fa fa-trash-o"></span> [[global:delete]]</a>
             </td>
           </tr>

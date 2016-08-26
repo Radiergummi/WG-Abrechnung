@@ -11,9 +11,6 @@ var helper = require('./helper'),
 
 module.exports = function(router, middleware, controllers) {
   router.post('/login', auth.login);
-  router.post('/register', function(req, res, next) {
-    console.log(req.body);
-    return next();
-  }, auth.register);
+  router.post('/register', auth.register);
 };
 

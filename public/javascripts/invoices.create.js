@@ -32,7 +32,7 @@ var app = app || {};
       app.on('drop', document.body, function(event) {
         event.preventDefault();
         event.stopPropagation();
-        app.translator.translate('[[global:outside_dnd_area]]', document.documentElement.lang, function(translated) {
+        app.translate('[[global:outside_dnd_area]]', function(translated) {
           app.notifications.info(translated);
         });
 
@@ -84,7 +84,7 @@ var app = app || {};
           body:   data
         })).then(function(response) {
           if (response.ok) {
-            app.translator.translate('[[invoices:create_success]]', document.documentElement.lang, function(translated) {
+            app.translate('[[invoices:create_success]]', function(translated) {
               app.notifications.success(translated);
             });
           } else {

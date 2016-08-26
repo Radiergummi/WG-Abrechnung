@@ -7,10 +7,12 @@
 
 var mongo = require('mongodb');
 
-var userModel    = require('./models/user'),
+var file = require('./meta/file'),
+    userModel    = require('./models/user'),
     invoiceModel = require('./models/invoice');
 
 var User = module.exports = {};
+
 
 /**
  * @callback userCallback
@@ -74,6 +76,7 @@ User.getByName = function(name, callback) {
 User.createNew = function(data, callback) {
   var newUser = new userModel();
 
+  newUser.creationDate            = new Date();
   newUser.firstName               = data.firstName;
   newUser.lastName                = data.lastName;
   newUser.email                   = data.email;
@@ -87,8 +90,14 @@ User.createNew = function(data, callback) {
     if (error) {
       return callback(error);
     }
+    
+    file.copy('public/images/users/default.jpg', 'public/images/users/' + newUser._id + '.jpg', function(error) {
+      if (error) {
+        return callback(error);
+      }
 
-    return callback(null, newUser);
+      return callback(null, newUser);
+    });
   })
 };
 

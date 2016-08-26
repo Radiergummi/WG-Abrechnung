@@ -14,15 +14,15 @@ var file       = require('../meta/file'),
 /**
  * Override res.render to do any pre/post processing
  */
-module.exports = function (middleware) {
-  middleware.processRender = function (req, res, next) {
+module.exports = function(middleware) {
+  middleware.processRender = function(req, res, next) {
     var render = res.render;
 
-    res.render = function (template, variables, callback) {
+    res.render = function(template, variables, callback) {
       var self = this;
       var req  = this.req;
 
-      var defaultCallback = function (error, string) {
+      var defaultCallback = function(error, string) {
         if (error) {
           return next(error);
         }
@@ -48,6 +48,7 @@ module.exports = function (middleware) {
       baseVariables.template[ template ] = true;
       res.locals.template                = template;
       baseVariables._locals              = undefined;
+      baseVariables.debug                = (nconf.get('environment') === 'development');
 
       if (baseVariables.loggedIn) {
         debug('adding user to view variables');
@@ -62,10 +63,15 @@ module.exports = function (middleware) {
         baseVariables.user.color             = req.user.color;
       }
 
-      baseVariables.language    = (req.hasOwnProperty('user')
-        ? baseVariables.user.language
-        : req.query.lang || nconf.get('language')
+      baseVariables.language = (req.hasOwnProperty('user')
+          ? req.query.lang || baseVariables.user.language
+          : req.query.lang || nconf.get('language')
       );
+
+      if (req.query.lang) {
+        debug('set language to %s', req.query.lang);
+      }
+
       baseVariables.bodyClass   = buildBodyClass(req);
       baseVariables.url         = (req.baseUrl + req.path).replace(/^\/api/, '');
       baseVariables.cacheBuster = Date.now();
@@ -75,7 +81,7 @@ module.exports = function (middleware) {
       variables.pageTitle = (variables.pageTitle ? variables.pageTitle + ' | ' : '') + nconf.get('name');
 
       debug('rendering view');
-      return render.call(self, template, variables, function (error, str) {
+      return render.call(self, template, variables, function(error, str) {
         if (error) {
 
           debug('view renderer encountered an error: ' + error.message);
@@ -85,7 +91,7 @@ module.exports = function (middleware) {
         debug('set template language to %s', baseVariables.language);
 
         debug('translating template');
-        translator.translate(str, baseVariables.language, function (translatedStr) {
+        translator.translate(str, baseVariables.language, function(translatedStr) {
 
           debug('template translated. calling callback');
           return callback(error, translatedStr);
@@ -96,10 +102,10 @@ module.exports = function (middleware) {
     next();
   };
 
-  function buildBodyClass(req) {
+  function buildBodyClass (req) {
     var clean = req.path.replace(/^\/|\/$/g, '');
     var parts = clean.split('/').slice(0, 3);
-    parts.forEach(function (part, index) {
+    parts.forEach(function(part, index) {
       parts[ index ] = index ? parts[ 0 ] + '-' + part : 'page-' + (part || 'home');
     });
     return parts.join(' ');

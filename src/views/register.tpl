@@ -13,29 +13,29 @@
       <p>
         Bitte das Formular vollständig ausfüllen, um ein Konto anzulegen.
       </p>
-      <form id="registration-form" method="post" action="/register">
+      <form id="registration-form" method="post" action="/register" enctype="application/x-www-form-urlencoded">
         <label for="first-name">[[users:first_name]]</label>
-        <input id="first-name" type="text" required>
+        <input id="first-name" name="firstName" type="text" required>
 
         <label for="last-name">[[users:last_name]]</label>
-        <input id="last-name" type="text" required>
+        <input id="last-name" name="lastName" type="text" required>
 
         <label for="email-address">[[users:email_address]]</label>
-        <input id="email-address" type="email" required>
+        <input id="email-address" name="email" type="email" required>
 
         <label for="language">[[global:language]]</label>
-        <select id="language">
+        <select id="language" name="language">
           <option value="de_DE">[[global:language.german]] (de_DE)</option>
           <option value="en_US">[[global:language.english]] (en_US)</option>
         </select>
 
         <label for="username">[[users:username]]</label>
-        <input id="username" type="text" required>
+        <input id="username" name="username" type="text" required>
 
         <label for="password">[[users:password]]</label>
-        <input id="password" type="password" required>
+        <input id="password" name="password" type="password" required>
 
-
+        <input type="hidden" name="token" value="{token}">
         <button type="submit" class="register-button"><span class="fa fa-send"></span> [[global:register]]</button>
       </form>
       </form>

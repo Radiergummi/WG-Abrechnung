@@ -46,6 +46,7 @@
     "socketio-wildcard": "^0.3.0",
     "templates.js": "^0.3.4",
     "underscore": "^1.8.3",
+    "webpack": "^1.13.2",
     "winston": "^2.2.0"
   }
 }

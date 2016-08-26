@@ -116,3 +116,50 @@ settingsSockets.sendInvitation = function(socket, emailAddress, callback) {
       return callback(error);
     });
 };
+
+/**
+ * delete a user
+ *
+ * @param socket
+ * @param userId
+ * @param callback
+ * @returns {Promise}
+ */
+settingsSockets.deleteUser = function(socket, userId, callback) {
+
+  /**
+   * retrieve the user that tries to delete a user and verify
+   * that he is an administrator
+   */
+  return new Promise(function(resolve, reject) {
+    return User.getById(socket._id, function(error, user) {
+      if (error) {
+        debug('Could not determine socket user: %s', error.message);
+        return reject(error);
+      }
+
+      if (!user.isAdmin) {
+        debug('User %s does not seem to be an admin. Actual role: %s', user._id, user.role);
+        return reject(new Error('Administrative socket settings.deleteUser has been called by a non-administrator.'));
+      }
+
+      debug('found user with ID %s', user._id);
+      return resolve();
+    });
+  })
+
+  /**
+   * delete the user
+   */
+    .then(function() {
+      return User.remove(userId, function(error, deletedUser) {
+        if (error) {
+          debug('could not delete user %s: %s', userId, error.message);
+          return callback(error);
+        }
+
+        debug('deleted user %s', userId);
+        return callback(null, deletedUser);
+      });
+    });
+};
