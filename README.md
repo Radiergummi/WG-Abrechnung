@@ -7,10 +7,14 @@ That way, everyone pays the same amount and you get some neat stats about your m
 This is a project intended to ease the way me and the people I'm sharing a flat with calculate their share in our monthly grocery shopping calculation. Up until now, we just went through all the receipts at the end of the month, while those having spent less than the others paid their difference. Obviously, this is a time consuming activity, so we thought *how could we possibly nerd the hell out of this?*
 
 ## Current state
-~~~Apart from the base structure and working Mongo models as well as a functioning login system, there is not much to do yet. I'm actively working on this, though, so I'd expect an example implementation up and running in about a month.  
-Language is german right now, though most of the strings are in the view files - you should have no problem modifying these.~~~
+~~Apart from the base structure and working Mongo models as well as a functioning login system, there is not much to do yet. I'm actively working on this, though, so I'd expect an example implementation up and running in about a month.  
+Language is german right now, though most of the strings are in the view files - you should have no problem modifying these.~~
 
-Much has changed over the last course of weeks! Dynamic data loading as well as a proper translation system has been implemented. A server-side statistics API is in the making, the mailer is set up and working (both local and relay works) and cron job handling (for monthly calculations and so on) works using [agenda](https://github.com/rschmukler/agenda). More to come.
+*Update 2016/08/01:* Much has changed over the last course of weeks! Dynamic data loading as well as a proper translation system has been implemented. A server-side statistics API is in the making, the mailer is set up and working (both local and relay works) and cron job handling (for monthly calculations and so on) works using [agenda](https://github.com/rschmukler/agenda). More to come.
+
+*Update 2016/08/16:* Localization is finally working - flatm8 can be completely translated using JSON translation files. The module works on both server as well as client side. I will put a complete documentation in the wiki pages as soon as I'm ready.
+
+*Update 2016/08/22:* In the mean time, I built a settings page for both global and user specific settings (depending on the users role) including full CRUD user management with an invitation system to add new users via expiring invitation tokens. Additionally, the clientside framework has received a lot of love: there are toast notifications and try-catch abstractions to prevent uncaught exceptions, even for event callbacks. There is a HTTP request abstraction layer that uses the fetch API if available or falls back to XHR; and lastly I included a globally available (`app.debug()`) function that works like the server side debug module.
 
 Once the current way of handling receipts works, I'm planning to integrate OCR (using tesseract, maybe) somehow, so the receipts get parsed automatically. That would eliminate the need to enter the sum manually and allow to create detailed product statistics. As far as I've seen, though, that is a non-trivial task which'd require some serious engineering.  
 
@@ -19,12 +23,15 @@ Once the current way of handling receipts works, I'm planning to integrate OCR (
 - [x] translate processes in models
 - [x] set up login system
 - [x] implement socket.io
+- [ ] build REST API routes for socket.io methods
 - [x] make invoice-tag relationship work
 - [x] set up invoice tagging
 - [ ] set up manual invoice sum modification
-- [ ] set up invoice creation and upload
+- [x] set up invoice creation and upload
 - [ ] enable siofu image upload
-- [ ] set up admin routes (user management)
+- [ ] set up input validation
+- [ ] handle input errors gracefully
+- [x] set up admin routes (user management)
 - [ ] develop the core algorithms for the calculations
 - [ ] set up monthly statements
 - [ ] set up gifting, negative invoices (for private product shopping etc.)
