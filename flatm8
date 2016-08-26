@@ -37,6 +37,15 @@ var flatm8       = require('commander'),
     spawn        = childProcess.spawn,
     instance;
 
+var errorMessage = {
+  notRunning: function() {
+    return console.error('[init]'.white + ' pidfile could not be read - it seems like there is no running instance yet?'.red);
+  },
+  alreadyRunning: function(pid) {
+    console.log('[init]'.white + ' flatm8 is still running (PID: %s). Please stop it using '.red + './flatm8 stop'.bold.yellow + ' first.'.red, pid);
+  }
+};
+
 /**
  * starts a new flatm8 process
  *
@@ -105,7 +114,7 @@ function stop () {
     // if we get an error the pidfile does not exist or is not readable. Either way
     // that means there should not be a running process at all.
     if (error) {
-      return console.error('[init]'.white + ' pidfile could not be read - it seems like there is no running instance yet?'.red);
+      return errorMessage.notRunning();
     }
 
     // if the pidfile can be read, kill the according process
@@ -146,6 +155,13 @@ function stop () {
  * @dummy
  */
 function reload () {
+  getStatus(function(running, pid) {
+    if (! running) {
+      return errorMessage.notRunning();
+    }
+
+    process.send(pid, '')
+  });
 }
 
 /**
@@ -155,7 +171,7 @@ function update () {
   new Promise(function(resolve, reject) {
     fs.readFile(path.join(__dirname, 'pidfile'), function(error, pid) {
       if (!error) {
-        console.log('[init]'.white + ' flatm8 is still running (PID: %s). Please stop it using '.red + './flatm8 stop'.bold.yellow + ' before updating.'.red, pid);
+        errorMessage.alreadyRunning(pid);
 
         reject('flatm8 is still running');
       }
@@ -243,7 +259,7 @@ function tailLog () {
 function getRunningPid () {
   fs.readFile(path.join(__dirname, 'pidfile'), function(error, pid) {
     if (error) {
-      return console.error('[init]'.white + ' pidfile could not be read - it seems like there is no running instance yet?'.red);
+      return errorMessage.notRunning();
     }
 
     return console.log('[init]'.white + ' flatm8 is running with PID %s', pid);
@@ -256,9 +272,10 @@ function getStatus (callback) {
       return callback(false);
     }
 
-    return callback(true);
+    return callback(true, pid);
   });
 }
+
 
 /**
  * Set up the commander application
@@ -276,11 +293,11 @@ flatm8.command('start')
       options.debug = 'flatm8:*';
     }
 
-    getStatus(function(running) {
+    getStatus(function(running, pid) {
       if (!running) {
         return start(options.debug);
       } else {
-        console.log('[init]'.white + ' flatm8 is already running.'.red);
+        return errorMessage.alreadyRunning(pid);
       }
     });
   });
@@ -323,11 +340,11 @@ flatm8.command('debug [level]')
   .action(function(debugLevel) {
     debugLevel = debugLevel || '*';
 
-    return getStatus(function(running) {
+    return getStatus(function(running, pid) {
       if (!running) {
         return start(debugLevel);
       } else {
-        console.log('[init]'.white + ' flatm8 is already running.'.red);
+        return errorMessage.alreadyRunning(pid);
       }
     });
   });
@@ -341,9 +358,9 @@ flatm8.command('pid')
 flatm8.command('status')
   .description('will show whether flatm8 is running or not')
   .action(function() {
-    return getStatus(function(running) {
+    return getStatus(function(running, pid) {
       if (running) {
-        console.log('[init]'.white + ' flatm8 is running');
+        console.log('[init]'.white + ' flatm8 is running with PID %s', pid);
       } else {
         console.log('[init]'.white + ' flatm8 is not running');
       }

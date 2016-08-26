@@ -3,7 +3,7 @@ var debug     = require('debug')('flatm8:meta:templates'),
     mkdirp    = require('mkdirp'),
     nconf     = require('nconf'),
     path      = require('path'),
-    rimraf    = require('rimraf'),
+    rimraf    = require('rmfr'),
     winston   = require('winston'),
 
     Templates = module.exports = {};
@@ -141,17 +141,7 @@ Templates.compile = function() {
   /**
    * delete the public template path
    */
-  return new Promise(function(resolve, reject) {
-    return rimraf(publicTemplatesPath, function(error) {
-      if (error) {
-        debug('could not clean up public template path: %s', error.message);
-        return reject(error);
-      }
-
-      debug('cleaned public template path');
-      return resolve();
-    });
-  })
+  return rimraf(publicTemplatesPath)
 
   /**
    * start processing templates

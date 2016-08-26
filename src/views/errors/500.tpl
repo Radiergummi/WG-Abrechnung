@@ -1,7 +1,23 @@
 <!-- IMPORT partials/header.tpl -->
-<article class="page-error error-500">
-  <h1>[[error:title, 500]]</h1>
-  <h2>[[error:500.text]]</h2>
-  <p>[[error:500.description]]</p>
-</article>
+  <!-- IF debug -->
+    <style>
+      body{font-family:"Roboto","Open Sans",arial,sans-serif;font-size:1.05rem;background:#fff;color:#333;margin:2em}figure{margin:0}h3{margin-bottom:10px}code{background:#d1e751;border-radius:4px;padding:2px 6px}pre{margin:0;background:#eaeaea;border-radius:4px;padding:12px;white-space:pre;font-weight:normal;text-shadow:1px 1px rgba(255,255,255,.5)}
+    </style>
+    <h1>{error.name}</h1>
+    <figure>
+      <code>{error.message}</code>
+    </figure>
+    <h3>Origin</h3>
+    <figure>
+      <code>{error.file} on line {error.line}</code>
+    </figure>
+    <h3>Trace</h3>
+    <pre>{error.stack}</pre>
+  <!-- ELSE -->
+    <article class="page-error error-500">
+      <h1>[[error:title, 500]]</h1>
+      <h2>[[error:500.text]]</h2>
+      <p>[[error:500.description]]</p>
+    </article>
+  <!-- ENDIF debug -->
 <!-- IMPORT partials/footer.tpl -->

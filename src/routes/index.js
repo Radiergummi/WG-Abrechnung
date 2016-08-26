@@ -31,13 +31,10 @@ module.exports = function(app, middleware, controllers) {
   app.use('/', router);
 
   // catch 404 and forward to error handler
-  app.use(function(req, res, next) {
-    var err = new Error('Page Not Found: ' + req.url);
+  app.use(controllers.handle404Errors);
 
-    err.status = 404;
-    err.stack = err.stack.replace(new RegExp('(' + nconf.get('path').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + ')+', 'g'), '').trim();
-    next(err);
-  });
+  // catch other errors
+  app.use(controllers.handleErrors);
 
   // register error handler
   app.use(require('../errorHandler'));
