@@ -16,6 +16,8 @@ Language is german right now, though most of the strings are in the view files -
 
 *Update 2016/08/22:* In the mean time, I built a settings page for both global and user specific settings (depending on the users role) including full CRUD user management with an invitation system to add new users via expiring invitation tokens. Additionally, the clientside framework has received a lot of love: there are toast notifications and try-catch abstractions to prevent uncaught exceptions, even for event callbacks. There is a HTTP request abstraction layer that uses the fetch API if available or falls back to XHR; and lastly I included a globally available (`app.debug()`) function that works like the server side debug module.
 
+*Update 2016/08/30:* Clientside scripts have been modified to use webpack. That way, using `require()` to load dependencies is possible, as well as asset minification and proper code splitting. No more async load timing issues, awkward dependency hacks and single script files for each page. Maybe I should also implement clientside routing, webpack has a pretty convenient chunk loading API... Another bullet point is converting the code to ES6 and using babel to translate it for clients.
+
 Once the current way of handling receipts works, I'm planning to integrate OCR (using tesseract, maybe) somehow, so the receipts get parsed automatically. That would eliminate the need to enter the sum manually and allow to create detailed product statistics. As far as I've seen, though, that is a non-trivial task which'd require some serious engineering.  
 
 ## ToDo-List
