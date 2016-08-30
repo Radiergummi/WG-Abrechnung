@@ -9,7 +9,7 @@ var debug      = require('debug')('flatm8:render'),
     nconf      = require('nconf');
 
 var file       = require('../meta/file'),
-    translator = require('../../public/javascripts/modules/translator');
+    translator = require('../../public/javascripts/src/modules/translator');
 
 /**
  * Override res.render to do any pre/post processing
@@ -72,9 +72,12 @@ module.exports = function(middleware) {
         debug('set language to %s', req.query.lang);
       }
 
-      baseVariables.bodyClass   = buildBodyClass(req);
-      baseVariables.url         = (req.baseUrl + req.path).replace(/^\/api/, '');
-      baseVariables.cacheBuster = Date.now();
+      baseVariables.bodyClass     = buildBodyClass(req);
+      baseVariables.url           = (req.baseUrl + req.path).replace(/^\/api/, '');
+      baseVariables.cacheBuster   = Date.now();
+      baseVariables.clientScripts = (variables.clientScripts
+        ? [ { name: 'base' } ].concat(variables.clientScripts)
+        : [ { name: 'base' } ]);
 
       debug('merging view variables');
       deepExtend(variables, baseVariables);

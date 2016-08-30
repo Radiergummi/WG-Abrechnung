@@ -59,5 +59,4 @@
     </div>
   </section>
 </article>
-<script src="/javascripts/dashboard.js"></script>
 <!-- IMPORT partials/footer.tpl -->

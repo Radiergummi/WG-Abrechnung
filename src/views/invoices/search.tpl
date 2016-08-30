@@ -105,5 +105,4 @@
     </ul>
   </section>
 </article>
-<script src="/javascripts/invoices.search.js"></script>
 <!-- IMPORT partials/footer.tpl -->

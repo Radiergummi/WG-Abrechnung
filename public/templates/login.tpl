@@ -5,13 +5,6 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/stylesheets/style.css" rel="stylesheet"/>
-<script src="/javascripts/libraries/Chart.bundle.min.js"></script>
-<script src="/javascripts/libraries/vanilla-modal.min.js"></script>
-<script src="/javascripts/modules/notifications.js"></script>
-<script src="/javascripts/modules/translator.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/javascripts/app.js"></script>
-
     </head>
   <body class="{bodyClass}">
     <div id="overlay" class="disabled"></div>
@@ -68,11 +61,18 @@
 </article>
 </main>
 <!-- IF user.loggedIn -->
-<script src="/javascripts/main.js"></script>
 <!-- ENDIF user.loggedIn -->
-<script>
-  app.init();
-</script>
+<!--
+<script src="/javascripts/libraries/Chart.bundle.min.js"></script>
+<script src="/javascripts/libraries/vanilla-modal.min.js"></script>
+<script src="/javascripts/src/modules/notifications.js"></script>
+<script src="/javascripts/src/modules/translator.js"></script>
+-->
+<script src="/socket.io/socket.io.js"></script>
+<!-- BEGIN clientScripts -->
+<script src="/javascripts/{clientScripts.name}<!-- IF !debug -->.min<!-- ENDIF !debug -->.js"></script>
+<!-- END clientScripts -->
+
 </body>
 </html>
 

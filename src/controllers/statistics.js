@@ -12,6 +12,7 @@ var statistics = module.exports = {};
 statistics.overview = function(req, res, next) {
   var vars = {
     pageTitle: 'Statistiken - Übersicht',
+    clientScripts: [ { name: 'statistics.all' } ],
     statisticsActive: true
   };
 
@@ -35,6 +36,7 @@ statistics.month = function(req, res, next) {
       },
       vars   = {
         pageTitle:   'Statistik - ' + months[ req.params.month ],
+        clientScripts: [ { name: 'statistics.month' } ],
         statisticsActive: true,
         month:       req.params.month,
         monthName:   months[ req.params.month ],

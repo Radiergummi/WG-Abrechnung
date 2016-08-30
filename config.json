@@ -43,12 +43,6 @@
     "css": "public/css",
     "sass": "public/scss",
     "js": "public/javascripts",
-    "img": "public/img",
-
-    "options": {
-      "skipCSSMinification": false,
-      "skipJSMinification": true,
-      "mainJSFile": "main.js"
-    }
+    "img": "public/img"
   }
 }

@@ -5,13 +5,6 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/stylesheets/style.css" rel="stylesheet"/>
-<script src="/javascripts/libraries/Chart.bundle.min.js"></script>
-<script src="/javascripts/libraries/vanilla-modal.min.js"></script>
-<script src="/javascripts/modules/notifications.js"></script>
-<script src="/javascripts/modules/translator.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/javascripts/app.js"></script>
-
     </head>
   <body class="{bodyClass}">
     <div id="overlay" class="disabled"></div>

@@ -30,5 +30,4 @@
   </header>
   <section class="flat-spending"></section>
 </article>
-<script src="/javascripts/statistics.js"></script>
 <!-- IMPORT partials/footer.tpl -->

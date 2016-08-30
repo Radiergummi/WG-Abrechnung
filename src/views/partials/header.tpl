@@ -5,7 +5,6 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/stylesheets/style.css" rel="stylesheet"/>
-    <!-- IMPORT partials/header/scripts.tpl -->
     </head>
   <body class="{bodyClass}">
     <div id="overlay" class="disabled"></div>

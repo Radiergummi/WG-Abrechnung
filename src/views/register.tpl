@@ -62,5 +62,4 @@
   <!-- ENDIF token -->
   <!-- ENDIF error -->
 </article>
-<script src="/javascripts/registration.js"></script>
 <!-- IMPORT partials/footer.tpl -->

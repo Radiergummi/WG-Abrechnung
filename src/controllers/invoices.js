@@ -14,6 +14,7 @@ invoices.redirectToInvoices = (req, res, next) => res.redirect('/invoices');
 
 invoices.viewSingle = function(req, res, next) {
   var vars = {
+//    clientScripts: [ { name: 'invoices.single' } ],
     invoicesActive: true,
     success: req.query.success
   };
@@ -34,6 +35,7 @@ invoices.viewSingle = function(req, res, next) {
 
 invoices.viewAll = function(req, res, next) {
   var vars  = {
+        clientScripts: [ { name: 'invoices.all' } ],
         invoicesActive: true
       },
       limit = (req.params.pageNum ? (Math.floor(req.params.pageNum) * 2 + 3) : 4);
@@ -58,6 +60,7 @@ invoices.viewAll = function(req, res, next) {
 
 invoices.create = function(req, res, next) {
   var vars = {
+    clientScripts: [ { name: 'invoices.create' } ],
     invoicesActive: true,
     todayDate:      new Date().toISOString().substring(0, 10),
     pageTitle:      'Neu'
@@ -95,6 +98,7 @@ invoices.edit = function(req, res, next) {
 
 invoices.search = function(req, res, next) {
   var vars = {
+    clientScripts: [ { name: 'invoices.search' } ],
     invoicesActive: true,
     pageTitle:      'Suche'
   };

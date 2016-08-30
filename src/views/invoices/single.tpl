@@ -37,7 +37,7 @@
 </div>
 <!-- IF success -->
 <script>
-window.addEventListener('app:ready', function(event) {
+window.addEventListener('flatm8:ready', function(event) {
   app.notifications.success('[[invoices:create_success]]');
 });
 </script>

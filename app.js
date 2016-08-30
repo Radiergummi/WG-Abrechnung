@@ -53,6 +53,7 @@ catch (error) {
 /**
  * register process event handlers
  */
+process.on('SIGUSR2', reload);
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
 process.on('uncaughtException', exceptionHandler);
@@ -147,6 +148,14 @@ function shutdown (code) {
   return process.exit(code || 0);
 }
 
+function reload() {
+  console.log('flushing template cache');
+  require('templates.js').flush();
+
+  console.log('preparing assets');
+  prepareAssets();
+}
+
 /**
  *
  */
@@ -154,19 +163,6 @@ function prepareAssets (callback) {
   var templates   = require('./src/meta/templates'),
       // stylesheets = require('./src/meta/stylesheets'),
       javascripts = require('./src/meta/javascripts');
-
-  // compile templates
-  templates.compile();
-
-  // compile SASS files to CSS
-  //stylesheets.compile();
-
-  // Skip CSS minification if debug mode is enabled
-  if (nconf.get('assets:options:skipCSSMinification') === false) {
-
-    // minify CSS files
-    // stylesheets.minify();
-  }
 
   return Promise.all([
     templates.compile(),

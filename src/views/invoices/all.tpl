@@ -22,5 +22,4 @@
     <span class="no-invoices">[[invoices:no_invoices]]</span>
   <!-- ENDIF userInvoices.length -->
 </article>
-<script src="/javascripts/invoices.all.js"></script>
 <!-- IMPORT partials/footer.tpl -->

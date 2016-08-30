@@ -12,6 +12,7 @@ var dashboard = module.exports = {};
 
 dashboard.dash = function (req, res, next) {
   var vars = {
+    clientScripts: [ { name: 'dashboard' } ],
     user: {},
     dashboardActive: true
   };

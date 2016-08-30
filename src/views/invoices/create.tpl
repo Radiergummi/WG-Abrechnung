@@ -39,5 +39,4 @@
     </section>
   </article>
 </div>
-<script src="/javascripts/invoices.create.js"></script>
 <!-- IMPORT partials/footer.tpl -->

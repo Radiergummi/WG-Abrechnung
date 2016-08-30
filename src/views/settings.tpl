@@ -269,5 +269,4 @@
     </section>
   </div>
 </div>
-<script src="/javascripts/settings.js"></script>
 <!-- IMPORT partials/footer.tpl -->

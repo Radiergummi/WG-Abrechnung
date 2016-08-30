@@ -1,8 +1,11 @@
 'use strict';
 
-var app = app || {};
+var app  = require('./app'),
+    main = require('./main')(app);
 
-(function () {
+require('./libraries/chart.js')(app);
+
+(function(app) {
   app.startup.push(function () {
     app.elements.ownInvoiceStatistics = document.getElementsByClassName('flat-spending') [ 0 ];
 
@@ -35,4 +38,4 @@ var app = app || {};
 
     app.listeners.addLoadStatistics();
   });
-})();
+})(app);

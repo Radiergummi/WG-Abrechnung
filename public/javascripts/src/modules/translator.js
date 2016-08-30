@@ -281,7 +281,7 @@
   function loadLanguageFileServer (language, callback) {
     try {
       debug('trying to require language file for %s', language);
-      languages[ language ] = require('../../translations/' + language + '.json');
+      languages[ language ] = require('../../../translations/' + language + '.json');
     }
     catch (error) {
       debug('could not require language file for %s (%s)', language, error.message);

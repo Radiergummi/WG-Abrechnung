@@ -1,6 +1,3 @@
-</main>
-<!-- IF user.loggedIn -->
-<!-- ENDIF user.loggedIn -->
 <!--
 <script src="/javascripts/libraries/Chart.bundle.min.js"></script>
 <script src="/javascripts/libraries/vanilla-modal.min.js"></script>
@@ -11,6 +8,3 @@
 <!-- BEGIN clientScripts -->
 <script src="/javascripts/{clientScripts.name}<!-- IF !debug -->.min<!-- ENDIF !debug -->.js"></script>
 <!-- END clientScripts -->
-
-</body>
-</html>

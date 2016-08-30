@@ -19,7 +19,9 @@ main.home = function(req, res, next) {
 };
 
 main.settings = function(req, res, next) {
-  var vars = {};
+  var vars = {
+    clientScripts: [ { name: 'settings' } ]
+  };
 
   User.getAll(function(error, data) {
     if (error) {
@@ -34,9 +36,10 @@ main.settings = function(req, res, next) {
 
 main.register = function(req, res, next) {
   var vars = {
-    token: false,
+    token:    false,
     verified: false,
-    error: false
+    error:    false,
+    clientScripts: [ { name: 'registration' } ]
   };
 
   if (req.user) {
@@ -80,7 +83,7 @@ main.register = function(req, res, next) {
 
     // store the token in the user session. That will allow a retry on failure
     req.session.registrationToken = vars.token;
-    vars.verified = verified;
+    vars.verified                 = verified;
 
     debug('stored token %s in session data and set verified to true. rendering register page.', req.session.registrationToken);
 

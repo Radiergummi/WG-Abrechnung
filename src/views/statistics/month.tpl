@@ -32,5 +32,4 @@
   </header>
   <section class="flat-spending-by-month month-{month}" data-month="{monthNumber}"></section>
 </article>
-<script src="/javascripts/statistics.month.js"></script>
 <!-- IMPORT partials/footer.tpl -->
