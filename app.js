@@ -63,7 +63,7 @@ start();
 /**
  * Starts the app
  */
-function start () {
+function start() {
   // write lock file
   fs.writeFileSync('./pidfile', process.pid);
 
@@ -91,7 +91,7 @@ function start () {
  * @param {Error} error  the exception object
  * @returns void
  */
-function exceptionHandler (error) {
+function exceptionHandler(error) {
   var path  = nconf.get('path'),
       stack = (stack ? error.stack.toString().split(path).join('') : ''),
       origin;
@@ -103,7 +103,7 @@ function exceptionHandler (error) {
     origin = [ '[module internal]', '', '' ];
   }
 
-  var file = origin[ 0 ].split(path).join('') + (origin[ 0 ].indexOf('(') !== -1 ? ')' : ''),
+  var file = origin[ 0 ].split(path).join('') + (origin[ 0 ].indexOf('(') !== - 1 ? ')' : ''),
       line = origin[ 1 ];
 
   console.error('');
@@ -122,7 +122,7 @@ function exceptionHandler (error) {
  * @param {number} [code]  an optional exit code
  * @returns {number}       the exit code to return to the shell
  */
-function shutdown (code) {
+function shutdown(code) {
   if (code > 0) {
     winston.error('[app]'.white + ' Shutting down process ' + process.pid.toString().bold + ' due to an error.');
   } else {
@@ -131,7 +131,7 @@ function shutdown (code) {
 
   // remove lock file
   try {
-    fs.unlinkSync('./pidfile', function(error) {
+    fs.unlinkSync('./pidfile', function (error) {
       if (error) {
         winston.error('[app]'.white + ' Could not remove PIDFile, you will have to do this by yourself to start the app again.');
       }
@@ -141,7 +141,7 @@ function shutdown (code) {
     winston.error('[app]'.white + ' Could not remove PIDFile, you will have to do this by yourself to start the app again.');
   }
 
-  require('./src/jobs').instance.stop(function() {
+  require('./src/jobs').instance.stop(function () {
     winston.info('[jobs]'.white + ' Agenda has been stopped.');
   });
 
@@ -157,17 +157,18 @@ function reload() {
 }
 
 /**
- *
+ * Compiles all assets
  */
-function prepareAssets (callback) {
+function prepareAssets(callback) {
   var templates   = require('./src/meta/templates'),
-      // stylesheets = require('./src/meta/stylesheets'),
+      stylesheets = require('./src/meta/stylesheets'),
       javascripts = require('./src/meta/javascripts');
 
   return Promise.all([
     templates.compile(),
+    stylesheets.compile(),
     javascripts.compile()
-  ]).then(function(results) {
+  ]).then(function (results) {
     return callback(null, results);
   }).catch(callback);
 }
@@ -175,12 +176,12 @@ function prepareAssets (callback) {
 /**
  * Configures Winston Logger
  */
-function setupLogger () {
+function setupLogger() {
   winston.remove(winston.transports.Console);
 
   if (process.env.OUTPUT === 'stdout') {
     winston.add(winston.transports.Console, {
-      timestamp:   function() {
+      timestamp:   function () {
         return moment().format('D.mm.YYYY @ HH:mm:ss:SSS');
       },
       prettyPrint: true,
