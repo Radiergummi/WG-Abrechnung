@@ -6,9 +6,9 @@ webpackJsonp([5],{
 	'use strict';
 	
 	var app  = __webpack_require__(1),
-	    main = __webpack_require__(10)(app);
+	    main = __webpack_require__(59)(app);
 	
-	__webpack_require__(11)(app);
+	__webpack_require__(60)(app);
 	
 	(function(app) {
 	    app.startup.push(function() {
@@ -204,13 +204,13 @@ webpackJsonp([5],{
 
 /***/ },
 
-/***/ 11:
+/***/ 60:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	module.exports = function(app) {
-	  var vanillaModal = __webpack_require__(12);
+	  var vanillaModal = __webpack_require__(61);
 	
 	  app.modals = {
 	    instance: null
@@ -249,7 +249,7 @@ webpackJsonp([5],{
 
 /***/ },
 
-/***/ 12:
+/***/ 61:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {

@@ -4,9 +4,8 @@
   var translationRegex = /\[\[\w+:[\w\.]+((?!\[\[).)*?\]\]/g,
       debug;
 
-  if (typeof module !== 'undefined' && module.exports) {
-    debug   = require('debug')('flatm8:translator');
-    module.exports = translator;
+  if (typeof window === 'undefined') {
+    debug          = require('debug')('flatm8:translator');
   } else {
     if (window.hasOwnProperty('debug') && window.debug) {
       debug = console.debug.bind(console);
@@ -14,9 +13,8 @@
       debug = function() {
       }
     }
-
-    window[ 'translator' ] = translator;
   }
+  module.exports = translator;
 
   var languages = {};
 

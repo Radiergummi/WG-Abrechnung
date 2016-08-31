@@ -241,5 +241,5 @@
   };
 
 
-  window.notifications = new notificationModule();
+  module.exports = new notificationModule();
 })();

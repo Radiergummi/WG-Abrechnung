@@ -30,8 +30,8 @@ var Stylesheets = module.exports = {
  *
  * @returns {Promise}
  */
-Stylesheets.compile = function () {
-  return new Promise(function (resolve, reject) {
+Stylesheets.compile = function() {
+  return new Promise(function(resolve, reject) {
 
     /**
      * read all SCSS files
@@ -40,15 +40,15 @@ Stylesheets.compile = function () {
       path.join(Stylesheets.sourcePath, '*.scss')
     ])
 
-      /**
-       * initialize source maps
-       */
+    /**
+     * initialize source maps
+     */
       .pipe(sourceMaps.init())
 
       /**
        * compile SCSS
        */
-      .pipe(scss(scssConfig).on('error', function (error) {
+      .pipe(scss(scssConfig).on('error', function(error) {
         reject(error);
       }))
 

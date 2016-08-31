@@ -23,7 +23,7 @@ var compilerPlugins = [
 ];
 
 // enable minification in production
-if (! debug) {
+if (!debug) {
   compilerPlugins.push(new webpack.optimize.UglifyJsPlugin({
     compress: { warnings: false }
   }));
@@ -33,7 +33,7 @@ if (! debug) {
  * create the webpack instance
  */
 var compiler = webpack({
-  debug:   debug,
+  debug: debug,
 
   /**
    * the public javascript path
@@ -43,7 +43,7 @@ var compiler = webpack({
   /**
    * the app entry points. That'll be scripts for individual pages
    */
-  entry:   {
+  entry:  {
     'dashboard':        './dashboard.js',
     'invoices.all':     './invoices.all.js',
     'invoices.create':  './invoices.create.js',
@@ -53,7 +53,7 @@ var compiler = webpack({
     'statistics.all':   './statistics.all.js',
     'statistics.month': './statistics.month.js'
   },
-  output:  {
+  output: {
     path:              Javascripts.deploymentPath,
     publicPath:        Javascripts.deploymentUri,
     filename:          (debug
@@ -67,7 +67,7 @@ var compiler = webpack({
   },
 
   // enable caching
-  cache:   true,
+  cache: true,
 
   // render source maps only in development
   devtool: (debug ? 'source-map' : false),
@@ -88,9 +88,9 @@ var compiler = webpack({
  *
  * @returns {Promise}
  */
-Javascripts.compile = function () {
-  return new Promise(function (resolve, reject) {
-    compiler.run(function (error, stats) {
+Javascripts.compile = function() {
+  return new Promise(function(resolve, reject) {
+    compiler.run(function(error, stats) {
       if (error) {
         return reject(error);
       }
