@@ -6,49 +6,54 @@
  */
 
 var gulp       = require('gulp'),
+    changed    = require('gulp-changed'),
     scss       = require('gulp-sass'),
     sourceMaps = require('gulp-sourcemaps'),
-    nconf      = require('nconf'),
-    path       = require('path'),
-    basePath   = nconf.get('path'),
-    debug      = (nconf.get('environment') === 'development'),
-    scssConfig = {
-      outputStyle:    (debug ? 'expanded' : 'compressed'),
-      precision:      3,
-      sourceComments: debug,
-      indentWidth:    2,
-      indentType:     'space'
-    };
+    path       = require('path');
 
-var Stylesheets = module.exports = {
-  sourcePath:     path.join(basePath, 'public', 'scss'),
-  deploymentPath: path.join(basePath, 'public', 'stylesheets')
-};
+var Stylesheets = module.exports = {};
 
 /**
  * compiles and minifies SCSS
  *
+ * @param {object} config
  * @returns {Promise}
  */
-Stylesheets.compile = function() {
-  return new Promise(function(resolve, reject) {
+Stylesheets.compile = function (config) {
+  var debug          = config.debug,
+      sourcePath     = path.join(config.basePath, 'src'),
+      deploymentPath = config.basePath,
+      scssConfig     = {
+        outputStyle:    (config.debug ? 'expanded' : 'compressed'),
+        precision:      3,
+        sourceComments: debug,
+        indentWidth:    2,
+        indentType:     'space'
+      };
+
+  return new Promise(function (resolve, reject) {
 
     /**
      * read all SCSS files
      */
     var gulpStream = gulp.src([
-      path.join(Stylesheets.sourcePath, '*.scss')
+      path.join(sourcePath, '*.scss')
     ])
 
     /**
-     * initialize source maps
+     * filter unchanged files
      */
+      .pipe(changed(deploymentPath))
+
+      /**
+       * initialize source maps
+       */
       .pipe(sourceMaps.init())
 
       /**
        * compile SCSS
        */
-      .pipe(scss(scssConfig).on('error', function(error) {
+      .pipe(scss(scssConfig).on('error', function (error) {
         reject(error);
       }))
 
@@ -60,7 +65,12 @@ Stylesheets.compile = function() {
       /**
        * write the CSS file
        */
-      .pipe(gulp.dest(Stylesheets.deploymentPath));
+      .pipe(gulp.dest(deploymentPath));
+
+    process.send({
+      type: 'info',
+      message: 'Successfully compiled SCSS'
+    });
 
     return resolve(gulpStream);
   });

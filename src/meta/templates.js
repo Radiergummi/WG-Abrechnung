@@ -1,16 +1,19 @@
 var debug     = require('debug')('flatm8:meta:templates'),
     fs        = require('fs'),
     mkdirp    = require('mkdirp'),
-    nconf     = require('nconf'),
     path      = require('path'),
     rimraf    = require('rmfr'),
-    winston   = require('winston'),
 
     Templates = module.exports = {};
 
-Templates.compile = function() {
-  var publicTemplatesPath = path.join(nconf.get('path'), 'public/templates'), // path to templates
-      viewsPath           = path.join(nconf.get('path'), 'src/views');//, // path to views
+/**
+ *
+ * @param {object} config
+ * @returns {Promise}
+ */
+Templates.compile = function (config) {
+  var publicTemplatesPath = path.join(config.basePath, 'public', 'templates'), // path to templates
+      viewsPath           = path.join(config.basePath, 'src', 'views'); // path to views
 
   debug('view input path set to %s', viewsPath);
   debug('template output path set to %s', publicTemplatesPath);
@@ -23,17 +26,21 @@ Templates.compile = function() {
    * @param {string} viewsPath
    * @returns {Promise}
    */
-  function getTemplates (directory, publicTemplatesPath, viewsPath) {
+  function getTemplates(directory, publicTemplatesPath, viewsPath) {
 
     // create a promise to start from
-    var innerTemplatePromise = new Promise(function(resolve, reject) {
+    var innerTemplatePromise = new Promise(function (resolve, reject) {
 
       debug('iterating over view directory %s', path.join(viewsPath, directory));
 
       // read the template directory
-      return fs.readdir(path.join(viewsPath, directory), function(error, files) {
+      return fs.readdir(path.join(viewsPath, directory), function (error, files) {
         if (error) {
-          winston.error('could not read view folder %s: %s', directory, error.message);
+          process.send({
+            type:    'error',
+            message: 'could not read view folder ' + directory + ': ' + error.message
+          });
+
           return reject(error);
         }
 
@@ -44,11 +51,11 @@ Templates.compile = function() {
       });
     });
 
-    innerTemplatePromise.then(function(files) {
-      return new Promise(function(resolve, reject) {
+    innerTemplatePromise.then(function (files) {
+      return new Promise(function (resolve, reject) {
         var templateDirectory = path.join(publicTemplatesPath, directory);
 
-        return mkdirp(templateDirectory, function(error) {
+        return mkdirp(templateDirectory, function (error) {
           if (error) {
             debug('could not create template directory %s: $s', templateDirectory, error.message);
             return reject(error);
@@ -61,21 +68,21 @@ Templates.compile = function() {
     });
 
 
-    innerTemplatePromise.then(function(files) {
+    innerTemplatePromise.then(function (files) {
       var fileSequence = Promise.resolve();
 
       debug('iterating over %s templates', files.length);
 
       // iterate over the files in the template folder
-      files.forEach(function(file) {
+      files.forEach(function (file) {
         var filePath = path.join(viewsPath, directory, file);
 
         debug('current file %s at %s', file, filePath);
 
-        fileSequence = fileSequence.then(function() {
+        fileSequence = fileSequence.then(function () {
 
           // retrieve statistics for the current file
-          fs.lstat(filePath, function(error, stats) {
+          fs.lstat(filePath, function (error, stats) {
             if (error) {
               debug('could not gather stats for %s: %s', filePath, error.message);
 
@@ -89,7 +96,7 @@ Templates.compile = function() {
               var currentDirectory = filePath.slice(viewsPath.length);
 
               debug('processing template directory %s (path: %s)', file, currentDirectory);
-              fileSequence.then(function() {
+              fileSequence.then(function () {
                 debug('running getTemplates on %s', currentDirectory);
 
                 return getTemplates(currentDirectory, publicTemplatesPath, viewsPath);
@@ -112,7 +119,7 @@ Templates.compile = function() {
   }
 
 
-  function importPartials (template, templatesPath, viewsPath) {
+  function importPartials(template, templatesPath, viewsPath) {
     var file    = fs.readFileSync(path.join(viewsPath, template)).toString(),
         matches = null,
         regex   = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
@@ -127,8 +134,13 @@ Templates.compile = function() {
       try {
         file = file.replace(regex, fs.readFileSync(partial).toString());
         debug('imported partial %s into %s', matches[ 1 ], template);
-      } catch (error) {
-        winston.warn('Partial not loaded: %s (searching at %s)', matches[ 1 ], partial);
+      }
+      catch (error) {
+        process.send({
+          type:    'warn',
+          message: 'Partial not loaded: ' + matches[ 1 ] + ' (searching at ' + partial + ')'
+        });
+
         debug('received fs error while importing partial %s into %s: %s', matches[ 1 ], template, error.message);
         file = file.replace(regex, '');
       }
@@ -146,12 +158,20 @@ Templates.compile = function() {
   /**
    * start processing templates
    */
-    .then(function() {
+    .then(function () {
       return getTemplates('', publicTemplatesPath, viewsPath)
+    }).then(function() {
+      process.send({
+        type: 'info',
+        message: 'Successfully compiled templates'
+      });
     })
 
     //catch any errors
-    .catch(function(error) {
-      console.error('error in templates: %s', error.message, error);
+    .catch(function (error) {
+      process.send({
+        type:    'error',
+        message: 'error in templates: ' + error.message
+      });
     });
 };

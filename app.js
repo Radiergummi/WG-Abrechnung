@@ -14,6 +14,7 @@ var cluster         = require('cluster'),
 
     async           = require('async'),
     colors          = require('colors'),
+    fork            = require('child_process').fork,
     nconf           = require('nconf'),
     moment          = require('moment'),
     winston         = require('winston'),
@@ -38,7 +39,7 @@ if (process.env.DEBUG) {
 }
 
 // setup the logger
-setupLogger();
+winston = setupLogger(winston);
 
 // try to retrieve the PID of the running process from its lock file. If it does not exist,
 // we will assume there is no running instance yet.
@@ -63,7 +64,7 @@ start();
 /**
  * Starts the app
  */
-function start () {
+function start() {
   // write lock file
   fs.writeFileSync('./pidfile', process.pid);
 
@@ -75,13 +76,7 @@ function start () {
   winston.info('[app]'.white + ' Started app with PID %s', process.pid.toString().bold);
 
   // prepare the assets
-  prepareAssets(function(error, results) {
-    if (error) {
-      winston.error(error);
-    }
-
-    winston.info('[meta]'.white + ' Successfully compiled all assets');
-  });
+  prepareAssets();
 
   var webserver = require('./src/server'),
       sockets   = require('./src/socket.io');
@@ -97,7 +92,7 @@ function start () {
  * @param {Error} error  the exception object
  * @returns void
  */
-function exceptionHandler (error) {
+function exceptionHandler(error) {
   var path  = nconf.get('path'),
       stack = (stack ? error.stack.toString().split(path).join('') : ''),
       origin;
@@ -109,7 +104,7 @@ function exceptionHandler (error) {
     origin = [ '[module internal]', '', '' ];
   }
 
-  var file = origin[ 0 ].split(path).join('') + (origin[ 0 ].indexOf('(') !== -1 ? ')' : ''),
+  var file = origin[ 0 ].split(path).join('') + (origin[ 0 ].indexOf('(') !== - 1 ? ')' : ''),
       line = origin[ 1 ];
 
   console.error('');
@@ -128,7 +123,7 @@ function exceptionHandler (error) {
  * @param {number} [code]  an optional exit code
  * @returns {number}       the exit code to return to the shell
  */
-function shutdown (code) {
+function shutdown(code) {
   if (code > 0) {
     winston.error('[app]'.white + ' Shutting down process ' + process.pid.toString().bold + ' due to an error.');
   } else {
@@ -137,7 +132,7 @@ function shutdown (code) {
 
   // remove lock file
   try {
-    fs.unlinkSync('./pidfile', function(error) {
+    fs.unlinkSync('./pidfile', function (error) {
       if (error) {
         winston.error('[app]'.white + ' Could not remove PIDFile, you will have to do this by yourself to start the app again.');
       }
@@ -147,19 +142,19 @@ function shutdown (code) {
     winston.error('[app]'.white + ' Could not remove PIDFile, you will have to do this by yourself to start the app again.');
   }
 
-  require('./src/jobs').instance.stop(function() {
+  require('./src/jobs').instance.stop(function () {
     winston.info('[jobs]'.white + ' Agenda has been stopped.');
   });
 
   return process.exit(code || 0);
 }
 
-function reload () {
+function reload() {
   console.log('flushing template cache');
   require('templates.js').flush();
 
   console.log('preparing assets');
-  prepareAssets(function(error, results) {
+  prepareAssets(function (error, results) {
     if (error) {
       winston.error(error);
     }
@@ -171,29 +166,47 @@ function reload () {
 /**
  * Compiles all assets
  */
-function prepareAssets (callback) {
-  var templates   = require('./src/meta/templates'),
-      stylesheets = require('./src/meta/stylesheets'),
-      javascripts = require('./src/meta/javascripts');
+function prepareAssets(callback) {
+  var meta = fork('./src/meta');
 
-  return Promise.all([
-    templates.compile(),
-    stylesheets.compile(),
-    javascripts.compile()
-  ]).then(function(results) {
-    return callback(null, results);
-  }).catch(callback);
+  winston.info('[meta]'.white + ' forked asset compiler worker with PID %s', meta.pid);
+
+  meta.send({
+    action: 'compile.all',
+    config: {
+      basePath: nconf.get('path'),
+      debug: (nconf.get('environment') === 'development')
+    }
+  });
+
+  meta.on('message', function (event) {
+    if (typeof event !== 'object') {
+      return;
+    }
+
+    if (winston.hasOwnProperty(event.type)) {
+      return winston[ event.type ]('[meta]'.white + ' ' + event.message);
+    }
+
+    if (nconf.get('environment') === 'development') {
+      winston.info(event.results);
+    }
+
+    if (event.type === 'success') {
+      return winston.info('[meta]'.white + ' Successfully compiled assets');
+    }
+  });
 }
 
 /**
  * Configures Winston Logger
  */
-function setupLogger () {
-  winston.remove(winston.transports.Console);
+function setupLogger(winstonInstance) {
+  winstonInstance.remove(winstonInstance.transports.Console);
 
   if (process.env.OUTPUT === 'stdout') {
-    winston.add(winston.transports.Console, {
-      timestamp:   function() {
+    winstonInstance.add(winstonInstance.transports.Console, {
+      timestamp:   function () {
         return moment().format('D.mm.YYYY @ HH:mm:ss:SSS');
       },
       prettyPrint: true,
@@ -201,7 +214,7 @@ function setupLogger () {
       level:       (nconf.get('environment') === 'development' ? 'silly' : 'info')
     });
   } else {
-    winston.add(winston.transports.File, {
+    winstonInstance.add(winstonInstance.transports.File, {
       filename:    'logs/output.log',
       colorize:    false,
       timestamp:   true,
@@ -214,4 +227,6 @@ function setupLogger () {
       level:       'silly'
     });
   }
+
+  return winstonInstance;
 }
