@@ -15,29 +15,29 @@ webpackJsonp([1],[
 	    app.elements.lastInvoice       = app.elements.invoices[ app.elements.invoices.length - 1 ];
 	
 	    app.listeners.addInvoicesEvents = function () {
-	      addEventListener('DOMContentLoaded', app.events.lastInvoiceVisible);
-	      addEventListener('load', app.events.lastInvoiceVisible);
-	      addEventListener('scroll', app.events.lastInvoiceVisible);
-	      addEventListener('resize', app.events.lastInvoiceVisible);
+	      app.on('DOMContentLoaded', app.events.lastInvoiceVisible, true);
+	      app.on('load', app.events.lastInvoiceVisible, true);
+	      app.on('scroll', app.events.lastInvoiceVisible, true);
+	      app.on('resize', app.events.lastInvoiceVisible, true);
 	
 	//      app.elements.lastInvoice.addEventListener();
 	    };
 	
 	    app.listeners.removeInvoiceEvents = function () {
-	      removeEventListener('DOMContentLoaded', app.events.lastInvoiceVisible);
-	      removeEventListener('load', app.events.lastInvoiceVisible);
-	      removeEventListener('scroll', app.events.lastInvoiceVisible);
-	      removeEventListener('resize', app.events.lastInvoiceVisible);
+	      app.off('DOMContentLoaded', app.events.lastInvoiceVisible);
+	      app.off('load', app.events.lastInvoiceVisible);
+	      app.off('scroll', app.events.lastInvoiceVisible);
+	      app.off('resize', app.events.lastInvoiceVisible);
 	    };
 	
-	    app.events.lastInvoiceVisible = app.helpers.debounce(function (event) {
+	    app.events.lastInvoiceVisible = function (event) {
 	      var invoices    = app.elements.invoicesContainer.getElementsByClassName('invoice'),
 	          lastInvoice = invoices[ invoices.length - 1 ];
 	
 	      return app.helpers.onVisibilityChange(lastInvoice, function (visibility) {
 	        return app.connectors.getMoreInvoices();
 	      })();
-	    }, 250);
+	    };
 	
 	    app.helpers.isElementInViewport = function (element) {
 	      var rect = element.getBoundingClientRect();

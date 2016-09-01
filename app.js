@@ -150,16 +150,20 @@ function shutdown(code) {
 }
 
 function reload() {
-  console.log('flushing template cache');
+  winston.info('[meta]'.white + ' Reloading static assets');
   require('templates.js').flush();
 
-  console.log('preparing assets');
   prepareAssets(function (error, results) {
     if (error) {
       winston.error(error);
     }
 
     winston.info('[meta]'.white + ' Successfully compiled all assets');
+
+    if (nconf.get('environment') === 'development') {
+      winston.info('[meta]'.white + ' Statistics: ');
+      winston.info(results);
+    }
   });
 }
 

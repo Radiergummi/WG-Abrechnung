@@ -49,4 +49,6 @@ module.exports = function(app) {
 
     return true;
   };
+
+  app.on('error', document.getElementsByTagName('img'), app.events.imageError);
 };

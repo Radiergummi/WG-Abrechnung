@@ -32,32 +32,101 @@ module.exports = function(app) {
    * registers an event listener in a try-catch block to catch errors in events.
    * optionally debounces events
    *
-   * @param {string|Array}    eventNames  a single or multiple events to attach a listener on
-   * @param {object|function} [target]    the event target to listen on
-   * @param {function}        callback    the event callback to attach
-   * @param {boolean}         [debounce]  whether to debounce the event or not, defaults to false
+   * @param {string|Array}     eventNames  a single or multiple events to attach a listener on
+   * @param {object|function}  [targets]   the event target to listen on
+   * @param {function|boolean} callback    the event callback to attach
+   * @param {boolean}          [debounce]  whether to debounce the event or not, defaults to false
    */
-  app.on = function(eventNames, target, callback, debounce) {
-    if (typeof target === 'function') {
-      callback = target;
-      target   = window;
+  app.on = function(eventNames, targets, callback, debounce) {
+
+    // shift arguments if necessary
+    if (typeof targets === 'function') {
+      debounce = callback;
+      callback = targets;
+      targets  = window;
     }
 
+    // create array from target
+    targets = (targets instanceof NodeList
+        ? Array.prototype.slice.call(targets)
+        : [ targets ]
+    );
+
+    // debounce the callback
     if (debounce) {
       callback = app.debounce(callback, 250);
     }
 
+    // split event names by space to allow assigning multiple events
     eventNames = eventNames.split(' ');
-    for (var i = 0; i < eventNames.length; i++) {
-      var eventName = eventNames[ i ];
 
-      target.addEventListener(eventName, function(event) {
-        try {
-          return callback(event);
-        } catch (error) {
-          return app.error(error);
+    // iterate over elements and events to attach all events to all elements
+    for (var t = 0; t < targets; t++) {
+      for (var e = 0; e < eventNames.length; e++) {
+        var eventName = eventNames[ e ],
+            target    = targets[ t ];
+
+        // add the attached events registry to the target if not present
+        if (!target.hasOwnProperty('_attachedEvents')) {
+          target._attachedEvents = {};
         }
-      }, false);
+
+        // register the callback for easier removal
+        target._attachedEvents[ eventName ] = callback;
+
+        // add the event listener with the callback in a try-catch block
+        // to forward any errors to the apps error handler
+        target.addEventListener(eventName, function(event) {
+          try {
+            return callback(event);
+          } catch (error) {
+            return app.error(error);
+          }
+        }, false);
+      }
     }
   };
+
+  /**
+   * removes an event listeners
+   *
+   * @param {string|Array}               eventNames  the event(s) to remove listeners for
+   * @param {NodeList|Array|EventTarget} [targets]   the target(s) to remove listeners from. if none given,
+   *                                                 will use the window object
+   * @param {function}                   [callback]  the callback to remove. takes the callback stored in the
+   *                                                 target if none given
+   */
+  app.off = function(eventNames, targets, callback) {
+    if (typeof targets === 'function') {
+      targets = window;
+    }
+
+    // create array from target
+    targets = (targets instanceof NodeList
+        ? Array.prototype.slice.call(targets)
+        : [ targets ]
+    );
+
+    // split event names by space to allow assigning multiple events
+    eventNames = (eventNames instanceof Array
+        ? eventNames
+        : eventNames.split(' ')
+    );
+
+    // iterate over elements and events to attach all events to all elements
+    for (var t = 0; t < targets; t++) {
+      for (var e = 0; e < eventNames.length; e++) {
+        var eventName = eventNames[ e ],
+            target    = targets[ t ];
+
+        // use the stored event callback if none specified
+        if (!callback) {
+          callback = target._attachedEvents[ eventName ];
+        }
+
+        // remove the event listener
+        target.removeEventListener(eventName, callback);
+      }
+    }
+  }
 };

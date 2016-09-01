@@ -2,7 +2,6 @@
   <section class="invoice-image">
     <img src="/images/invoices/{user._id}/{userInvoices._id}.jpg"
          alt="[[invoices:title, {userInvoices._id}]]"
-         onerror="app.events.imageError(this)"
     >
   </section>
   <section class="invoice-data">
