@@ -6,6 +6,22 @@ That way, everyone pays the same amount and you get some neat stats about your m
 ## About
 This is a project intended to ease the way me and the people I'm sharing a flat with calculate their share in our monthly grocery shopping calculation. Up until now, we just went through all the receipts at the end of the month, while those having spent less than the others paid their difference. Obviously, this is a time consuming activity, so we thought *how could we possibly nerd the hell out of this?*
 
+## Installation
+
+    # Clone the repository
+    git clone https://github.com/Radiergummi/WG-Abrechnung
+    
+    # Switch the directory
+    cd WG-Abrechnung
+    
+    # Install dependencies
+    npm install
+    
+    # Start flatm8
+    ./flatm8 start
+
+Navigate to `http://localhost:3000`.
+
 ## Current state
 ~~Apart from the base structure and working Mongo models as well as a functioning login system, there is not much to do yet. I'm actively working on this, though, so I'd expect an example implementation up and running in about a month.  
 Language is german right now, though most of the strings are in the view files - you should have no problem modifying these.~~
