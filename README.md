@@ -1,4 +1,4 @@
-# Flatm8
+# Flatm8 [![Dependencies](https://david-dm.org/Radiergummi/WG-Abrechnung.svg)](https://david-dm.org/Radiergummi/WG-Abrechnung)
 Personal project to organize monthly grocery spending with my flatmates.  
 This is just a simple web app that allows you to upload grocery receipts, assign them tags and a sum, and create a split bill at the end of the month.  
 That way, everyone pays the same amount and you get some neat stats about your monthly spending.
