@@ -92,3 +92,80 @@ So far, there are view routes implemented. I'll try to describe the existing her
 - `/admin/invoices` - Shows the invoice management
 - `/admin/tags` - Shows the tag management
 - `/admin/config` - Shows the general configuration page
+
+
+# API
+The following document describes the flatm8 API (*as planned*). Currently, I don't really use REST methods due to socket.io being somewhat easier to use, though I'd like to use the REST API for client-initiated requests and socket.io for server-side pushing, as in streaming modified/new data or pushing notifications to clients.  
+All endpoints will return JSON objects (*even though I may implement a config setting to allow setting the API data type*). If requests fail due to client errors (eg. the response has a `4xx` error code), they will contain an error object like this:
+
+````json
+{
+  "error": {
+    "status": <status code>,
+    "reason": "<error category, eg. 'authentication' or 'invalid'>",
+    "message": {
+      "raw": "<error message in english intended for developers>",
+      "translation": "<friendly error message translation key>"
+    }
+  }
+}
+````
+
+The API URI prefix is defined in the configuration and defaults to `/api/v1` where `v1` indicates API version 1.
+
+## Endpoints
+**Bold endpoints** will require authentication.
+
+| method | URI                           | description                       | possible responses                                                                |
+|:------:|-------------------------------|-----------------------------------|-----------------------------------------------------------------------------------|
+| GET    | `/`                           | lists available endpoints         | `200`: list of endpoints                                                          |
+
+
+### Invoices endpoints
+| method | URI                           | description                       | possible responses                                                                |
+|:------:|-------------------------------|-----------------------------------|-----------------------------------------------------------------------------------|
+| GET    | `/invoices`                   | lists all invoices                | `200`: list of invoices                                                           |
+| POST   | `/invoices`                   | creates a new invoice             | `201`: created, Location points to new invoice<br>`400`: invalid data             |
+| GET    | `/invoices/:invoice-id`       | returns a specific invoice        | `200`: invoice data<br>`404`: no such invoice<br>`400`: invalid ID                |
+| PUT    | `/invoices/:invoice-id`       | updates an existing invoice       | `204`: invoice was updated<br>`404`: no such invoice<br>`400`: invalid data       |
+| DELETE | `/invoices/:invoice-id`       | deletes an existing invoice       | `204`: invoice was deleted<br>`404`: no such invoice                              |
+| GET    | `/invoices/:year`             | lists all invoices from date      | `200`: list of invoices from `year`<br>`400`: invalid date                        |
+| DELETE | `/invoices/:year`             | deletes all invoices from date    | `204`: invoices were deleted<br>`400`: invalid date                               |
+| GET    | `/invoices/:year/:month`      | lists all invoices from date      | `200`: list of invoices from `year/month`<br>`400`: invalid date                  |
+| DELETE | `/invoices/:year/:month`      | deletes all invoices from date    | `204`: invoices were deleted<br>`400`: invalid date                               |
+| GET    | `/invoices/:year/:month/:day` | lists all invoices from date      | `200`: list of invoices from `year/month/day`<br>`400`: invalid date              |
+| DELETE | `/invoices/:year/:month/:day` | deletes all invoices from date    | `204`: invoices were deleted<br>`400`: invalid date                               |
+
+
+### Users endpoints
+| method | URI                           | description                       | possible responses                                                                |
+|:------:|-------------------------------|-----------------------------------|-----------------------------------------------------------------------------------|
+| GET    | `/users`                      | lists all users                   | `200`: list of users                                                              |
+| POST   | `/users`                      | creates a new user                | `201`: created, Location points to new user<br>`400`: invalid data                |
+| GET    | `/users:user-id`              | returns a specific user           | `200`: user data<br>`404`: no such user<br>`400`: invalid ID                      |
+| PUT    | `/users/:user-id`             | updates an existing user          | `204`: user was updated<br>`404`: no such user<br>`400`: invalid data             |
+| DELETE | `/users/:user-id`             | deletes an existing user          | `204`: user was deleted<br>`404`: no such user                                    |
+| GET    | `/users/:user-id/invoices`    | returns a specific users invoices | `200`: user invoice data<br>`404`: no such user<br>`400`: invalid ID              |
+| DELETE | `/users/:user-id/invoices`    | deletes all invoices of a user    | `204`: invoices were deleted<br>`404`: no such user                               |
+
+
+### Invitations endpoints
+| method | URI                           | description                       | possible responses                                                                |
+|:------:|-------------------------------|-----------------------------------|-----------------------------------------------------------------------------------|
+| GET    | `/invitations`                | lists all invitations             | `200`: list of invitations                                                        |
+| DELETE | `/invitations`                | deletes all invitations           | `204`: invitations were deleted                                                   |
+| POST   | `/invitations`                | creates a new invitation          | `201`: created, Location points to new invitation<br>`400`: invalid data          |
+| GET    | `/invitations/:invitation-id` | returns a specific invitation     | `200`: invitation data<br>`404`: no such invitation<br>`400`: invalid ID          |
+| PUT    | `/invitations/:invitation-id` | updates an existing invitation    | `204`: invitation was updated<br>`404`: no such invitation<br>`400`: invalid data |
+| DELETE | `/invitations/:invitation-id` | deletes an existing invitation    | `204`: invitation was deleted<br>`404`: no such invitation                        |
+
+### Tags endpoints
+| method | URI                           | description                       | possible responses                                                                |
+|:------:|-------------------------------|-----------------------------------|-----------------------------------------------------------------------------------|
+| GET    | `/tags`                       | lists all tags                    | `200`: list of tags                                                               |
+| POST   | `/tags`                       | creates a new tag                 | `201`: created, Location points to new tag<br>`400`: invalid data                 |
+| GET    | `/tags:tag-id`                | returns a specific tag            | `200`: tag data<br>`404`: no such tag<br>`400`: invalid ID                        |
+| PUT    | `/tags/:tag-id`               | updates an existing tag           | `204`: tag was updated<br>`404`: no such tag<br>`400`: invalid data               |
+| DELETE | `/tags/:tag-id`               | deletes an existing tag           | `204`: tag was deleted<br>`404`: no such tag                                      |
+| GET    | `/tags/:tag-id/invoices`      | returns all invoices with a tag   | `200`: tagged invoices<br>`404`: no such tag<br>`400`: invalid ID                 |
+| DELETE | `/tags/:tag-id/invoices`      | deletes all invoices with a tag   | `204`: invoices were deleted<br>`404`: no such tag                                |
