@@ -3,10 +3,11 @@
 var app  = require('./app'),
     main = require('./main')(app);
 
-require('./libraries/vanilla-modal')(app);
 
 (function(app) {
     app.startup.push(function() {
+      require('./libraries/vanilla-modal')(app);
+
       app.elements.userList               = document.getElementsByClassName('users')[ 0 ];
       app.elements.sendInvitationButton   = document.getElementsByClassName('send-invite') [ 0 ];
       app.elements.invitationEmailAddress = document.getElementById('invite-email-address');

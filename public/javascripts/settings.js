@@ -8,10 +8,11 @@ webpackJsonp([5],{
 	var app  = __webpack_require__(1),
 	    main = __webpack_require__(59)(app);
 	
-	__webpack_require__(60)(app);
 	
 	(function(app) {
 	    app.startup.push(function() {
+	      __webpack_require__(60)(app);
+	
 	      app.elements.userList               = document.getElementsByClassName('users')[ 0 ];
 	      app.elements.sendInvitationButton   = document.getElementsByClassName('send-invite') [ 0 ];
 	      app.elements.invitationEmailAddress = document.getElementById('invite-email-address');
