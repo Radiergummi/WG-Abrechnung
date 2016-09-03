@@ -5,6 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/stylesheets/style.css" rel="stylesheet"/>
+<!-- BEGIN clientScripts -->
+<script src="/javascripts/{clientScripts.name}<!-- IF !debug -->.min<!-- ENDIF !debug -->.js"></script>
+<!-- END clientScripts -->
+
     </head>
   <body class="{bodyClass}">
     <div id="overlay" class="disabled"></div>

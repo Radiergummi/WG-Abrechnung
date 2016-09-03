@@ -238,7 +238,8 @@
         <button type="button" class="save-user"><span class="fa fa-save"></span> [[global:do_save]]</button>
         <button type="button" class="cancel" data-close-modal><span class="fa fa-times"></span> [[global:cancel]]
         </button>
-      </div>    </section>
+      </div>
+    </section>
   </div>
 </div>
 <div id="modal-delete-user" class="hidden">
