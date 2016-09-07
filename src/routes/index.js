@@ -20,6 +20,7 @@ var nconf = require('nconf'),
 
 module.exports = function(app, middleware, controllers) {
   var router = express.Router();
+  app.all('(/api|/api/*?)', middleware.isApiRequest);
 
   mainRoutes(router, middleware, controllers);
   authenticationRoutes(router, middleware, controllers);

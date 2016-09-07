@@ -169,3 +169,14 @@ The API URI prefix is defined in the configuration and defaults to `/api/v1` whe
 | DELETE | `/tags/:tag-id`               | deletes an existing tag           | `204`: tag was deleted<br>`404`: no such tag                                      |
 | GET    | `/tags/:tag-id/invoices`      | returns all invoices with a tag   | `200`: tagged invoices<br>`404`: no such tag<br>`400`: invalid ID                 |
 | DELETE | `/tags/:tag-id/invoices`      | deletes all invoices with a tag   | `204`: invoices were deleted<br>`404`: no such tag                                |
+
+
+#### User endpoints
+| method | URI                           | description                       | possible responses                                                                |
+|:------:|-------------------------------|-----------------------------------|-----------------------------------------------------------------------------------|
+| GET    | `/user`                       | returns the current user          | `200`: user data<br>`401`: Not logged in                                          |
+| PUT    | `/user/picture`               | uploads a new user picture        | `204`: image uploaded<br>`401`: Not logged in<br>`400`: validation error          |
+| DELETE | `/user/picture`               | deletes the user picture          | `204`: image deleted<br>`401`: Not logged in<br>`404`: no image uploaded          |
+
+
+

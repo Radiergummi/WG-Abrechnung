@@ -25,24 +25,32 @@ var Invoice = module.exports = {};
 /**
  * retrieves invoice data from the database by ID
  *
- * @param {string} id  the ID to find a invoice for
- * @param {invoiceCallback} callback  a callback to run on the invoice object
+ * @param {string}          id          the ID to find a invoice for
+ * @param {invoiceCallback} callback    a callback to run on the invoice object
+ * @param {boolean}         [populate]  whether to populate subdocuments or not
  * @returns {object}
  */
-Invoice.getById = function(id, callback) {
-  invoiceModel
-    .findOne({ '_id': id })
-    .populate([
+Invoice.getById = function(id, callback, populate) {
+  if (typeof populate === 'undefined') {
+    populate = true;
+  }
+
+  var query = invoiceModel.findOne({ '_id': id });
+
+  if (populate) {
+    query.populate([
       { path: 'tags', model: 'tag' },
       { path: 'user', model: 'user' }
-    ])
-    .exec(function(error, invoice) {
-      if (error) {
-        return callback(error);
-      }
+    ]);
+  }
 
-      callback(null, invoice);
-    });
+  query.exec(function(error, invoice) {
+    if (error) {
+      return callback(error);
+    }
+
+    callback(null, invoice);
+  });
 };
 
 /**

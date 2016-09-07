@@ -114,7 +114,8 @@
     .upload-modal {
       position:      absolute;
       top:           55px;
-      right:         50%;
+      left:         -80px;
+      width: 300px;
       background:    #fff;
       border:        1px solid rgba(0, 0, 0, .1);
       border-radius: 4px;

@@ -5,24 +5,42 @@
  require
  */
 
-var colors = require('colors'),
-    nconf = require('nconf'),
+var colors  = require('colors'),
+    nconf   = require('nconf'),
     winston = require('winston');
 
-var controllers = require('./main');
-controllers.helpers = require('./helpers');
-controllers.dashboard = require('./dashboard');
-controllers.invoices = require('./invoices');
-controllers.statistics = require('./statistics');
+var controllers            = require('./main');
+controllers.helpers        = require('./helpers');
+controllers.dashboard      = require('./dashboard');
+controllers.invoices       = require('./invoices');
+controllers.statistics     = require('./statistics');
 controllers.authentication = require('./authentication');
-controllers.api = require('./api');
+controllers.api            = require('./api');
+
+controllers.handle401Errors = function(req, res, next) {
+  var error    = new Error('Not Authorized');
+  error.status = 401;
+  next(error);
+};
 
 controllers.handle404Errors = function(req, res, next) {
-  var err = new Error('Page Not Found: ' + req.url);
+  var error = new Error('Page Not Found: ' + req.url);
 
-  err.status = 404;
-  err.stack = err.stack.replace(new RegExp('(' + nconf.get('path').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + ')+', 'g'), '').trim();
-  next(err);
+  error.status = 404;
+  error.stack  = error.stack.replace(new RegExp('(' + nconf.get('path').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + ')+', 'g'), '').trim();
+
+  if (res.locals.isApiRequest) {
+    res.status(404).json({
+      status:  404,
+      reason:  'no-entity',
+      message: {
+        raw:         req.url + ' does not exist',
+        translation: '[[global:page_not_found]]'
+      }
+    })
+  }
+
+  next(error);
 };
 
 controllers.handleErrors = function(error, req, res, next) {
@@ -40,12 +58,12 @@ controllers.handleErrors = function(error, req, res, next) {
   // prepare the error stack
   try {
     origin = error.stack.match((new RegExp(path.replace(/\//g, '\\/') + '\/(.*)+:([0-9]+):([0-9]+)'))).slice(1);
-    file   = origin[ 0 ].split(path).join('') + (origin[ 0 ].indexOf('(') !== - 1 ? ')' : '');
+    file   = origin[ 0 ].split(path).join('') + (origin[ 0 ].indexOf('(') !== -1 ? ')' : '');
     line   = origin[ 1 ];
   }
   catch (e) {
     origin = error.stack.match(/at (.[^:])+:([0-9]+):([0-9]+)/).slice(1);
-    file   = (origin[ 0 ].indexOf('(') !== - 1 ? ')' : '') + ' [from module]';
+    file   = (origin[ 0 ].indexOf('(') !== -1 ? ')' : '') + ' [from module]';
     line   = origin[ 1 ];
   }
 
@@ -53,7 +71,7 @@ controllers.handleErrors = function(error, req, res, next) {
   var status = error.status || 500;
   res.status(status);
 
-  if (error.status !== 404) {
+  if ((error.status !== 404) && (error.status !== 401)) {
 
     // log the error to console
     console.error("\n" + error.name.bold.white);
@@ -65,15 +83,41 @@ controllers.handleErrors = function(error, req, res, next) {
   } else {
     winston.error(req.method + ' ' + req.path + ': ' + '404 Not found'.red);
   }
-  
-  res.render('errors/' + status, {
+
+  if (res.locals.isApiRequest) {
+    if (error.status === 401) {
+      return res.json({
+        status:  401,
+        reason:  'authentication',
+        message: {
+          raw:         'Not authorized to request ' + req.url,
+          translation: '[[global:not_authorized]]'
+        }
+      });
+    }
+
+    return res.json({
+      status:  status,
+      reason:  error.name,
+      message: {
+        raw:         error.message,
+        translation: '[[global:server_error]]'
+      }
+    });
+  } else {
+    if (error.status === 401) {
+      return res.redirect('/login?redirect_to=' + encodeURI(req.path));
+    }
+  }
+
+  return res.render('errors/' + status, {
     error: {
       status:  status,
       name:    'Internal Server Error',
       message: 'Something went wrong.',
-      file: file,
-      line: line,
-      stack: error.stack.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      file:    file,
+      line:    line,
+      stack:   error.stack.replace(/</g, '&lt;').replace(/>/g, '&gt;')
     }
   });
 };

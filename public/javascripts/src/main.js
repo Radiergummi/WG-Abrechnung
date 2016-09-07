@@ -2,6 +2,7 @@
 
 module.exports = function(app) {
   window.addEventListener('flatm8:ready', function(event) {
+    console.log('main ready');
     app.startup.push(function() {
       app.elements.profilePicture = document.getElementsByClassName('profile-picture')[ 0 ];
       app.elements.backLinks      = document.getElementsByClassName('back-link');
@@ -28,8 +29,7 @@ module.exports = function(app) {
       };
 
       app.listeners.addProfilePictureEvents = function() {
-        app.on('click', app.elements.profilePicture, app.events.toggleProfilePictureUploadModal);
-        app.on('click', app.elements.overlay, app.events.toggleProfilePictureUploadModal);
+        app.on('click', app.elements.profilePicture, app.events.showProfilePictureUploadModal);
       };
 
       app.events.revertLastHistoryState = function(event) {
@@ -70,84 +70,80 @@ module.exports = function(app) {
         return event.target.classList.add('visible');
       };
 
-      app.events.toggleProfilePictureUploadModal = function(event) {
-        if (document.querySelector('.upload-modal') && document.querySelector('.upload-modal').contains(event.target)) {
+      app.events.showProfilePictureUploadModal = function(event) {
+        var uploadModal = document.querySelector('.upload-modal');
+
+        // if the current click targets the modal itself, quit
+        if (uploadModal && uploadModal.contains(event.target)) {
           return false;
         }
 
-        if (app.elements.profilePicture.classList.contains('upload-visible')) {
-          app.elements.profilePicture.querySelector('.upload-modal').remove();
-          app.elements.profilePicture.classList.remove('upload-visible');
-          app.elements.overlay.classList.add('disabled');
-          return;
-        }
+        // add event listener to HTML to close it again
+        app.on('click', document.documentElement, app.events.hideProfilePictureUploadModal);
 
-        app.elements.overlay.classList.remove('disabled');
         app.elements.profilePicture.classList.add('upload-visible');
         app.templates.profilePictureUploadModal.then(function(element) {
           app.elements.profilePicture.appendChild(element);
         }).then(function() {
-          app.elements.profilePicture.querySelector('.save-picture').addEventListener('click', function() {
-            var file = document.getElementById('file-input').files[ 0 ];
+          app.on('click', app.elements.profilePicture.querySelector('.save-picture'), app.connectors.uploadProfilePicture);
+        });
+      };
 
-            if (file.type.match('image\/jp(e)?g')) {
-              var data = new FormData();
-              data.append('profilePicture', file);
-              data.append('user', app.config.user.id);
+      app.events.hideProfilePictureUploadModal = function(event) {
+        var uploadModal = document.querySelector('.upload-modal');
 
-              if (window.fetch) {
-                fetch(new Request('/api/user/picture/upload', {
-                  method: 'post',
-                  body:   data
-                })).then(function(response) {
-                  if (response.ok) {
-                    var pictures = app.elements.profilePicture.querySelectorAll('img');
+        if (!uploadModal) {
+          return false;
+        }
 
-                    pictures[ 0 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
-                    pictures[ 1 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
-                  } else {
-                    throw new Error('Response status %s indicates error', response.statusCode)
-                  }
-                }, function(error) {
-                  console.error('An error occurred while trying to save the image.', error);
-                });
-              } else {
-                var request = new XMLHttpRequest();
-                request.open('POST', '/api/invoices/create', true);
+        // if the current click targets the modal itself, quit
+        if (uploadModal && uploadModal.contains(event.target)) {
+          return false;
+        }
 
-                request.onreadystatechange = function() {
+        // remove the modal
+        uploadModal.remove();
+        app.elements.profilePicture.classList.remove('upload-visible');
 
-                  // when the data is available, fire the callback
-                  if (request.readyState == 4) {
+        // remove the event listener from HTML
+        app.off('click', document.documentElement, app.events.hideProfilePictureUploadModal);
+        return true;
+      };
 
-                    if (request.status == "200") {
-                      console.log('response is okay. invoice has been saved.', request);
-                      return window.location = request.responseURL;
-                    } else {
-                      return app.error(new Error('XMLHttpRequest failed: Error ' + request.status + ' - ' + request.statusText), '[[clientError:save_invoice_failed, ' + request.status + ']]');
-                    }
-                  }
-                };
+      app.connectors.uploadProfilePicture = function() {
+        var file = document.getElementById('file-input').files[ 0 ];
 
-                // update the progress meter
-                request.upload.onprogress = function(event) {
-                  if (event.lengthComputable) {
-                    app.elements.newInvoice.uploadProgress.value = (event.loaded / event.total * 100 | 0);
-                  }
-                };
+        if (file.type.match('image\/jp(e)?g')) {
+          var data = new FormData();
+          data.append('profilePicture', file);
+          data.append('user', app.config.user.id);
 
-                // finish the progress meter
-                request.onload = function() {
-                  app.elements.newInvoice.uploadProgress.value = 100;
-                };
+          app.post('/api/user/picture', data, function(response) {
+            if (response.ok) {
+              var pictures = app.elements.profilePicture.querySelectorAll('img');
 
-                request.send(data);
-              }
+              pictures[ 0 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
+              pictures[ 1 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
             } else {
-              console.error('wrong file type: ' + file.type);
+              return app.error(new Error('POST failed: Error ' + response.status + ' - ' + response.statusText), '[[clientError:save_invoice_failed, ' + response.status + ']]');
+            }
+          }, {
+            upload: {
+              onprogress: function(event) {
+                if (event.lengthComputable) {
+                  app.elements.newInvoice.uploadProgress.value = (event.loaded / event.total * 100 | 0);
+                }
+              }
+            },
+
+            // finish the progress meter
+            onload: function() {
+              app.elements.newInvoice.uploadProgress.value = 100;
             }
           });
-        });
+        } else {
+          console.error('wrong file type: ' + file.type);
+        }
       };
 
       app.templates.profilePictureUploadModal = (function() {

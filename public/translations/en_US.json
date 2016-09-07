@@ -75,11 +75,13 @@
   },
   "error":       {
     "title":           "Error %1",
+    "401.text":        "You are not logged in",
+    "401.description": "You have to log in to access <code>%1</code>.",
     "500.text":        "Whoops! Looks like the server did not like your request.",
     "500.description": "Seems like something does not quite work. Try to repeat whatever you did. If that doesn&#39;t help, somebody has to fix this (<a href=\"mailto:m@9dev.de?subject=error in Flatm8 at {url}\">send him a mail</a>).",
     "404.text":        "Whoops! The page <code>%1</code> doesn&#39;t exist.",
     "404.description": "Looks like you were too stoopid to type. Or I&#39;ve made a mistake.<br>That&#39;s pretty unlikely though, so let&#39;s just assume this is your fault.",
-    "403.text":        "You have no access to <code>{url}</code>.",
+    "403.text":        "You have no access to <code>%1</code>.",
     "403.description": "You lack the permissions to access or edit this resource."
   },
   "search":      {

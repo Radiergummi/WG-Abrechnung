@@ -13,9 +13,7 @@ var app,
     User    = require('../user'),
     Invoice = require('../invoice');
 
-var controllers = {
-      helpers: require('../controllers/helpers')
-    },
+var controllers = require('../controllers'),
     middleware  = {};
 
 /**
@@ -33,7 +31,7 @@ middleware.checkAuth = function(req, res, next) {
     debug('no user in request');
   }
 
-  return controllers.helpers.notAllowed(req, res);
+  return controllers.handle401Errors(req, res, next);
 };
 
 /**
@@ -45,16 +43,28 @@ middleware.checkAuth = function(req, res, next) {
  */
 middleware.isAdmin = function(req, res, next) {
   if (!req.user) {
-    return controllers.helpers.notAllowed(req, res);
+    return controllers.handle401Errors(req, res, next);
   }
 
   if (req.user.role !== 'admin') {
-    return controllers.helpers.noPermission(req, res);
+    return controllers.helpers.noPermission(req, res, next);
   }
 
-  return next(null);
+  return next();
 };
 
+/**
+ * sets the isApiRequest parameter to true
+ *
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+middleware.isApiRequest = function(req, res, next) {
+  res.locals.isApiRequest = true;
+  return next();
+};
 
 /**
  * Adds expiration headers

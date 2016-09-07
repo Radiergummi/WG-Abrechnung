@@ -5,8 +5,7 @@
  require
  */
 
-var User    = require('../user'),
-    Invoice = require('../invoice');
+var Invoice  = require('../invoice');
 
 var invoices = module.exports = {};
 
@@ -16,7 +15,7 @@ invoices.viewSingle = function(req, res, next) {
   var vars = {
 //    clientScripts: [ { name: 'invoices.single' } ],
     invoicesActive: true,
-    success: req.query.success
+    success:        req.query.success
   };
 
   Invoice.getById(req.params.id, function(error, data) {
@@ -35,7 +34,7 @@ invoices.viewSingle = function(req, res, next) {
 
 invoices.viewAll = function(req, res, next) {
   var vars  = {
-        clientScripts: [ { name: 'invoices.all' } ],
+        clientScripts:  [ { name: 'invoices.all' } ],
         invoicesActive: true
       },
       limit = (req.params.pageNum ? (Math.floor(req.params.pageNum) * 2 + 3) : 4);
@@ -60,7 +59,7 @@ invoices.viewAll = function(req, res, next) {
 
 invoices.create = function(req, res, next) {
   var vars = {
-    clientScripts: [ { name: 'invoices.create' } ],
+    clientScripts:  [ { name: 'invoices.create' } ],
     invoicesActive: true,
     todayDate:      new Date().toISOString().substring(0, 10),
     pageTitle:      'Neu'
@@ -98,7 +97,7 @@ invoices.edit = function(req, res, next) {
 
 invoices.search = function(req, res, next) {
   var vars = {
-    clientScripts: [ { name: 'invoices.search' } ],
+    clientScripts:  [ { name: 'invoices.search' } ],
     invoicesActive: true,
     pageTitle:      'Suche'
   };

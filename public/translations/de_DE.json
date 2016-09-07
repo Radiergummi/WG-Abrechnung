@@ -94,12 +94,14 @@
   },
   "error":       {
     "title":           "Fehler %1",
-    "500.text":        "Hoppla! Der Server hat Schluckauf.",
-    "500.description": "Sieht so aus, als läuft hier was schief. Versuche es noch einmal. Wenn es dann immer noch nicht funktioniert, muss jemand (<a href=\"mailto:m@9dev.de?subject=Fehler in Flatm8 unter {url}\">schick ihm &#39;ne Mail</a>) das Problem reparieren.<br> Hrmpf.",
+    "401.text":        "Du bist nicht angemeldet",
+    "401.description": "Du musst dich anmelden, um auf <code>%1</code> zuzugreifen.",
+    "403.text":        "Du hast keinen Zugriff auf die Seite <code>%1</code>.",
+    "403.description": "Dir fehlt die Berechtigung, diesen Inhalt anzuzeigen oder zu bearbeiten.",
     "404.text":        "Hoppla! Die Seite <code>%1</code> gibt es nicht.",
     "404.description": "Sieht so aus, als wärst du zu doof zum tippen. Oder ich hab einen Fehler gemacht.<br>Das ist ziemlich unwahrscheinlich, also nehmen wir an, du bist zu doof.",
-    "403.text":        "Du hast keinen Zugriff auf die Seite <code>{url}</code>.",
-    "403.description": "Dir fehlt die Berechtigung, diesen Inhalt anzuzeigen oder zu bearbeiten."
+    "500.text":        "Hoppla! Der Server hat Schluckauf.",
+    "500.description": "Sieht so aus, als läuft hier was schief. Versuche es noch einmal. Wenn es dann immer noch nicht funktioniert, muss jemand (<a href=\"mailto:m@9dev.de?subject=Fehler in Flatm8 unter {url}\">schick ihm &#39;ne Mail</a>) das Problem reparieren.<br> Hrmpf."
   },
   "search":      {
     "title":                  "Suche nach Rechnungen",

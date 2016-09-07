@@ -15,16 +15,25 @@ module.exports = function(app) {
      * @returns {XMLHttpRequest|Promise}  the request object. either a promise or the XHR
      */
     request: function(method, url, data, success, failure, events) {
-      method  = method.toUpperCase();
-      data    = data || undefined;
-      success = success || function() {
-        };
-      failure = failure || function() {
-        };
-      events  = events || {};
+      method = method.toUpperCase();
+      data   = data || undefined;
+
+      var complete = function() {
+      };
+
+      if (typeof success === 'function' && typeof failure !== 'function') {
+        complete = success;
+        events = failure || {};
+      } else {
+        success = success || function() {
+          };
+        failure = failure || function() {
+          };
+        events  = events || {};
+      }
 
       if (window[ 'fetch' ]) {
-        return fetch(new Request(url, {
+        return window.fetch(new Request(url, {
           method: method,
           body:   data
         })).then(function(response) {
@@ -34,9 +43,12 @@ module.exports = function(app) {
             failure.call(this, response);
           }
 
+          complete.call(this, response);
+
           return response;
         }, function(error) {
           failure.call(this, error);
+          complete.call(this, error);
 
           return error;
         });
@@ -49,10 +61,14 @@ module.exports = function(app) {
           // when the data is available, fire the callback
           if (XHR.readyState == 4) {
             if (XHR.status == "200") {
+              XHR.ok = true;
               success.call(this, XHR);
             } else {
+              XHR.ok = false;
               failure.call(this, XHR);
             }
+
+            complete.call(this, XHR);
           }
 
         };
@@ -68,7 +84,7 @@ module.exports = function(app) {
       }
     }
   };
-  
+
   app.get = function(url, data, success, failure, events) {
     if (data) {
       url = url + '?';
@@ -88,11 +104,24 @@ module.exports = function(app) {
   };
 
   app.post = function(url, data, success, failure, events) {
-    if (data) {
-      if (data instanceof FormData) {
-
-      }
+    if (!data) {
+      return false;
     }
+
+    if (!data instanceof FormData) {
+      var formData = new FormData();
+
+      for (var key in data) {
+        if (!data.hasOwnProperty(key)) {
+          continue;
+        }
+
+        formData.append(key, data[ key ]);
+      }
+
+      data = formData;
+    }
+
     return app.http.request('post', data, success, failure, events);
   };
 };

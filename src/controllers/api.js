@@ -10,18 +10,16 @@ var fs      = require('fs'),
 
     Invoice = require('../invoice'),
 
-    api     = module.exports = {};
+    api     = module.exports = {
+      invoices: require('./api/invoices'),
+      users:    require('./api/users'),
+      user:     require('./api/user')
+    };
 
-api.saveProfilePicture = function(req, res, next) {
-  fs.writeFile(nconf.get('path') + '/public/images/users/' + req.body.user + '.jpg', req.file.buffer, function(error) {
-    if (error) {
-      return next(error);
-    }
+api.listEndpoints = function(req, res, next) {
+  var endpoints = {};
 
-    return res.status(200).send({
-      response: 'the image has been saved'
-    });
-  });
+  return res.json(endpoints);
 };
 
 api.createNewInvoice = function(req, res) {

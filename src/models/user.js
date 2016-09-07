@@ -112,4 +112,11 @@ userSchema.pre('save', function(callback) {
   });
 });
 
+userSchema.set('toJSON', {
+  transform: function(document, exportedDocument, options) {
+    delete exportedDocument.authentication.password;
+    return exportedDocument;
+  }
+});
+
 module.exports = mongoose.model('user', userSchema);

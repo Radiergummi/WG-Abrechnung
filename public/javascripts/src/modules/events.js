@@ -52,16 +52,18 @@ module.exports = function(app) {
         : [ targets ]
     );
 
+
     // debounce the callback
     if (debounce) {
       callback = app.debounce(callback, 250);
     }
-
+    
     // split event names by space to allow assigning multiple events
     eventNames = eventNames.split(' ');
 
+
     // iterate over elements and events to attach all events to all elements
-    for (var t = 0; t < targets; t++) {
+    for (var t = 0; t < targets.length; t++) {
       for (var e = 0; e < eventNames.length; e++) {
         var eventName = eventNames[ e ],
             target    = targets[ t ];
@@ -72,7 +74,9 @@ module.exports = function(app) {
         }
 
         // register the callback for easier removal
-        target._attachedEvents[ eventName ] = callback;
+        if (!target._attachedEvents[ eventName ] === callback) {
+          target._attachedEvents[ eventName ] = callback;
+        }
 
         // add the event listener with the callback in a try-catch block
         // to forward any errors to the apps error handler
@@ -114,7 +118,7 @@ module.exports = function(app) {
     );
 
     // iterate over elements and events to attach all events to all elements
-    for (var t = 0; t < targets; t++) {
+    for (var t = 0; t < targets.length; t++) {
       for (var e = 0; e < eventNames.length; e++) {
         var eventName = eventNames[ e ],
             target    = targets[ t ];
@@ -123,6 +127,9 @@ module.exports = function(app) {
         if (!callback) {
           callback = target._attachedEvents[ eventName ];
         }
+
+        // remove the stored callback
+        delete target._attachedEvents[ eventName ];
 
         // remove the event listener
         target.removeEventListener(eventName, callback);
