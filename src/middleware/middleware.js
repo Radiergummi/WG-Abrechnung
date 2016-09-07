@@ -6,6 +6,7 @@
  */
 
 var async = require('async'),
+    csurf = require('csurf'),
     debug = require('debug'),
     nconf = require('nconf');
 
@@ -107,6 +108,8 @@ middleware.addHeaders = function(req, res, next) {
 
   next();
 };
+
+middleware.csrf = csurf();
 
 /**
  * checks if a user owns an invoice
