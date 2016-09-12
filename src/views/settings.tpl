@@ -133,7 +133,7 @@
             <td class="last-name">{users.lastName}</td>
             <td class="role">[[global:{users.role}_user]]</td>
             <td class="actions">
-              <a href="#modal-edit-user" class="edit-user button" data-user-id="{users._id}" data-open-modal><span
+              <a href="#modal-edit-user" class="edit-user button" data-user-id="{users._id}" data-on-modal-open-event="prepareEditUserModal" data-open-modal><span
                 class="fa fa-edit"></span> [[global:edit]] </a>
               <a href="#modal-delete-user" class="remove-user button danger" data-user-id="{users._id}"
                  data-first-name="{users.firstName}" data-on-modal-open-event="prepareDeleteUserModal" data-open-modal><span
