@@ -20,7 +20,8 @@ main.home = function(req, res, next) {
 
 main.settings = function(req, res, next) {
   var vars = {
-    clientScripts: [ { name: 'settings' } ]
+    clientScripts: [ { name: 'settings' } ],
+    csrfToken: req.csrfToken()
   };
 
   User.getAll(function(error, data) {

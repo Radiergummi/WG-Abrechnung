@@ -10,9 +10,9 @@ var helper         = require('./helper'),
 
 module.exports = function(router, middleware, controllers) {
 
-  var middlewares = [ middleware.checkAuth ];
+  var middlewares = [ middleware.checkAuth, middleware.csrf ];
 
-  setupPageRoute(router, '/', middleware, middlewares, controllers.home);
+  setupPageRoute(router, '/', middleware, [ middleware.checkAuth ], controllers.home);
   setupPageRoute(router, '/settings', middleware, middlewares, controllers.settings);
   setupPageRoute(router, '/register/:token?', middleware, [], controllers.register);
   setupPageRoute(router, '/login', middleware, [], controllers.login);

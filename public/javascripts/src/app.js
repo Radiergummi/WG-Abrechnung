@@ -65,12 +65,12 @@ var app = module.exports =  {
   /**
    * load base dependencies
    */
-  app.notifications = require('./modules/notifications');
   app.translator = require('./modules/translator');
   app.translate = function(text, callback) {
     return app.translator.translate(text, document.documentElement.lang, callback);
   };
 
+  require('./modules/notifications')(app);
   require('./modules/errorHandler')(app);
   require('./modules/events')(app);
   require('./modules/http')(app);

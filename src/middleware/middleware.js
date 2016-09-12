@@ -5,10 +5,12 @@
  require
  */
 
-var async = require('async'),
-    csurf = require('csurf'),
-    debug = require('debug'),
-    nconf = require('nconf');
+var async         = require('async'),
+    csurf         = require('csurf'),
+    debug         = require('debug')('flatm8:middleware'),
+    nconf         = require('nconf'),
+    multer        = require('multer'),
+    multerStorage = multer.memoryStorage();
 
 var app,
     User    = require('../user'),
@@ -109,7 +111,19 @@ middleware.addHeaders = function(req, res, next) {
   next();
 };
 
-middleware.csrf = csurf();
+middleware.csrf = csurf({});
+
+middleware.upload = multer({
+  storage:    multerStorage,
+  fileFilter: function(req, file, callback) {
+    if (file.mimetype.match('image\/jp(e)?g')) {
+      return callback(null, true);
+    }
+
+    return callback(null, false);
+  }
+});
+
 
 /**
  * checks if a user owns an invoice

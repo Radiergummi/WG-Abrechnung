@@ -216,7 +216,7 @@
       <label for="modified-role">[[users:role]]</label>
       <select id="modified-role">
         <option value="admin">[[global:admin_user]]</option>
-        <option value="normal" selected>[[global:normal_user]]</option>
+        <option value="normal">[[global:normal_user]]</option>
       </select>
 
       <label for="modified-username">[[users:username]]</label>

@@ -7,7 +7,7 @@
     <link href="/stylesheets/style.css" rel="stylesheet"/>
     <!-- IMPORT partials/scripts.tpl -->
     </head>
-  <body class="{bodyClass}" data-csrf="{csrfToken}">
+  <body class="{bodyClass}" data-csrf-token="{csrfToken}">
     <div id="overlay" class="disabled"></div>
     <header class="site-header">
       <!-- IF user.loggedIn -->

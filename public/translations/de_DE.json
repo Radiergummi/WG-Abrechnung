@@ -72,7 +72,10 @@
     "user_logged_in": "%1 hat sich angemeldet"
   },
   "account":     {
-    "upload_profile_picture": "Profilbild ändern"
+    "upload_profile_picture":            "Profilbild ändern",
+    "upload_profile_picture.success":    "Das neue Profilbild wurde gespeichert",
+    "upload_profile_picture.error":      "Fehler beim Speichern des Profilbilds",
+    "upload_profile_picture.wrong_type": "Es können nur Bilder im jpg-Format verwendet werden."
   },
   "users":       {
     "first_name":    "Vorname",

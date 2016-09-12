@@ -8,38 +8,38 @@ webpackJsonp([1],[
 	    main = __webpack_require__(59)(app);
 	
 	(function(app) {
-	  app.startup.push(function () {
+	  app.startup.push(function() {
 	
 	    app.elements.invoicesContainer = document.getElementsByClassName('invoices')[ 0 ];
 	    app.elements.invoices          = app.elements.invoicesContainer.getElementsByClassName('invoice');
 	    app.elements.lastInvoice       = app.elements.invoices[ app.elements.invoices.length - 1 ];
 	
-	    app.listeners.addInvoicesEvents = function () {
-	      app.on('DOMContentLoaded', app.events.lastInvoiceVisible, true);
-	      app.on('load', app.events.lastInvoiceVisible, true);
-	      app.on('scroll', app.events.lastInvoiceVisible, true);
-	      app.on('resize', app.events.lastInvoiceVisible, true);
+	    app.listeners.addInvoicesEvents = function() {
+	      app.on('DOMContentLoaded', app.events.lastInvoiceVisible, { debounce: true });
+	      app.on('load', app.events.lastInvoiceVisible, { debounce: true });
+	      app.on('scroll', app.events.lastInvoiceVisible, { debounce: true });
+	      app.on('resize', app.events.lastInvoiceVisible, { debounce: true });
 	
 	//      app.elements.lastInvoice.addEventListener();
 	    };
 	
-	    app.listeners.removeInvoiceEvents = function () {
+	    app.listeners.removeInvoiceEvents = function() {
 	      app.off('DOMContentLoaded', app.events.lastInvoiceVisible);
 	      app.off('load', app.events.lastInvoiceVisible);
 	      app.off('scroll', app.events.lastInvoiceVisible);
 	      app.off('resize', app.events.lastInvoiceVisible);
 	    };
 	
-	    app.events.lastInvoiceVisible = function (event) {
+	    app.events.lastInvoiceVisible = function(event) {
 	      var invoices    = app.elements.invoicesContainer.getElementsByClassName('invoice'),
 	          lastInvoice = invoices[ invoices.length - 1 ];
 	
-	      return app.helpers.onVisibilityChange(lastInvoice, function (visibility) {
+	      return app.helpers.onVisibilityChange(lastInvoice, function(visibility) {
 	        return app.connectors.getMoreInvoices();
 	      })();
 	    };
 	
-	    app.helpers.isElementInViewport = function (element) {
+	    app.helpers.isElementInViewport = function(element) {
 	      var rect = element.getBoundingClientRect();
 	
 	      return (
@@ -50,8 +50,8 @@ webpackJsonp([1],[
 	      );
 	    };
 	
-	    app.helpers.onVisibilityChange = function (element, callback) {
-	      return function () {
+	    app.helpers.onVisibilityChange = function(element, callback) {
+	      return function() {
 	        var isVisible = app.helpers.isElementInViewport(element);
 	
 	        //console.log('last invoice element is visible:', isVisible);
@@ -64,7 +64,7 @@ webpackJsonp([1],[
 	      }
 	    };
 	
-	    app.connectors.getMoreInvoices = function () {
+	    app.connectors.getMoreInvoices = function() {
 	      var page = (document.getElementsByClassName('invoice').length) / 2;
 	
 	      // remove tail element
@@ -77,13 +77,13 @@ webpackJsonp([1],[
 	        userId:     app.config.user.id,
 	        pageNumber: page,
 	        pageSize:   2
-	      }, function (error, invoices) {
+	      }, function(error, invoices) {
 	        if (error) {
 	          return console.error(error);
 	        }
 	
 	        // wait a second
-	        setTimeout(function () {
+	        setTimeout(function() {
 	
 	          // remove the loading indicator
 	          document.getElementsByClassName('timeline-loading')[ 0 ].remove();
@@ -93,7 +93,7 @@ webpackJsonp([1],[
 	            var invoicePromises = [];
 	
 	            // iterate over invoices
-	            for (var i = 0; i < invoices.length; i ++) {
+	            for (var i = 0; i < invoices.length; i++) {
 	
 	              // insert a timeline separator
 	              app.elements.invoicesContainer.appendChild(app.templates.invoiceTimelineSeparator());
@@ -119,10 +119,10 @@ webpackJsonp([1],[
 	      });
 	    };
 	
-	    app.templates.invoiceCard = (function () {
+	    app.templates.invoiceCard = (function() {
 	      var userId = app.config.user.id;
 	
-	      return function (invoice) {
+	      return function(invoice) {
 	        var template = '<article class="invoice" id="' + invoice._id + '">' +
 	          '<section class="invoice-image">' +
 	          '<img src="/images/invoices/' + userId + '/' + invoice._id + '.jpg" alt="Rechnung ' + invoice._id + '" onerror="app.events.imageError(this)">' +
@@ -141,7 +141,7 @@ webpackJsonp([1],[
 	          '<div class="invoice-tags">';
 	
 	        if (invoice.tags.length) {
-	          for (var i = 0; i < invoice.tags.length; i ++) {
+	          for (var i = 0; i < invoice.tags.length; i++) {
 	            template += '<div class="tag tag-' + invoice.tags[ i ].color + '" id="' + invoice.tags[ i ]._id + '">' +
 	              '<span>' + invoice.tags[ i ].name + '</span>' +
 	              '</div>';
@@ -168,19 +168,19 @@ webpackJsonp([1],[
 	      }
 	    })();
 	
-	    app.templates.invoiceTimelineSeparator = function () {
+	    app.templates.invoiceTimelineSeparator = function() {
 	      return app.helpers.createElement('<div class="timeline-item timeline-separator timeline-within-range"></div>');
 	    };
 	
-	    app.templates.invoiceTimelineLoading = (function () {
+	    app.templates.invoiceTimelineLoading = (function() {
 	      return app.helpers.createElement('<div class="timeline-item timeline-loading"></div>');
 	    })();
 	
-	    app.templates.invoiceTimelineEnd = (function () {
+	    app.templates.invoiceTimelineEnd = (function() {
 	      return app.helpers.createTranslatedElement('<div class="timeline-item timeline-last" data-timeline-description="[[invoices:no_older]]"></div>');
 	    })();
 	
-	    app.templates.invoiceTimelineAvailabilityIndicator = (function () {
+	    app.templates.invoiceTimelineAvailabilityIndicator = (function() {
 	      return app.helpers.createElement('<div class="timeline-item timeline-data-available"></div>');
 	    })();
 	

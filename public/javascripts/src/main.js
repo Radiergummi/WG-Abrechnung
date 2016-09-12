@@ -2,7 +2,6 @@
 
 module.exports = function(app) {
   window.addEventListener('flatm8:ready', function(event) {
-    console.log('main ready');
     app.startup.push(function() {
       app.elements.profilePicture = document.getElementsByClassName('profile-picture')[ 0 ];
       app.elements.backLinks      = document.getElementsByClassName('back-link');
@@ -74,19 +73,13 @@ module.exports = function(app) {
         var uploadModal = document.querySelector('.upload-modal');
 
         // if the current click targets the modal itself, quit
-        if (uploadModal && uploadModal.contains(event.target)) {
+        if (uploadModal) {
           return false;
         }
 
-        // add event listener to HTML to close it again
-        app.on('click', document.documentElement, app.events.hideProfilePictureUploadModal);
+        app.helpers.openProfilePictureUploadModal();
 
-        app.elements.profilePicture.classList.add('upload-visible');
-        app.templates.profilePictureUploadModal.then(function(element) {
-          app.elements.profilePicture.appendChild(element);
-        }).then(function() {
-          app.on('click', app.elements.profilePicture.querySelector('.save-picture'), app.connectors.uploadProfilePicture);
-        });
+        return true;
       };
 
       app.events.hideProfilePictureUploadModal = function(event) {
@@ -101,15 +94,44 @@ module.exports = function(app) {
           return false;
         }
 
-        // remove the modal
-        uploadModal.remove();
-        app.elements.profilePicture.classList.remove('upload-visible');
+        if (app.elements.profilePicture.contains(event.target)) {
+          return false;
+        }
 
-        // remove the event listener from HTML
-        app.off('click', document.documentElement, app.events.hideProfilePictureUploadModal);
+        app.helpers.closeProfilePictureUploadModal();
         return true;
       };
 
+      /**
+       * reads the currently selected file and swaps the profile picture
+       *
+       * @param event
+       */
+      app.events.previewNewProfilePicture = function(event) {
+        app.elements.profilePicture.querySelector('.current-picture').classList.add('loading');
+        var file = event.target.files[ 0 ];
+        var reader = new FileReader();
+
+        reader.onload = function(event) {
+
+          // iterate over the images in the profile picture container, replace
+          // the current content with the image selected for upload
+          Array.prototype.forEach.call(
+            app.elements.profilePicture.querySelectorAll('img'),
+            function(picture) {
+              picture.src = event.target.result;
+            }
+          );
+
+          app.elements.profilePicture.querySelector('.current-picture').classList.remove('loading');
+        };
+        reader.readAsDataURL(file);
+      };
+
+      /**
+       * uploads the currently selected file, if the type matches.
+       * this uses flatm8's HTTP module for the request.
+       */
       app.connectors.uploadProfilePicture = function() {
         var file = document.getElementById('file-input').files[ 0 ];
 
@@ -117,33 +139,54 @@ module.exports = function(app) {
           var data = new FormData();
           data.append('profilePicture', file);
           data.append('user', app.config.user.id);
+          data.append('_csrf', document.body.dataset.csrfToken);
 
-          app.post('/api/user/picture', data, function(response) {
+          // post the picture to the server
+          return app.http.post('/api/user/picture', data, function(response) {
+
+            // if the response is okay (= 200 or 204 set as status code)
             if (response.ok) {
-              var pictures = app.elements.profilePicture.querySelectorAll('img');
 
-              pictures[ 0 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
-              pictures[ 1 ].src = '/images/users/' + app.config.user.id + '.jpg?cacheBuster=' + Date.now();
-            } else {
-              return app.error(new Error('POST failed: Error ' + response.status + ' - ' + response.statusText), '[[clientError:save_invoice_failed, ' + response.status + ']]');
-            }
-          }, {
-            upload: {
-              onprogress: function(event) {
-                if (event.lengthComputable) {
-                  app.elements.newInvoice.uploadProgress.value = (event.loaded / event.total * 100 | 0);
+              // iterate over the images in the profile picture container, replace
+              // the current content with the image present on the server
+              Array.prototype.forEach.call(
+                app.elements.profilePicture.querySelectorAll('img'),
+                function(picture) {
+                  picture.src = '/api/user/picture?cacheBuster=' + Date.now();
                 }
-              }
-            },
+              );
 
-            // finish the progress meter
-            onload: function() {
-              app.elements.newInvoice.uploadProgress.value = 100;
+              app.helpers.closeProfilePictureUploadModal();
+              return app.notifications.success('[[account:upload_profile_picture.success]]');
+            } else {
+              return app.error(new Error('POST failed: Error ' + response.status + ' - ' + response.statusText), '[[account:upload_profile_picture.error]]');
             }
           });
         } else {
-          console.error('wrong file type: ' + file.type);
+          return app.error('wrong file type: ' + file.type, '[[account:upload_profile_picture.wrong_type]]');
         }
+      };
+
+      app.helpers.openProfilePictureUploadModal = function() {
+        // add event listener to HTML to close it again
+        app.on('click', document.documentElement, app.events.hideProfilePictureUploadModal, { propagate: false });
+
+        app.elements.profilePicture.classList.add('upload-visible');
+        app.templates.profilePictureUploadModal.then(function(element) {
+          app.elements.profilePicture.appendChild(element);
+        }).then(function() {
+          app.on('change', app.elements.profilePicture.querySelector('input'), app.events.previewNewProfilePicture);
+          app.on('click', app.elements.profilePicture.querySelector('.save-picture'), app.connectors.uploadProfilePicture);
+        });
+      };
+
+      app.helpers.closeProfilePictureUploadModal = function() {
+        // remove the modal
+        document.querySelector('.upload-modal').remove();
+        app.elements.profilePicture.classList.remove('upload-visible');
+
+        // remove the event listener from HTML
+        app.off('click', document.documentElement, app.events.hideProfilePictureUploadModal);
       };
 
       app.templates.profilePictureUploadModal = (function() {

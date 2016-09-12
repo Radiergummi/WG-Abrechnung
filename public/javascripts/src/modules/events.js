@@ -37,30 +37,37 @@ module.exports = function(app) {
    * @param {function|boolean} callback    the event callback to attach
    * @param {boolean}          [debounce]  whether to debounce the event or not, defaults to false
    */
-  app.on = function(eventNames, targets, callback, debounce) {
+  app.on = function(eventNames, targets, callback, options) {
 
     // shift arguments if necessary
     if (typeof targets === 'function') {
-      debounce = callback;
+      options = callback;
       callback = targets;
       targets  = window;
     }
+    
+    options = Object.assign({
+      capture: false,
+      once: false,
+      passive: false,
+      debounce: false,
+      preventDefault: false,
+      propagate: false
+    }, options);
 
     // create array from target
-    targets = (targets instanceof NodeList
+    targets = (targets instanceof NodeList || targets instanceof HTMLCollection
         ? Array.prototype.slice.call(targets)
         : [ targets ]
     );
 
-
     // debounce the callback
-    if (debounce) {
+    if (options.debounce) {
       callback = app.debounce(callback, 250);
     }
     
     // split event names by space to allow assigning multiple events
     eventNames = eventNames.split(' ');
-
 
     // iterate over elements and events to attach all events to all elements
     for (var t = 0; t < targets.length; t++) {
@@ -82,11 +89,19 @@ module.exports = function(app) {
         // to forward any errors to the apps error handler
         target.addEventListener(eventName, function(event) {
           try {
+            if (options.preventDefault) {
+              event.preventDefault();
+            }
+
+            if (options.propagate) {
+              event.stopPropagation();
+            }
+
             return callback(event);
           } catch (error) {
             return app.error(error);
           }
-        }, false);
+        }, options);
       }
     }
   };

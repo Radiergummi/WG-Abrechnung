@@ -5,7 +5,11 @@
  require
  */
 
-var invoiceModel = require('../../models/invoice'),
+var file         = require('../../meta/file'),
+    nconf        = require('nconf'),
+    path         = require('path'),
+    Invoice      = require('../../invoice'),
+    invoiceModel = require('../../models/invoice'),
     ObjectId     = require('mongoose').Types.ObjectId;
 
 var invoicesApi = module.exports = {};
@@ -76,4 +80,71 @@ invoicesApi.getInvoice = function(req, res, next) {
 };
 
 invoicesApi.createInvoice = function(req, res, next) {
+  new Promise(function(resolve, reject) {
+    var tags = [];
+    if (typeof req.body.tags === 'string' && req.body.tags.length !== 0) {
+      tags = req.body.tags.split(',');
+    } else {
+      tags = req.body.tags;
+    }
+
+    Invoice.createNew({
+      user:         req.user._id,
+      creationDate: req.body.creationDate || new Date(),
+      sum:          req.body.sum || undefined,
+      tags:         tags
+    }, function(error, newInvoice) {
+      if (error) {
+        return reject(error);
+      }
+
+      return resolve(newInvoice);
+    });
+  })
+
+  /**
+   * save the image file
+   */
+    .then(function(newInvoice) {
+      return new Promise(function(resolve, reject) {
+        if (!req.file) {
+          return resolve();
+        }
+
+        file.write(path.join('public', 'images', 'invoices', req.user._id, newInvoice._id + '.jpg'),
+          req.file.buffer,
+          function(error) {
+            if (error) {
+              return reject(error);
+            }
+
+            return resolve(newInvoice);
+          }
+        );
+      });
+    })
+
+    /**
+     * catch any errors
+     */
+    .catch(function(error) {
+      return res.status(500).send({
+        status:  500,
+        reason:  'db-error',
+        message: {
+          raw:         'could not save invoice: ' + error.message,
+          translation: '[[global:server_error]]'
+        }
+      });
+    })
+
+
+    /**
+     * send the response
+     */
+    .then(function(newInvoice) {
+      res.status(204);
+      res.set('Location', '/invoices/' + newInvoice._id + '?success=true');
+      res.send({});
+    })
 };

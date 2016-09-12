@@ -6,7 +6,7 @@
  app
  */
 
-(function() {
+module.exports = function(app) {
   var notificationModule = function() {
   };
 
@@ -79,10 +79,10 @@
     }
 
 
-    var domNode = document.createElement('div');
+    var domNode       = document.createElement('div');
     domNode.className = 'notification ' + type;
 
-    var messageNode = document.createElement('span');
+    var messageNode       = document.createElement('span');
     messageNode.className = 'message';
     messageNode.appendChild(document.createTextNode(message));
 
@@ -94,7 +94,7 @@
             actionId     = this.createId(8),
             actionButton = document.createElement('button');
 
-        actionButton.className = 'action';
+        actionButton.className        = 'action';
         actionButton.dataset.actionId = actionId;
         actionButton.appendChild(document.createTextNode(data.name));
         domNode.appendChild(actionButton);
@@ -181,7 +181,10 @@
    * @param options
    */
   notificationModule.prototype.info = function(message, options) {
-    this.create('info', message, options);
+    var current = this;
+    app.translate(message, function(translated) {
+      current.create('info', translated, options);
+    });
   };
 
 
@@ -192,7 +195,10 @@
    * @param options
    */
   notificationModule.prototype.success = function(message, options) {
-    this.create('success', message, options);
+    var current = this;
+    app.translate(message, function(translated) {
+      current.create('success', translated, options);
+    });
   };
 
 
@@ -203,7 +209,10 @@
    * @param options
    */
   notificationModule.prototype.warning = function(message, options) {
-    this.create('warning', message, options);
+    var current = this;
+    app.translate(message, function(translated) {
+      current.create('warning', translated, options);
+    });
   };
 
 
@@ -214,7 +223,10 @@
    * @param options
    */
   notificationModule.prototype.error = function(message, options) {
-    this.create('error', message, options);
+    var current = this;
+    app.translate(message, function(translated) {
+      current.create('error', translated, options);
+    });
   };
 
 
@@ -225,12 +237,15 @@
    * @param options
    */
   notificationModule.prototype.confirmation = function(message, options) {
-    this.create('confirmation', message, options);
+    var current = this;
+    app.translate(message, function(translated) {
+      current.create('confirmation', translated, options);
+    });
   };
 
 
   notificationModule.prototype.createId = function(count) {
-    var result = '';
+    var result   = '';
     var possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
     for (var i = 0; i < count; i++) {
@@ -241,5 +256,5 @@
   };
 
 
-  module.exports = new notificationModule();
-})();
+  app.notifications = new notificationModule();
+};

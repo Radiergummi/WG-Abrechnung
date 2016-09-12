@@ -283,7 +283,7 @@
     }
     catch (error) {
       debug('could not require language file for %s (%s)', language, error.message);
-      throw new Error('Language file could not be loaded. Shutting down.');
+      throw new Error('Language file could not be loaded: ' + error.message + '. Shutting down.');
     }
 
     return callback(languages[ language ]);

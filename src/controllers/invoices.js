@@ -5,7 +5,7 @@
  require
  */
 
-var Invoice  = require('../invoice');
+var Invoice = require('../invoice');
 
 var invoices = module.exports = {};
 
@@ -62,7 +62,8 @@ invoices.create = function(req, res, next) {
     clientScripts:  [ { name: 'invoices.create' } ],
     invoicesActive: true,
     todayDate:      new Date().toISOString().substring(0, 10),
-    pageTitle:      'Neu'
+    pageTitle:      'Neu',
+    csrfToken:      req.csrfToken()
   };
 
   return res.render('invoices/create', vars);

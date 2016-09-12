@@ -12,15 +12,7 @@ module.exports = function(app) {
    */
   app.error = function(error, friendlyMessage) {
     if (friendlyMessage) {
-      try {
-        app.translate(friendlyMessage, function(translated) {
-          return console.error(translated, error);
-        });
-      } catch (error) {
-
-        console.error('Could not translate error message!');
-        return console.error(friendlyMessage, error);
-      }
+        app.notifications.error(friendlyMessage);
     }
 
     return console.error('An error occurred:', error);

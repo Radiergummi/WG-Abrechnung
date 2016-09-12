@@ -5,15 +5,16 @@
  require
  */
 
-var fs    = require('fs'),
+var debug = require('debug')('flatm8:meta:file'),
+    fs    = require('fs'),
     path  = require('path'),
     nconf = require('nconf');
 
-function resolvePath(file) {
+function resolvePath (file) {
   var basepath = nconf.get('path');
 
   // append path if not present
-  if (file.indexOf(basepath) === - 1) {
+  if (file.indexOf(basepath) === -1) {
     file = path.resolve(path.join(basepath, file));
   }
 
@@ -33,21 +34,19 @@ var File = module.exports = {};
  * @param {string} file        the path to the file
  * @param {function} callback  a callback to execute once the file is read
  */
-File.read = function (file, callback) {
+File.read = function(file, callback) {
   file = resolvePath(file);
+  debug('trying to read %s', file);
 
-  try {
-    fs.readFile(file, function (error, data) {
-      if (error) {
-        return callback(error);
-      }
+  fs.readFile(file, function(error, data) {
+    if (error) {
+      debug('could not read %s: %s', file, error.message);
+      return callback(error);
+    }
 
-      return callback(null, data);
-    });
-  }
-  catch (error) {
-    return callback(error);
-  }
+    debug('successfully read %s', file);
+    return callback(null, data);
+  });
 };
 
 
@@ -57,18 +56,21 @@ File.read = function (file, callback) {
  * @param {string} file  the path to the file
  * @returns {Buffer}     the files content
  */
-File.readSync = function (file) {
+File.readSync = function(file) {
   file = resolvePath(file);
+  debug('trying to read %s synchronously', file);
 
   var content;
   try {
     content = fs.readFileSync(file);
   }
   catch (error) {
-    throw error;
+    debug('could not read %s synchronously', file);
+    return error;
   }
 
-  return content
+  debug('successfully read %s synchronously', file);
+  return content;
 };
 
 
@@ -80,22 +82,20 @@ File.readSync = function (file) {
  * @param {function} callback        a callback to execute once the file is written
  * @param {object|string} [options]  options for the writeFile function or the encoding string
  */
-File.write = function (file, data, callback, options) {
+File.write = function(file, data, callback, options) {
   options = options || {};
   file    = resolvePath(file);
+  debug('trying to write %s', file);
 
-  try {
-    fs.writeFile(file, data, options, function (error) {
-      if (error) {
-        throw error;
-      }
+  fs.writeFile(file, data, options, function(error) {
+    if (error) {
+      debug('could not write %s: %s', file, error.message);
+      return callback(error);
+    }
 
-      return callback(null, data);
-    });
-  }
-  catch (error) {
-    throw error;
-  }
+    debug('successfully wrote %s', file);
+    return callback(null, data);
+  });
 };
 
 
@@ -106,7 +106,7 @@ File.write = function (file, data, callback, options) {
  * @param {string|Buffer} data     the data to write to the file, either a string or a buffer
  * @param {object|string} options  options for the writeFile function or the encoding string
  */
-File.writeSync = function (file, data, options) {
+File.writeSync = function(file, data, options) {
   options = options || {};
   file    = resolvePath(file);
 
@@ -125,11 +125,11 @@ File.writeSync = function (file, data, options) {
  * @param {string} file        the path to the file
  * @param {function} callback  a callback to execute once the file is removed
  */
-File.remove = function (file, callback) {
+File.remove = function(file, callback) {
   file = resolvePath(file);
 
   try {
-    fs.unlink(file, function (error) {
+    fs.unlink(file, function(error) {
       if (error) {
         throw error;
       }
@@ -149,7 +149,7 @@ File.remove = function (file, callback) {
  * @param {string} file  the path to the file
  * @returns {undefined}
  */
-File.removeSync = function (file) {
+File.removeSync = function(file) {
   file = resolvePath(file);
 
   try {
@@ -161,11 +161,11 @@ File.removeSync = function (file) {
 };
 
 
-File.rename = function (oldName, newName, callback) {
+File.rename = function(oldName, newName, callback) {
   var oldFile = resolvePath(oldName),
       newFile = resolvePath(newName);
 
-  fs.rename(oldFile, newFile, function (error) {
+  fs.rename(oldFile, newFile, function(error) {
     if (error) {
       return callback(error);
     }
@@ -175,23 +175,23 @@ File.rename = function (oldName, newName, callback) {
 };
 
 
-File.renameSync = function (oldName, newName) {
+File.renameSync = function(oldName, newName) {
 
 };
 
 
-File.move = function (file, target, callback) {
+File.move = function(file, target, callback) {
   file = resolvePath(file);
 
 
 };
 
 
-File.moveSync = function (file, target) {
+File.moveSync = function(file, target) {
 
 };
 
-File.copy = function (source, target, callback) {
+File.copy = function(source, target, callback) {
   source             = resolvePath(source);
   target             = resolvePath(target);
   var callbackCalled = false;
@@ -201,14 +201,14 @@ File.copy = function (source, target, callback) {
 
   var writeStream = fs.createWriteStream(target);
   writeStream.on('error', done);
-  writeStream.on('close', function (ex) {
+  writeStream.on('close', function(ex) {
     done();
   });
 
   readStream.pipe(writeStream);
 
-  function done(error) {
-    if (! callbackCalled) {
+  function done (error) {
+    if (!callbackCalled) {
       callback(error);
       callbackCalled = true;
     }
@@ -224,10 +224,10 @@ File.copy = function (source, target, callback) {
  * @param {string} file  the path to the file
  * @param {fileExistsCallback} callback  a callback to execute once the file
  */
-File.exists = function (file, callback) {
+File.exists = function(file, callback) {
   file = resolvePath(file);
 
-  fs.access(file, fs.F_OK, function (error) {
+  fs.access(file, fs.R_OK, function(error) {
     if (error) {
       callback(false);
     } else {
@@ -239,7 +239,7 @@ File.exists = function (file, callback) {
 /**
  * @callback fileExistsCallback
  *
- * @param {bool} exists
+ * @param {boolean} exists
  */
 
 
@@ -249,7 +249,7 @@ File.exists = function (file, callback) {
  * @param {string} file  the path to the file
  * @return {boolean}     whether the file exists or not
  */
-File.existsSync = function (file) {
+File.existsSync = function(file) {
   file = resolvePath(file);
 
   try {
@@ -268,11 +268,11 @@ File.existsSync = function (file) {
  * @param {string} file                   the path to the file
  * @param {isDirectoryCallback} callback  a callback to execute after the check
  */
-File.isDirectory = function (file, callback) {
+File.isDirectory = function(file, callback) {
   file = resolvePath(file);
 
   try {
-    fs.lstat(file, function (error, stats) {
+    fs.lstat(file, function(error, stats) {
       if (error) {
         throw error;
       }
@@ -298,11 +298,11 @@ File.isDirectory = function (file, callback) {
  * @param {string} file  the path to the file
  * @returns {boolean}    whether the file is a directory
  */
-File.isDirectorySync = function (file) {
+File.isDirectorySync = function(file) {
   file = resolvePath(file);
 
   try {
-    fs.lstat(file, function (error, stats) {
+    fs.lstat(file, function(error, stats) {
       if (error) {
         throw error;
       }
@@ -328,7 +328,7 @@ File.isDirectorySync = function (file) {
  *
  * @param {watchFileCallback} [listener]  an optional callback to apply when the file is changed
  */
-File.watch = function (file, options, listener) {
+File.watch = function(file, options, listener) {
   var watchOptions = options || {};
 
   if (typeof options === 'function') {
@@ -360,27 +360,27 @@ File.watch = function (file, options, listener) {
  * @param {string} directory
  * @param {recursiveDirectoryCallback} callback
  */
-File.readDirectoryRecursively = function (directory, callback) {
+File.readDirectoryRecursively = function(directory, callback) {
   directory = resolvePath(directory);
 
   var results = [];
-  fs.readdir(directory, function (error, list) {
+  fs.readdir(directory, function(error, list) {
     if (error) return callback(error);
 
     var i = 0;
-    (function next() {
-      var file = list[ i ++ ];
+    (function next () {
+      var file = list[ i++ ];
 
-      if (! file) {
+      if (!file) {
         return callback(null, results);
       }
 
       file = directory + '/' + file;
-      fs.stat(file, function (error, stat) {
+      fs.stat(file, function(error, stat) {
         if (error) return callback(error, null);
 
         if (stat && stat.isDirectory()) {
-          File.readDirectoryRecursively(file, function (error, res) {
+          File.readDirectoryRecursively(file, function(error, res) {
             if (error) return callback(error, null);
 
             results = results.concat(res);
@@ -408,11 +408,11 @@ File.readDirectoryRecursively = function (directory, callback) {
  * @param {string} file                    the path to the file
  * @param {lastModifiedCallback} callback  a callback to run once the date has been determined
  */
-File.lastModified = function (file, callback) {
+File.lastModified = function(file, callback) {
   file = resolvePath(file);
 
   try {
-    fs.lstat(file, function (error, stats) {
+    fs.lstat(file, function(error, stats) {
       if (error) {
         throw error;
       }
@@ -437,7 +437,7 @@ File.lastModified = function (file, callback) {
  * @param {string} file  the path to the file
  * @returns {Date}       the last modified time as a date object
  */
-File.lastModifiedSync = function (file) {
+File.lastModifiedSync = function(file) {
   file = resolvePath(file);
 
   try {

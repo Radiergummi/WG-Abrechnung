@@ -71,61 +71,24 @@ var app  = require('./app'),
         tags.push(tag);
       }
 
-      data.append('invoicePicture', (app.data.newInvoiceImage
-        ? app.data.newInvoiceImage
-        : app.elements.newInvoice.picture.files[ 0 ])
+      data.append('invoicePicture', (
+          app.data.newInvoiceImage
+            ? app.data.newInvoiceImage
+            : app.elements.newInvoice.picture.files[ 0 ]
+        )
       );
       data.append('creationDate', app.elements.newInvoice.date.value);
       data.append('sum', app.elements.newInvoice.sum.value);
       data.append('tags', tags);
+      data.append('_csrf', document.body.dataset.csrfToken);
 
-      if (window[ 'fetch' ]) {
-        fetch(new Request('/api/invoices/create', {
-          method: 'post',
-          body:   data
-        })).then(function(response) {
-          if (response.ok) {
-            app.translate('[[invoices:create_success]]', function(translated) {
-              app.notifications.success(translated);
-            });
-          } else {
-            app.error('Response status %s indicates error', response.status);
-          }
-        }, function(error) {
-          console.error('An error occurred trying to save the invoice');
-        });
-      } else {
-        var request = new XMLHttpRequest();
-        request.open('POST', '/api/invoices/create', true);
-
-        request.onreadystatechange = function() {
-
-          // when the data is available, fire the callback
-          if (request.readyState == 4) {
-
-            if (request.status == "200") {
-              console.log('response is okay. invoice has been saved.', request);
-              return window.location = request.responseURL;
-            } else {
-              return app.error(new Error('XMLHttpRequest failed: Error ' + request.status + ' - ' + request.statusText), '[[clientError:save_invoice_failed, ' + request.status + ']]');
-            }
-          }
-        };
-
-        // update the progress meter
-        request.upload.onprogress = function (event) {
-          if (event.lengthComputable) {
-            app.elements.newInvoice.uploadProgress.value = (event.loaded / event.total * 100 | 0);
-          }
-        };
-
-        // finish the progress meter
-        request.onload = function() {
-          app.elements.newInvoice.uploadProgress.value = 100;
-        };
-
-        request.send(data);
-      }
+      app.post('/api/invoices', data, function(response) {
+        if (response.ok) {
+          app.notifications.success('[[invoices:create_success]]');
+        } else {
+          return app.error(new Error('POST failed: Error ' + response.status + ' - ' + response.responseText.message.raw), response.responseText.message.translation);//'[[clientError:save_invoice_failed, ' + response.status + ']]');
+        }
+      });
     };
 
     app.events.addNewTagInput = function(event) {

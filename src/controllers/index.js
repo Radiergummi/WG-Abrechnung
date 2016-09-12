@@ -49,6 +49,17 @@ controllers.handleErrors = function(error, req, res, next) {
     return winston.error(error);
   }
 
+  if (error.code === 'EBADCSRFTOKEN') {
+    return res.status(403).json({
+      status: 403,
+      reason: 'invalid-csrf',
+      message: {
+        raw: 'invalid CSRF token',
+        translation: '[[global:server_error]]'
+      }
+    });
+  }
+
   var path  = nconf.get('path'),
       stack = error.stack.toString().split(path).join(''),
       origin,

@@ -29,7 +29,6 @@ webpackJsonp([5],{
 	       * attaches the delete user event listeners
 	       */
 	      app.listeners.addDeleteUserEvents = function() {
-	        app.debug('attaching delete user events');
 	        app.on('click', app.elements.deleteUserButton, app.events.deleteUser);
 	      };
 	
@@ -193,6 +192,26 @@ webpackJsonp([5],{
 	          }
 	
 	          return callback(null, deletedUser);
+	        });
+	      };
+	      
+	      app.connectors.createUser = function(userData, callback) {
+	        
+	        
+	        app.post('/api/users', userData, function(response) {
+	          if (response.ok) {}
+	        });
+	      };
+	
+	      app.connectors.getUserDetails = function(userId, callback) {
+	        console.log('request');
+	        return app.http.get('/api/users/' + userId, function(response) {
+	          console.log('response');
+	          if (response.ok) {
+	            console.log(response.responseText);
+	          } else {
+	            app.error('could not get user details for user ' + userId + ': ' + response.responseText.message.raw, response.responseText.message.translation);
+	          }
 	        });
 	      };
 	
