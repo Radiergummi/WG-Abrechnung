@@ -61,13 +61,16 @@ module.exports = function(app) {
 
         // check for class selectors
         var classMatches = [];
-        if (classMatches = selector.match(/([a-zA-Z]+)?\.(-?[_a-zA-Z0-9]+)/) && classMatches.length === 1) {
+        if (classMatches = selector.match(/([a-zA-Z]+)?\.(-?[_a-zA-Z0-9]+)/g)) {
+          if (classMatches.length === 1) {
 
-          // if we have only a single class, use getElementsByClassName
-          elements = document.getElementsByClassName(classMatches[ 0 ].slice(1));
+            // if we have only a single class, use getElementsByClassName
+            elements = document.getElementsByClassName(classMatches[ 0 ].slice(1));
 
-          if (elements.length === 1) {
-            return elements[ 0 ];
+
+            if (elements.length === 1) {
+              return elements[ 0 ];
+            }
           }
         } else {
 
