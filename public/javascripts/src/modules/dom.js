@@ -1,6 +1,32 @@
 'use strict';
 
 module.exports = function(app) {
+  app.dom = function(selectors) {
+    var selectorRegexes = {
+      class: /^\.(.*)/
+    };
+
+    // if we have not received a list of selectors, convert it
+    if (
+      (!selectors instanceof NodeList) ||
+      (!selectors instanceof HTMLCollection) ||
+      (!selectors instanceof Array)
+    ) {
+      selectors = [ selectors ];
+    }
+
+    // if selectors is not an array, convert it
+    if (!selectors instanceof Array) {
+      selectors = Array.prototype.slice.call(selectors);
+    }
+    
+    for (var i = 0; i < selectors.length; i++) {
+      if (typeof selectors[ i ] === 'string') {
+        if ()
+      }
+    }
+  };
+
   app.helpers.createNode = function(tagName, attributes, content) {
     var node = document.createElement(tagName);
 
