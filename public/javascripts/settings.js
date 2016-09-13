@@ -17,6 +17,7 @@ webpackJsonp([5],{
 	    app.elements.sendInvitationButton   = document.getElementsByClassName('send-invite') [ 0 ];
 	    app.elements.invitationEmailAddress = document.getElementById('invite-email-address');
 	    app.elements.deleteUserButton       = document.getElementsByClassName('delete-user')[ 0 ];
+	    app.elements.saveUserButton         = document.getElementsByClassName('save-user')[ 0 ];
 	
 	    /**
 	     * attaches the invitation event listeners
@@ -30,6 +31,10 @@ webpackJsonp([5],{
 	     */
 	    app.listeners.addDeleteUserEvents = function() {
 	      app.on('click', app.elements.deleteUserButton, app.events.deleteUser);
+	    };
+	
+	    app.listeners.addEditUserEvents = function() {
+	//      app.on('click')
 	    };
 	
 	    /**

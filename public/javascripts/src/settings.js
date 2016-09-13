@@ -29,7 +29,7 @@ var app  = require('./app'),
     };
 
     app.listeners.addEditUserEvents = function() {
-      app.on('click',)
+//      app.on('click')
     };
 
     /**
