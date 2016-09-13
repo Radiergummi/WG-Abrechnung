@@ -4,27 +4,32 @@ var app  = require('./app'),
     main = require('./main')(app);
 
 
-(function (app) {
-  app.startup.push(function () {
+(function(app) {
+  app.startup.push(function() {
     require('./libraries/vanilla-modal')(app);
 
     app.elements.userList               = document.getElementsByClassName('users')[ 0 ];
     app.elements.sendInvitationButton   = document.getElementsByClassName('send-invite') [ 0 ];
     app.elements.invitationEmailAddress = document.getElementById('invite-email-address');
     app.elements.deleteUserButton       = document.getElementsByClassName('delete-user')[ 0 ];
+    app.elements.saveUserButton         = document.getElementsByClassName('save-user')[ 0 ];
 
     /**
      * attaches the invitation event listeners
      */
-    app.listeners.addInvitationEvents = function () {
+    app.listeners.addInvitationEvents = function() {
       app.on('click', app.elements.sendInvitationButton, app.events.sendInvitation);
     };
 
     /**
      * attaches the delete user event listeners
      */
-    app.listeners.addDeleteUserEvents = function () {
+    app.listeners.addDeleteUserEvents = function() {
       app.on('click', app.elements.deleteUserButton, app.events.deleteUser);
+    };
+
+    app.listeners.addEditUserEvents = function() {
+      app.on('click',)
     };
 
     /**
@@ -32,7 +37,7 @@ var app  = require('./app'),
      *
      * @param {Event} event
      */
-    app.events.sendInvitation = function (event) {
+    app.events.sendInvitation = function(event) {
 
       // retrieve the email address from its field
       var emailAddress = app.elements.invitationEmailAddress.value;
@@ -45,11 +50,11 @@ var app  = require('./app'),
         event.target.classList.add('sending');
 
         // dispatch the invitation via the appropriate socket connector
-        app.connectors.sendInvitation(emailAddress, function (error, response) {
+        app.connectors.sendInvitation(emailAddress, function(error, response) {
           if (error) {
 
             // if we have an error, show a notification
-            app.translate('[[settings:user_management.invite.notification_error, ' + error.message + ']]', function (translated) {
+            app.translate('[[settings:user_management.invite.notification_error, ' + error.message + ']]', function(translated) {
               app.notifications.error(translated);
             });
 
@@ -65,12 +70,12 @@ var app  = require('./app'),
           }
 
           // everything went smoothly, show a notification
-          app.translate('[[settings:user_management.invite.notification_success, ' + response.invitation.sentTo + ']]', function (translated) {
+          app.translate('[[settings:user_management.invite.notification_success, ' + response.invitation.sentTo + ']]', function(translated) {
             app.notifications.success(translated);
           });
 
           // leave the user some time to see what's going on
-          return setTimeout(function () {
+          return setTimeout(function() {
 
             // remove the sending class and enable the button again
             event.target.classList.remove('sending');
@@ -83,7 +88,7 @@ var app  = require('./app'),
       } else {
 
         // the validation failed, show a notification
-        app.translate('[[settings:user_management.invite.notification_valid_email]]', function (translated) {
+        app.translate('[[settings:user_management.invite.notification_valid_email]]', function(translated) {
           app.notifications.warning(translated);
         });
       }
@@ -94,7 +99,7 @@ var app  = require('./app'),
      *
      * @param {Event} event
      */
-    app.events.prepareDeleteUserModal = function (event) {
+    app.events.prepareDeleteUserModal = function(event) {
       app.debug('attaching prepare delete user modal data');
       var modal = document.getElementsByClassName('dialog-delete-user-wrapper')[ 0 ];
 
@@ -110,23 +115,23 @@ var app  = require('./app'),
      *
      * @param {Event} event
      */
-    app.events.deleteUser = function (event) {
+    app.events.deleteUser = function(event) {
 
       // prevent users from deleting themselves
       if (event.target.dataset.userId === app.config.user._id) {
 
         // if we have an error, show a notification
-        app.translate('[[settings:user_management.delete.notification_error_delete_self]]', function (translated) {
+        app.translate('[[settings:user_management.delete.notification_error_delete_self]]', function(translated) {
           app.notifications.error(translated);
           app.modals.instance.close();
         });
       }
 
-      app.connectors.deleteUser(event.target.dataset.userId, function (error, deletedUser) {
+      app.connectors.deleteUser(event.target.dataset.userId, function(error, deletedUser) {
         if (error) {
 
           // if we have an error, show a notification
-          app.translate('[[settings:user_management.delete.notification_error, ' + error.message + ']]', function (translated) {
+          app.translate('[[settings:user_management.delete.notification_error, ' + error.message + ']]', function(translated) {
             app.notifications.error(translated);
           });
 
@@ -138,11 +143,11 @@ var app  = require('./app'),
         }
 
         // everything went smoothly, show a notification
-        app.translate('[[settings:user_management.delete.notification_success, ' + deletedUser.firstName + ' ' + deletedUser.lastName + ']]', function (translated) {
+        app.translate('[[settings:user_management.delete.notification_success, ' + deletedUser.firstName + ' ' + deletedUser.lastName + ']]', function(translated) {
           app.notifications.success(translated);
         });
 
-        return setTimeout(function () {
+        return setTimeout(function() {
           app.modals.instance.close();
 
           // delete the user row
@@ -151,9 +156,9 @@ var app  = require('./app'),
       });
     };
 
-    app.events.prepareEditUserModal = function (event) {
-      return app.connectors.getUserDetails(event.target.dataset.userId, function (user) {
-        var modal  = document.getElementsByClassName('dialog-edit-user-wrapper')[ 0 ],
+    app.events.prepareEditUserModal = function(event) {
+      return app.connectors.getUserDetails(event.target.dataset.userId, function(user) {
+        var modal  = document.getElementsByClassName('modal-edit-user-wrapper')[ 0 ],
             fields = {
               firstName: document.getElementById('modified-first-name'),
               lastName:  document.getElementById('modified-last-name'),
@@ -182,10 +187,10 @@ var app  = require('./app'),
      * @param {string} emailAddress
      * @param {function(Error, object)} callback
      */
-    app.connectors.sendInvitation = function (emailAddress, callback) {
+    app.connectors.sendInvitation = function(emailAddress, callback) {
 
       // emit the socket call
-      app.io.emit('settings.sendInvitation', emailAddress, function (error, response) {
+      app.io.emit('settings.sendInvitation', emailAddress, function(error, response) {
         if (error) {
           return callback(error, response);
         }
@@ -201,12 +206,12 @@ var app  = require('./app'),
      * @param {function(Error, object)} callback
      * @returns {*}
      */
-    app.connectors.deleteUser = function (userId, callback) {
-      if (! userId) {
+    app.connectors.deleteUser = function(userId, callback) {
+      if (!userId) {
         return callback(new Error('invalid user ID ' + userId), null);
       }
 
-      app.io.emit('settings.deleteUser', userId, function (error, deletedUser) {
+      app.io.emit('settings.deleteUser', userId, function(error, deletedUser) {
         if (error) {
           return callback(error, null);
         }
@@ -215,10 +220,10 @@ var app  = require('./app'),
       });
     };
 
-    app.connectors.createUser = function (userData, callback) {
+    app.connectors.createUser = function(userData, callback) {
 
 
-      app.post('/api/users', userData, function (response) {
+      app.post('/api/users', userData, function(response) {
         if (response.ok) {
           return callback(response.responseText);
         } else {
@@ -227,8 +232,8 @@ var app  = require('./app'),
       });
     };
 
-    app.connectors.getUserDetails = function (userId, callback) {
-      return app.http.get('/api/users/' + userId, function (response) {
+    app.connectors.getUserDetails = function(userId, callback) {
+      return app.http.get('/api/users/' + userId, function(response) {
         if (response.ok) {
           return callback(response.responseText);
         } else {
@@ -237,8 +242,8 @@ var app  = require('./app'),
       });
     };
 
-    app.connectors.editUser = function (userId, userData, callback) {
-      return app.http.put('/api/users/' + userId, userData, function (response) {
+    app.connectors.editUser = function(userId, userData, callback) {
+      return app.http.put('/api/users/' + userId, userData, function(response) {
         if (response.ok) {
           return callback(response.responseText);
         } else {

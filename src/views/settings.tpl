@@ -200,7 +200,7 @@
   </div>
 </div>
 <div id="modal-edit-user" class="hidden">
-  <div class="modal-content-wrapper modal-invite-user-wrapper">
+  <div class="modal-content-wrapper modal-edit-user-wrapper">
     <header class="modal-header">
       <h2>[[settings:user_management.edit_user]]</h2>
     </header>
