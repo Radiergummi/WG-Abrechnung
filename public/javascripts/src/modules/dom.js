@@ -4,28 +4,24 @@ module.exports = function(app) {
 
   /**
    *
-   * @param {string|Array|Element|HTMLElement|Node|HTMLCollection|NodeList} selectors
+   * @param {Array|Element|HTMLElement|Node|HTMLCollection|NodeList} elements
    *
    * @returns {Array}
    * @private
    */
-  function _covertToSelectorArray (selectors) {
+  function _covertToElementArray (elements) {
 
     // if we have not received a list of selectors, convert it
-    if (
-      (!selectors instanceof NodeList) ||
-      (!selectors instanceof HTMLCollection) ||
-      (typeof selectors !== 'Array')
-    ) {
-      selectors = [ selectors ];
+    if (!elements.hasOwnProperty('length')) {
+      elements = [ elements ];
     }
 
     // if selectors is not an array, convert it
-    if (!selectors instanceof Array) {
-      selectors = Array.prototype.slice.call(selectors);
+    if (typeof elements !== 'Array') {
+      elements = Array.prototype.slice.call(elements);
     }
 
-    return selectors;
+    return elements;
   }
 
   /**
@@ -39,65 +35,93 @@ module.exports = function(app) {
 
     // if we received any type of DOM node, return it
     if (typeof selector === 'object' && selector.hasOwnProperty('nodeType')) {
-      return selector;
+      return _covertToElementArray(selector);
     }
 
     // check for element collections
     if (selector instanceof NodeList || selector instanceof HTMLCollection) {
-      elements = selector;
+      return _covertToElementArray(selector);
     }
 
     if (typeof selector === 'string') {
 
       // check for ID selectors
       if (selector.charAt(0) === '#') {
-        return document.getElementById(selector.slice(1));
+        return _covertToElementArray(document.getElementById(selector.slice(1)));
       }
 
       // check for tag selectors
       if (selector.match(/^([a-zA-Z]+)$/)) {
-        elements = document.getElementsByTagName(selector);
-      } else {
-
-        // check for class selectors
-        var classMatches = [];
-        if (classMatches = selector.match(/([a-zA-Z]+)?\.(-?[_a-zA-Z0-9]+)/g)) {
-          if (classMatches.length === 1) {
-
-            // if we have only a single class, use getElementsByClassName
-            elements = document.getElementsByClassName(classMatches[ 0 ].slice(1));
+        return _covertToElementArray(document.getElementsByTagName(selector));
+      }
 
 
-            if (elements.length === 1) {
-              return elements[ 0 ];
-            }
-          }
-        } else {
+      // check for class selectors
+      var classMatches = [];
+      if (classMatches = selector.match(/([a-zA-Z]+)?\.([-_a-zA-Z0-9]+)/g)) {
+        if (classMatches.length === 1) {
 
-          // in all other cases, just use querySelectorAll
-          elements = document.querySelectorAll(selector);
+          // if we have only a single class, use getElementsByClassName
+          return _covertToElementArray(document.getElementsByClassName(classMatches[ 0 ].slice(1)));
         }
       }
     }
 
-    // if we have multiple elements left, convert them to an array
-    return Array.prototype.slice.call(elements);
+    // in all other cases, just use querySelectorAll
+    return _covertToElementArray(document.querySelectorAll(selector));
   }
 
-  app.dom = function(selectors) {
-    selectors = _covertToSelectorArray(selectors);
+  function _DOMElement (elementSet) {
+    console.log(elementSet);
+    this.elementSet = elementSet;
 
-    var elements = [];
-
-    for (var selector = 0; selector < selectors.length; selector++) {
-      elements.push(_parseSelector(selectors[ selector ]));
+    for (var i = 0; i < elementSet.length; i++) {
+      this[ i ] = elementSet[ i ];
     }
 
-    if (elements.length === 1) {
-      return elements[ 0 ];
-    }
+    this.length = elementSet.length;
 
-    return elements;
+    // return all elements
+    return this;
+  }
+
+  _DOMElement.prototype = {
+    length: 0,
+    splice: function(begin, end) {
+      return this.elementSet.slice(begin, end);
+    }
+  };
+/*
+  Object.defineProperty(_DOMElement.prototype, 'length', {
+    get: function() {
+      var count = 0,
+          idx   = 0;
+
+      while (this[ idx ]) {
+        count++;
+        idx++;
+      }
+
+      return count;
+    }
+  });
+*/
+  _DOMElement.prototype.each = function(callback) {
+    for (var index = 0; index < this.elementSet; index++) {
+      callback.call(this, this.elementSet[ index ], index);
+    }
+  };
+
+  _DOMElement.prototype.on = function(eventNames, callback, options) {
+    return app.on(eventNames, this, callback, options);
+  };
+
+  _DOMElement.prototype.off = function(eventNames, callback) {
+    return app.off(eventNames, this, callback);
+  };
+
+  app.dom = function(selector) {
+    return new _DOMElement(_parseSelector(selector));
   };
 
 
