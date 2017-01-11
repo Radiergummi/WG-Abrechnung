@@ -67,11 +67,13 @@ Usually users can just reset their password and generate a new one, but in speci
 - [x] set up admin routes (user management)
 - [ ] develop the core algorithms for the calculations
 - [ ] set up monthly statements
-- [ ] set up gifting, negative invoices (for private product shopping etc.)
+- [ ] set up gifting, negative invoices (for private shopping expenses etc.)
 - [x] implement statistics generation and rendering
 - [x] set up mail server with payment notifications
 - [ ] set up tests
 - [ ] set up PayPal.me integration for instant payments
+- [ ] review callback hell and replace with promise hell (:+1:)
+- [ ] review vue.js for suitability (and write 90% of flatm8 again, lol)
 - [ ] ... more to come
 
 ## Routes
