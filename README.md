@@ -37,6 +37,11 @@ Language is german right now, though most of the strings are in the view files -
 *Update 2016/09/14:* Again, more work to the clientside scripts - they are properly split up in modules now, beneath the existing HTTP abstraction we also have a simple DOM library slightly similar to how jQuery works, though it only provides a single interface to retrieving DOM elements and applying methods to them. The HTTP module was modified to handle API requests properly, and on the server side the API structure has been flatened and extended. I also implemented CSRF checking and will do Oauth 1.0a/2 at some point, but that has less priority currently.  
 Besides, I came up with a new concept of storing user passwords ([outlined below](#secure-plaintext-password-retrieval-concept)). If it turns out to be secure, maybe I'll implement it.  
 
+*Update 201701/11:* Wow, has been a while. I did not have time during the last months to actively work on flatm8, but things cleared up a bit, so there's a lot of updates coming. In the meantime, I have swapped templates.js with handlebars due to some bugs that haven't been fixed for half a year. That also enables me to write simpler templates and to finally get rid of these awkward "object to JSON, JSON to object" conversations in controllers.  
+I also reviewed the CSRF problems, improved the clientside HTTP abstraction module and included [flatpickr](https://github.com/chmln/flatpickr) as the date selector (which looks absolutely freaking beautiful btw). Since the invoice section is almost complete, I'm planning to do the stats from scratch again and build a solid backend structure for it (no more spaghetti object sorting but a real, flexible mongo output sorter).  
+Anyway, much to come, I'm excited!
+
+
 Once the current way of handling receipts works, I'm planning to integrate OCR (using tesseract, maybe) somehow, so the receipts get parsed automatically. That would eliminate the need to enter the sum manually and allow to create detailed product statistics. As far as I've seen, though, that is a non-trivial task which'd require some serious engineering.  
 
 ### Secure plaintext password retrieval concept
