@@ -3,7 +3,9 @@
 module.exports = function(app) {
   window.addEventListener('flatm8:ready', function(event) {
     app.startup.push(function() {
-      app.elements.profilePicture = document.getElementsByClassName('profile-picture')[ 0 ];
+      app.elements.currentUser    = app.dom('.current-user');
+      app.elements.profilePicture = app.dom('.profile-picture', app.elements.currentUser);
+      //app.elements.profilePicture = document.getElementsByClassName('profile-picture')[ 0 ];
       app.elements.backLinks      = document.getElementsByClassName('back-link');
       app.elements.inputElements  = document.getElementsByTagName('input');
       app.elements.selectBoxes    = document.getElementsByClassName('select-box');
@@ -27,8 +29,9 @@ module.exports = function(app) {
         });
       };
 
-      app.listeners.addProfilePictureEvents = function() {
-        app.on('click', app.elements.profilePicture, app.events.showProfilePictureUploadModal);
+      app.listeners.addCurrentUserEvents = function() {
+        app.elements.currentUser.on('flatm8:user_updated', app.events.updateHeaderUserName);
+        app.elements.profilePicture.on('click', app.events.showProfilePictureUploadModal);
       };
 
       app.events.revertLastHistoryState = function(event) {
@@ -45,13 +48,10 @@ module.exports = function(app) {
       };
 
       app.events.toggleSelectBox = function(event) {
-        console.log('select clicked');
-        if (document.querySelectorAll('.select-box.visible').length > 0) {
-          for (var i = 0; i < app.elements.selectBoxes.length; i++) {
-            app.elements.selectBoxes[ i ].classList.remove('visible');
-          }
+        var visibleSelectBoxes = app.dom('.select-box.visible');
 
-          return;
+        if (!visibleSelectBoxes.empty()) {
+          return visibleSelectBoxes.removeClass('visible');
         }
 
         if (!event.target.classList.contains('select-box')) {
@@ -69,11 +69,22 @@ module.exports = function(app) {
         return event.target.classList.add('visible');
       };
 
+      app.events.updateHeaderUserName = function(event) {
+        if (event.target.dataset.userId !== event.detail.userId) {
+          return false;
+        }
+
+        var newName = event.detail.firstName + ' ' + event.detail.lastName;
+
+        app.dom('.username', event.target).text(newName);
+      };
+
       app.events.showProfilePictureUploadModal = function(event) {
-        var uploadModal = document.querySelector('.upload-modal');
+        var uploadModal = app.dom('.upload-modal');
 
         // if the current click targets the modal itself, quit
-        if (uploadModal) {
+        if (!uploadModal.empty()) {
+          app.debug('upload modal is not visible');
           return false;
         }
 
@@ -83,14 +94,14 @@ module.exports = function(app) {
       };
 
       app.events.hideProfilePictureUploadModal = function(event) {
-        var uploadModal = document.querySelector('.upload-modal');
+        var uploadModal = app.dom('.upload-modal');
 
-        if (!uploadModal) {
+        if (uploadModal.empty()) {
           return false;
         }
 
         // if the current click targets the modal itself, quit
-        if (uploadModal && uploadModal.contains(event.target)) {
+        if (uploadModal.contains(event.target)) {
           return false;
         }
 
@@ -108,22 +119,20 @@ module.exports = function(app) {
        * @param event
        */
       app.events.previewNewProfilePicture = function(event) {
-        app.elements.profilePicture.querySelector('.current-picture').classList.add('loading');
-        var file = event.target.files[ 0 ];
+        app.dom('.current-picture', app.elements.profilePicture).addClass('loading');
+        var file   = event.target.files[ 0 ];
         var reader = new FileReader();
 
         reader.onload = function(event) {
 
-          // iterate over the images in the profile picture container, replace
-          // the current content with the image selected for upload
-          Array.prototype.forEach.call(
-            app.elements.profilePicture.querySelectorAll('img'),
-            function(picture) {
-              picture.src = event.target.result;
-            }
-          );
+          setTimeout(function() {
 
-          app.elements.profilePicture.querySelector('.current-picture').classList.remove('loading');
+            // iterate over the images in the profile picture container, replace
+            // the current content with the image selected for upload
+            app.dom('img', app.elements.profilePicture).src(event.target.result);
+
+            app.dom('.current-picture', app.elements.profilePicture).removeClass('loading');
+          }, 500);
         };
         reader.readAsDataURL(file);
       };
@@ -139,7 +148,7 @@ module.exports = function(app) {
           var data = new FormData();
           data.append('profilePicture', file);
           data.append('user', app.config.user.id);
-          data.append('_csrf', document.body.dataset.csrfToken);
+          //data.append('_csrf', document.body.dataset.csrfToken);
 
           // post the picture to the server
           return app.http.post('/api/user/picture', data, function(response) {
@@ -149,17 +158,14 @@ module.exports = function(app) {
 
               // iterate over the images in the profile picture container, replace
               // the current content with the image present on the server
-              Array.prototype.forEach.call(
-                app.elements.profilePicture.querySelectorAll('img'),
-                function(picture) {
-                  picture.src = '/api/user/picture?cacheBuster=' + Date.now();
-                }
-              );
+              app.dom('img', app.elements.profilePicture).each(function(index, picture) {
+                picture.src = '/api/user/picture?cacheBuster=' + Date.now();
+              });
 
               app.helpers.closeProfilePictureUploadModal();
               return app.notifications.success('[[account:upload_profile_picture.success]]');
             } else {
-              return app.error(new Error('POST failed: Error ' + response.status + ' - ' + response.statusText), '[[account:upload_profile_picture.error]]');
+              return app.error('POST failed: Error ' + response.status + ' - ' + response.statusText, '[[account:upload_profile_picture.error]]');
             }
           });
         } else {
@@ -168,25 +174,28 @@ module.exports = function(app) {
       };
 
       app.helpers.openProfilePictureUploadModal = function() {
-        // add event listener to HTML to close it again
-        app.on('click', document.documentElement, app.events.hideProfilePictureUploadModal, { propagate: false });
 
-        app.elements.profilePicture.classList.add('upload-visible');
+        // add event listener to HTML to close it again
+        app.dom(document.documentElement).on('click', app.events.hideProfilePictureUploadModal, {
+          propagate: false
+        });
+
+        app.elements.profilePicture.addClass('upload-visible');
         app.templates.profilePictureUploadModal.then(function(element) {
-          app.elements.profilePicture.appendChild(element);
+          app.elements.profilePicture.append(element);
         }).then(function() {
-          app.on('change', app.elements.profilePicture.querySelector('input'), app.events.previewNewProfilePicture);
-          app.on('click', app.elements.profilePicture.querySelector('.save-picture'), app.connectors.uploadProfilePicture);
+          app.dom('input', app.elements.profilePicture).on('change', app.events.previewNewProfilePicture);
+          app.dom('.save-picture', app.elements.profilePicture).on('click', app.connectors.uploadProfilePicture);
         });
       };
 
       app.helpers.closeProfilePictureUploadModal = function() {
         // remove the modal
-        document.querySelector('.upload-modal').remove();
-        app.elements.profilePicture.classList.remove('upload-visible');
+        app.dom('.upload-modal').remove();
+        app.elements.profilePicture.removeClass('upload-visible');
 
         // remove the event listener from HTML
-        app.off('click', document.documentElement, app.events.hideProfilePictureUploadModal);
+        app.dom(document.documentElement).off('click', app.events.hideProfilePictureUploadModal);
       };
 
       app.templates.profilePictureUploadModal = (function() {
@@ -202,7 +211,7 @@ module.exports = function(app) {
           '</section>' +
           '<section class="upload-controls">' +
           '<input type="file" name="profilePicture" id="file-input">' +
-          '<button type="button" class="save-picture"><span class="fa fa-upload"></span> [[global:do_upload]]</button>' +
+          '<button type="button" class="save-picture"><span class="fa fa-upload"></span> [[global:do_save]]</button>' +
           '</section>' +
           '</article>' +
           '</div>');
@@ -211,7 +220,7 @@ module.exports = function(app) {
       app.listeners.addLinkEvents();
       app.listeners.addInputEvents();
       app.listeners.addSelectBoxEvents();
-      app.listeners.addProfilePictureEvents();
+      app.listeners.addCurrentUserEvents();
     });
   });
 };

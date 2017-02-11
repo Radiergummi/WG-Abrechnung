@@ -29,6 +29,7 @@ var controllers = require('../controllers'),
  */
 middleware.checkAuth = function(req, res, next) {
   if (req.user) {
+    debug('user is authenticated');
     return next();
   } else {
     debug('no user in request');
@@ -65,6 +66,7 @@ middleware.isAdmin = function(req, res, next) {
  * @returns {*}
  */
 middleware.isApiRequest = function(req, res, next) {
+  debug('current request is an API request');
   res.locals.isApiRequest = true;
   return next();
 };

@@ -28,7 +28,7 @@ invoiceSockets.getPaginated = function (socket, data, callback) {
       return callback(error);
     }
 
-    var invoiceSet = JSON.parse(JSON.stringify(invoices));
+    var invoiceSet = invoices;
 
     for (var i = 0; i < invoices.length; i ++) {
       invoiceSet[ i ].creationDate = invoices[ i ].getFormattedDate();
@@ -66,11 +66,9 @@ invoiceSockets.search = function (socket, data, callback) {
     if (error) {
       return callback(error);
     }
-
-        var stringifiedInvoices = JSON.parse(JSON.stringify(invoices));
-
+    
     return callback(null, {
-      results: stringifiedInvoices.map(function(current, index) {
+      results: invoices.map(function(current, index) {
         current.creationDate = invoices[ index ].getFormattedDate();
         current.ownInvoice   = (invoices[ index ].user._id == socket._id.toString());
         return current;

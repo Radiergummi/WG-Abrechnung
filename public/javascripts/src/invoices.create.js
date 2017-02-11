@@ -1,7 +1,8 @@
 'use strict';
 
-var app  = require('./app'),
-    main = require('./main')(app);
+const flatpickr = require('./libraries/flatpickr'),
+      app       = require('./app'),
+      main      = require('./main')(app);
 
 (function(app) {
 
@@ -9,25 +10,30 @@ var app  = require('./app'),
    * push the code into the app startup stack
    */
   app.startup.push(function() {
-    app.elements.overlay              = document.getElementById('overlay');
-    app.elements.invoiceData          = document.getElementsByClassName('invoice-data')[ 0 ];
+    app.elements.overlay              = app.dom('#overlay');
+    app.elements.invoiceData          = app.dom('.invoice-data');
     app.elements.newInvoice           = {
-      picture:         document.getElementById('invoice-picture'),
-      pictureDropArea: document.getElementsByClassName('invoice-picture-drop-area')[ 0 ],
-      date:            document.getElementById('invoice-creation-date'),
-      sum:             document.getElementById('invoice-sum'),
-      tagContainer:    document.getElementsByClassName('invoice-tags')[ 0 ],
-      tags:            document.getElementById('invoice-tag'),
-      uploadProgress:  document.getElementsByClassName('invoice-upload-progress')[ 0 ]
+      picture:         app.dom('#invoice-picture'),
+      pictureDropArea: app.dom('.invoice-picture-drop-area'),
+      date:            app.dom('#invoice-creation-date'),
+      sum:             app.dom('#invoice-sum'),
+      tagContainer:    app.dom('.invoice-tags'),
+      tags:            app.dom('#invoice-tag'),
+      uploadProgress:  app.dom('.invoice-upload-progress')
     };
-    app.elements.saveNewInvoiceButton = document.getElementById('save-invoice');
+    app.elements.saveNewInvoiceButton = app.dom('#save-invoice');
+
+    // initialize the date picker
+    flatpickr(app, app.elements.newInvoice.date[ 0 ]);
 
     app.listeners.addCreateInvoiceFormListeners = function() {
-      app.on('click', app.elements.saveNewInvoiceButton, app.events.saveNewInvoice);
+      app.elements.saveNewInvoiceButton.on('click', app.events.saveNewInvoice);
     };
+
     app.listeners.addTagInputListeners          = function() {
-      app.on('keydown', app.elements.newInvoice.tags, app.events.addNewTagInput);
+      app.elements.newInvoice.tags.on('keydown', app.events.addNewTagInput);
     };
+
     app.listeners.addDragUploadListeners        = function() {
       app.on('dragover', document.body, app.events.startedDragging);
       app.on('drop', document.body, function(event) {
@@ -39,24 +45,34 @@ var app  = require('./app'),
 
         return false;
       });
-      app.on('dragenter', app.elements.newInvoice.pictureDropArea, app.events.isDragging);
-      app.on('drag dragover dragstart', app.elements.newInvoice.pictureDropArea, app.events.startedDragging, true);
-      app.on('dragleave dragend', app.elements.newInvoice.pictureDropArea, app.events.stoppedDragging);
-      app.on('drop', app.elements.newInvoice.pictureDropArea, app.events.renderPreviewPicture);
+      app.elements.newInvoice.pictureDropArea.on('dragenter', app.events.isDragging);
+      app.elements.newInvoice.pictureDropArea.on('drag dragover dragstart', app.events.startedDragging, true);
+      app.elements.newInvoice.pictureDropArea.on('dragleave dragend', app.events.stoppedDragging);
+      app.elements.newInvoice.pictureDropArea.on('drop', app.events.renderPreviewPicture);
       // app.on('drop', document.body, app.events.startedDragging);
     };
 
     app.events.saveNewInvoice = function(event) {
-
-
-      var data = new FormData(),
+      let data = new FormData(),
           tags = [];
 
-      if (!app.elements.newInvoice.date.value) {
-        app.elements.newInvoice.date.value = new Date();
+      if (!app.elements.newInvoice.date.value()) {
+        app.elements.newInvoice.date.value(new Date());
       }
 
       // iterate over tag elements
+      app.elements.newInvoice.tagContainer.each(function(tagItem) {
+        let tag = tagItem.text(tagItem.text().replace(/\s/, ''));
+
+        // if the tag is already in the tag list or has a length of 0, don't append it
+        if (tags.indexOf(tag) !== -1 || !tag) {
+          return;
+        }
+
+        // append the tag name to the tag list
+        tags.push(tag);
+      });
+      /*
       for (var i = 0; i < app.elements.newInvoice.tagContainer.children.length; i++) {
 
         // get the tag name from the current item, removing any potential white space from it
@@ -69,7 +85,7 @@ var app  = require('./app'),
 
         // append the tag name to the tag list
         tags.push(tag);
-      }
+      }*/
 
       data.append('invoicePicture', (
           app.data.newInvoiceImage
@@ -80,9 +96,13 @@ var app  = require('./app'),
       data.append('creationDate', app.elements.newInvoice.date.value);
       data.append('sum', app.elements.newInvoice.sum.value);
       data.append('tags', tags);
-      data.append('_csrf', document.body.dataset.csrfToken);
+      //data.append('_csrf', document.body.dataset.csrfToken);
 
-      app.post('/api/invoices', data, function(response) {
+      for (let pair of data.entries()) {
+        app.debug(`form field ${pair[ 0 ]} is ${pair[ 1 ]}`);
+      }
+
+      app.http.post('/api/invoices', data, function(response) {
         if (response.ok) {
           app.notifications.success('[[invoices:create_success]]');
         } else {
@@ -141,14 +161,14 @@ var app  = require('./app'),
     app.events.isDragging = function(event) {
       event.preventDefault();
       event.stopPropagation();
-      app.elements.newInvoice.pictureDropArea.classList.add('dragged-over');
+      app.elements.newInvoice.pictureDropArea.addClass('dragged-over');
       return false;
     };
 
     app.events.stoppedDragging = function(event) {
       event.preventDefault();
       event.stopPropagation();
-      app.elements.newInvoice.pictureDropArea.classList.remove('dragged-over');
+      app.elements.newInvoice.pictureDropArea.removeClass('dragged-over');
       return false;
     };
 
@@ -156,8 +176,9 @@ var app  = require('./app'),
       event.preventDefault();
       event.stopPropagation();
 
-      app.elements.newInvoice.pictureDropArea.classList.remove('dragged-over');
-      app.elements.newInvoice.pictureDropArea.classList.add('loading-preview');
+      app.elements.newInvoice.pictureDropArea.removeClass('dragged-over');
+      app.dom('img', app.elements.newInvoice.pictureDropArea).remove();
+      app.elements.newInvoice.pictureDropArea.addClass('loading-preview');
 
       // retrieve the file from the dropped data
       var file = event.dataTransfer.files[ 0 ];
@@ -174,9 +195,9 @@ var app  = require('./app'),
         var image = new Image();
         image.src = event.target.result;
 
-        app.elements.newInvoice.pictureDropArea.classList.remove('loading-preview');
-        app.elements.newInvoice.pictureDropArea.classList.add('loaded-preview');
-        app.elements.newInvoice.pictureDropArea.appendChild(image);
+        app.elements.newInvoice.pictureDropArea.removeClass('loading-preview');
+        app.elements.newInvoice.pictureDropArea.addClass('loaded-preview');
+        app.elements.newInvoice.pictureDropArea.append(image);
       };
 
       reader.readAsDataURL(file);

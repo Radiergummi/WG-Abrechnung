@@ -6,13 +6,13 @@ module.exports = function(app) {
   /**
    * opens an HTTP request. uses the fetch API if available or falls back to XHR.
    *
-   * @param {string}   method           the HTTP method
-   * @param {string}   url              the request URL
-   * @param {FormData} [data]           a set of key-value pairs for GET requests or the body object
-   * @param {function} [success]        a success callback
-   * @param {function} [failure]        a failure callback
-   * @param {object}   [events]         an object containing named events to attach to the request
-   * @returns {XMLHttpRequest|Promise}  the request object. either a promise or the XHR
+   * @param   {string}                 method    the HTTP method
+   * @param   {string}                 url       the request URL
+   * @param   {string|object|FormData} [data]    a set of key-value pairs for GET requests or the body object
+   * @param   {function}               [success] a success callback
+   * @param   {function}               [failure] a failure callback
+   * @param   {object}                 [events]  an object containing named events to attach to the request
+   * @returns {XMLHttpRequest|Promise}           the request object. either a promise or the XHR
    */
   app.http.request = function(method, url, data, success, failure, events) {
     method = method.toUpperCase();
@@ -35,14 +35,50 @@ module.exports = function(app) {
         };
       events  = events || {};
     }
-
+    /*
+     if (data && typeof data !== 'string') {
+     data = JSON.stringify(data);
+     }
+     */
     if (window[ 'fetch' ]) {
-      var response;
-      return window.fetch(new Request(url, {
+      var request,
+          headers,
+          response;
+
+      if (data) {
+        headers = new Headers({
+          'Content-Type': (
+                            data instanceof FormData
+                              ? 'application/x-www-form-urlencoded'
+                              : 'application/json'
+                          )
+        });
+
+        if (data instanceof FormData) {
+          /**
+           * check if any formData entry is a file and adjust the content type
+           *
+           * @see http://stackoverflow.com/a/35799817/2532203
+           */
+          for (let pair of data.entries()) {
+            app.debug('processing form entry ' + pair[ 0 ] + ' with value ' + pair[ 1 ]);
+            if (pair[ 1 ] instanceof File) {
+
+              app.debug('form contains a binary file');
+              headers.delete('Content-Type');
+            }
+          }
+        }
+      }
+
+      request = new Request(url, {
         method:      method,
         body:        data,
-        credentials: 'include'
-      }))
+        credentials: 'include',
+        headers:     headers
+      });
+
+      return window.fetch(request)
         .then(function(responsePromise) {
           response = responsePromise;
           if (response.status !== 204) {
@@ -71,7 +107,25 @@ module.exports = function(app) {
         });
     } else {
       var XHR = new XMLHttpRequest();
+
       XHR.open(method, url, true);
+
+      if (data) {
+        if (data.__proto__.constructor === FormData) {
+          XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+          /**
+           * check if any formData entry is a file and adjust the content type
+           */
+          for (var pair of data.entries()) {
+            if (pair[ 1 ] instanceof File) {
+              XHR.setRequestHeader('Content-Type', '');
+            }
+          }
+        } else {
+          XHR.setRequestHeader('Content-Type', 'application/json');
+        }
+      }
 
       XHR.onreadystatechange = function() {
 
@@ -160,6 +214,11 @@ module.exports = function(app) {
       data = formData;
     }
 
+    /**
+     * add the CSRF token to the data set
+     */
+    data.set('_csrf', document.body.dataset.csrfToken);
+
     app.debug('POST ' + url);
     return app.http.request('post', url, data, success, failure, events);
   };
@@ -169,10 +228,13 @@ module.exports = function(app) {
       return false;
     }
 
-    if (!data instanceof FormData) {
-      var formData = new FormData();
+    if (data instanceof FormData) {
+      console.log('is FD')
+    } else {
+      app.debug('data is no formdata yet');
+      const formData = new FormData();
 
-      for (var key in data) {
+      for (let key in data) {
         if (!data.hasOwnProperty(key)) {
           continue;
         }
@@ -183,7 +245,13 @@ module.exports = function(app) {
       data = formData;
     }
 
+    /**
+     * add the CSRF token to the data set
+     */
+    data.set('_csrf', document.body.dataset.csrfToken);
+
     app.debug('PUT ' + url);
+    app.debug(data);
     return app.http.request('put', url, data, success, failure, events);
   };
 };

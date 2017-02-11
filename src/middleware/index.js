@@ -19,7 +19,8 @@ var favicon          = require('serve-favicon'),
     express          = require('express'),
     cookieParser     = require('cookie-parser'),
     bodyParser       = require('body-parser'),
-    templates        = require('templates.js'),
+    //templates        = require('templates.js'),
+    hbs              = require('express-handlebars'),
     compression      = require('compression'),
     expressValidator = require('express-validator'),
     mongoose         = require('mongoose'),
@@ -44,13 +45,22 @@ module.exports = function(app) {
   middleware = require('./middleware')(app);
 
   // register templates.js
-  app.engine('tpl', templates.__express);
+//  app.engine('tpl', templates.__express);
 
   // set view path
-  app.set('views', path.join(nconf.get('path'), nconf.get('views:templates:path')));
+  app.set('views', path.join(nconf.get('path'), 'src', 'views'));
 
   // set view engine
-  app.set('view engine', nconf.get('views:templates:engine'));
+//  app.set('view engine', nconf.get('views:templates:engine'));
+
+  app.engine('hbs', hbs({
+    extname:       'hbs',
+    defaultLayout: 'default',
+    layoutsDir:    path.join(nconf.get('path'), 'src', 'views', 'layouts'),
+    partialsDir:   path.join(nconf.get('path'), 'src', 'views', 'partials')
+  }));
+
+  app.set('view engine', 'hbs');
 
   // register template helpers
   registerTemplateHelpers();
@@ -67,7 +77,7 @@ module.exports = function(app) {
   if (nconf.get('environment') === 'development') {
     var winstonStream = {
       write: function(message) {
-        winston.verbose('[request] ' + message.replace(/\n$/, ''));
+        //winston.verbose('[request] ' + message.replace(/\n$/, ''));
       }
     };
 
@@ -77,11 +87,11 @@ module.exports = function(app) {
   }
 
   app.use(bodyParser.urlencoded({
-    extended: true,
-    limit:    '8mb'
+    limit:    '8mb',
+    extended: true
   }));
-
   app.use(bodyParser.json());
+
   app.use(compression());
   app.use(cookieParser());
   app.use(express.static(path.join(nconf.get('path'), 'public')));
@@ -121,7 +131,7 @@ module.exports = function(app) {
 };
 
 function registerTemplateHelpers () {
-  templates.registerHelper('format_date_string', function(data) {
+  /*templates.registerHelper('format_date_string', function(data) {
     return moment(data).format('LLLL:SS');
-  });
+  });*/
 }

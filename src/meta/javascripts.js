@@ -15,7 +15,7 @@ var webpack     = require('webpack'),
  * @param {object} config
  * @returns {Promise}
  */
-Javascripts.compile = function (config) {
+Javascripts.compile = function(config) {
 
   var sourcePath     = path.join(config.basePath, 'public', 'javascripts', 'src'),
       deploymentPath = path.join(config.basePath, 'public', 'javascripts'),
@@ -30,7 +30,7 @@ Javascripts.compile = function (config) {
   ];
 
 // enable minification in production
-  if (! debug) {
+  if (!debug) {
     compilerPlugins.push(new webpack.optimize.UglifyJsPlugin({
       compress: { warnings: false }
     }));
@@ -54,6 +54,7 @@ Javascripts.compile = function (config) {
       'dashboard':        './dashboard.js',
       'invoices.all':     './invoices.all.js',
       'invoices.create':  './invoices.create.js',
+      'invoices.edit':    './invoices.edit.js',
       'invoices.search':  './invoices.search.js',
       'registration':     './registration.js',
       'settings':         './settings.js',
@@ -90,36 +91,35 @@ Javascripts.compile = function (config) {
     }
   });
 
-  return new Promise(function (resolve, reject) {
-    compiler.run(function (error, stats) {
+  return new Promise(function(resolve, reject) {
+    compiler.run(function(error, stats) {
       if (error) {
         return reject(error);
       }
 
       if (stats.hasErrors()) {
         process.send({
-          type: 'error',
+          type:    'error',
           message: stats.error
         });
       }
 
       if (stats.hasWarnings()) {
         process.send({
-          type: 'error',
+          type:    'error',
           message: stats.warning
         });
       }
 
       if (debug) {
         process.send({
-          type: 'info',
+          type:    'info',
           message: stats.toString({ colors: true })
         });
       }
 
-
       process.send({
-        type: 'info',
+        type:    'info',
         message: 'Successfully compiled JS'
       });
 

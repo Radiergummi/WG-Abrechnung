@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "url": "http://localhost:3000",
   "port": 3000,
-  "environment": "production",
+  "environment": "development",
   "secret": "FJFuh24if8Y9",
 
   "language": "de_DE",

@@ -5,13 +5,13 @@
  require
  */
 
-var Invoice = require('../invoice');
+const debug   = require('debug')('flatm8:controllers:invoices'),
+      Invoice = require('../invoice');
 
-var invoices = module.exports = {};
+const invoices = module.exports = {};
 
 invoices.redirectToInvoices = (req, res, next) => res.redirect('/invoices');
-
-invoices.viewSingle = function(req, res, next) {
+invoices.viewSingle         = function(req, res, next) {
   var vars = {
 //    clientScripts: [ { name: 'invoices.single' } ],
     invoicesActive: true,
@@ -66,6 +66,7 @@ invoices.create = function(req, res, next) {
     csrfToken:      req.csrfToken()
   };
 
+  debug(`requested invoice creation form with CSRF ${vars.csrfToken}`);
   return res.render('invoices/create', vars);
 };
 
@@ -80,8 +81,11 @@ invoices.delete = function(req, res, next) {
 
 invoices.edit = function(req, res, next) {
   var vars = {
+    clientScripts:  [ { name: 'invoices.edit'
+    } ],
     invoicesActive: true,
-    pageTitle:      'Rechnung bearbeiten'
+    pageTitle:      'Rechnung bearbeiten',
+    csrfToken:      req.csrfToken()
   };
 
   Invoice.getById(req.params.id, function(error, invoice) {
@@ -89,8 +93,10 @@ invoices.edit = function(req, res, next) {
       return next(error);
     }
 
-    vars.invoice           = JSON.parse(JSON.stringify(invoice));
+    debug(invoice);
+    vars.invoice           = invoice;
     vars.invoice.inputDate = invoice.getHTMLInputDate();
+    vars.invoice.tagList   = invoice.tags.filter(tag => !!tag).map(tag => tag.name).join(',');
 
     return res.render('invoices/edit', vars);
   });

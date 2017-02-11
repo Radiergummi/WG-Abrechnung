@@ -171,7 +171,9 @@ function reload() {
  * Compiles all assets
  */
 function prepareAssets(callback) {
-  var meta = fork('./src/meta');
+  var meta = fork('./src/meta', [], {
+    stdio: [ 'ipc' ]
+  });
 
   winston.info('[meta]'.white + ' forked asset compiler worker with PID %s', meta.pid);
 

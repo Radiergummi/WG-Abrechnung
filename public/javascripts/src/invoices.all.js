@@ -5,10 +5,12 @@ var app  = require('./app'),
 
 (function(app) {
   app.startup.push(function() {
+    require('./libraries/vanilla-modal')(app);
 
-    app.elements.invoicesContainer = document.getElementsByClassName('invoices')[ 0 ];
-    app.elements.invoices          = app.elements.invoicesContainer.getElementsByClassName('invoice');
-    app.elements.lastInvoice       = app.elements.invoices[ app.elements.invoices.length - 1 ];
+    app.elements.invoicesContainer    = document.getElementsByClassName('invoices')[ 0 ];
+    app.elements.invoices             = app.elements.invoicesContainer.getElementsByClassName('invoice');
+    app.elements.lastInvoice          = app.elements.invoices[ app.elements.invoices.length - 1 ];
+    app.elements.deleteInvoiceButtons = app.dom('.delete-invoice');
 
     app.listeners.addInvoicesEvents = function() {
       app.on('DOMContentLoaded', app.events.lastInvoiceVisible, { debounce: true });
@@ -17,6 +19,14 @@ var app  = require('./app'),
       app.on('resize', app.events.lastInvoiceVisible, { debounce: true });
 
 //      app.elements.lastInvoice.addEventListener();
+    };
+
+
+    /**
+     * attaches the delete user event listeners
+     */
+    app.listeners.addDeleteInvoiceEvents = function() {
+      app.elements.deleteInvoiceButtons.on('click', app.events.deleteInvoice);
     };
 
     app.listeners.removeInvoiceEvents = function() {
@@ -34,6 +44,58 @@ var app  = require('./app'),
         return app.connectors.getMoreInvoices();
       })();
     };
+
+
+    /**
+     * prepares the delete invoice modal
+     *
+     * @param {Event} event
+     */
+    app.events.prepareDeleteInvoiceModal = function(event) {
+      app.debug('attaching prepare delete invoice modal data');
+      let modal = app.dom('.dialog-delete-invoice-wrapper')[ 0 ];
+
+      // pass the id of the user to delete on to the real delete button
+      app.dom('.delete-invoice', modal).data('invoiceId', event.target.dataset.invoiceId);
+    };
+
+    /**
+     * deletes an invoice via sockets
+     *
+     * @param {Event} event
+     */
+    app.events.deleteInvoice = function(event) {
+      event.preventDefault();
+
+      app.connectors.deleteInvoice(event.target.dataset.invoiceId, function(error, deletedInvoice) {
+        if (error) {
+
+          // if we have an error, show a notification
+          app.notifications.error('[[settings:user_management.delete.notification_error, ' + error.message + ']]');
+
+          // log the full error to the console
+          console.error(error);
+
+          // close the modal
+          return setTimeout(app.modals.instance.close, 500);
+        }
+
+        // everything went smoothly, show a notification
+        app.translate(
+          '[[settings:user_management.delete.notification_success, ' + deletedInvoice.firstName + ' ' + deletedInvoice.lastName + ']]',
+          function(translated) {
+            app.notifications.success(translated);
+          });
+
+        return setTimeout(function() {
+          app.modals.instance.close();
+
+          // delete the user row
+          app.dom('#' + deletedInvoice._id).remove();
+        }, 500);
+      });
+    };
+
 
     app.helpers.isElementInViewport = function(element) {
       var rect = element.getBoundingClientRect();
@@ -60,11 +122,33 @@ var app  = require('./app'),
       }
     };
 
+
+    /**
+     * deletes an invoice via sockets
+     *
+     * @param {string} invoiceId
+     * @param {function(Error, object)} callback
+     * @returns {*}
+     */
+    app.connectors.deleteInvoice = function(invoiceId, callback) {
+      if (!invoiceId) {
+        return callback(new Error('invalid invoice ID ' + invoiceId), null);
+      }
+
+      app.io.emit('settings.deleteInvoice', invoiceId, function(error, deletedInvoice) {
+        if (error) {
+          return callback(error, null);
+        }
+
+        return callback(null, deletedInvoice);
+      });
+    };
+
     app.connectors.getMoreInvoices = function() {
-      var page = (document.getElementsByClassName('invoice').length) / 2;
+      var page = Math.ceil((document.getElementsByClassName('invoice').length) / 2);
 
       // remove tail element
-      document.getElementsByClassName('timeline-data-available')[ 0 ].remove();
+      app.dom('.timeline-data-available').remove();
 
       // insert loading indicator
       app.elements.invoicesContainer.appendChild(app.templates.invoiceTimelineLoading);
@@ -82,7 +166,7 @@ var app  = require('./app'),
         setTimeout(function() {
 
           // remove the loading indicator
-          document.getElementsByClassName('timeline-loading')[ 0 ].remove();
+          app.dom('.timeline-loading').remove();
 
           if (invoices.length > 0) {
 
@@ -91,11 +175,12 @@ var app  = require('./app'),
             // iterate over invoices
             for (var i = 0; i < invoices.length; i++) {
 
-              // insert a timeline separator
-              app.elements.invoicesContainer.appendChild(app.templates.invoiceTimelineSeparator());
-
               // insert the invoice
               invoicePromises.push(app.templates.invoiceCard(invoices[ i ]).then(function(element) {
+
+                // insert a timeline separator
+                app.elements.invoicesContainer.appendChild(app.templates.invoiceTimelineSeparator());
+
                 app.elements.invoicesContainer.appendChild(element);
               }));
             }
@@ -136,29 +221,25 @@ var app  = require('./app'),
           '<div class="tags-label">[[invoices:tags]]: </div>' +
           '<div class="invoice-tags">';
 
-        if (invoice.tags.length) {
+        if (invoice.tags.length && invoice.tags[ 0 ] !== null) {
+
+          app.debug('invoice has ' + invoice.tags.length + ' tags assigned');
           for (var i = 0; i < invoice.tags.length; i++) {
-            template += '<div class="tag tag-' + invoice.tags[ i ].color + '" id="' + invoice.tags[ i ]._id + '">' +
-              '<span>' + invoice.tags[ i ].name + '</span>' +
-              '</div>';
+
+            app.debug(`processing tag ${invoice.tags[ i ].name}`);
+            template += `<div class="tag tag-${invoice.tags[ i ].color || 'blue'}" id="${invoice.tags[ i ]._id}"><span>${invoice.tags[ i ].name}</span></div>`;
           }
         } else {
           template += '<span class="no-tags">[[invoices:no_tags]]</span>';
         }
 
-        template += '</div>' +
-          '</section>' +
-          '<section class="invoice-actions">' +
-          '<a class="button" href="/invoices/' + invoice._id + '"><span class="fa fa-eye"></span> [[global:details]]</a>';
+        template += `</div></section><section class="invoice-actions"><a class="button" href="/invoices/${invoice._id}"><span class="fa fa-eye"></span> [[global:details]]</a>`;
 
         if (invoice.ownInvoice) {
-
-          template += '<a class="button" href="/invoices/' + invoice._id + '/edit"><span class="fa fa-edit"></span> [[global:edit]]</a>' +
-            '<a class="button danger" href="/invoices/' + invoice._id + '/delete"><span class="fa fa-trash-o"></span> [[global:delete]]</a>';
+          template += `<a class="button" href="/invoices/${invoice._id}/edit"><span class="fa fa-edit"></span> [[global:edit]]</a><a class="button danger" href="/invoices/${invoice._id}/delete"><span class="fa fa-trash-o"></span> [[global:delete]]</a>`;
         }
 
-        template += '</section>' +
-          '</article>';
+        template += '</section></article>';
 
         return app.helpers.createTranslatedElement(template);
       }
@@ -180,7 +261,7 @@ var app  = require('./app'),
       return app.helpers.createElement('<div class="timeline-item timeline-data-available"></div>');
     })();
 
-
     app.listeners.addInvoicesEvents();
+    app.listeners.addDeleteInvoiceEvents();
   });
 })(app);

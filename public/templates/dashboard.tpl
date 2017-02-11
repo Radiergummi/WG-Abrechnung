@@ -31,7 +31,7 @@
   </ul>
 </nav>
 
-<div class="current-user" id="{user.id}">
+<div class="current-user" data-user-id="{user._id}">
   <a href="/settings" class="settings button seamless"><span class="fa fa-gears"></span></a>
   <div class="profile-picture">
     <img src="/api/user/picture?cacheBuster={cacheBuster}" alt="">

@@ -78,7 +78,7 @@ function start (debugLevel) {
     instance = fork(path.join(__dirname, 'app.js'), [], {
       env:      environmentVariables,
       detached: true,
-      stdio:    [ 'ignore', 'ignore', 'ignore' ]
+      stdio:    [ 'ignore', 'ignore', 'ignore', 'ipc' ]
     }).on('error', function(error) {
       console.error('[init]'.white + ' could not fork worker: ', error);
     });

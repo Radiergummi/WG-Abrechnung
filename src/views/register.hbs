@@ -1,14 +1,17 @@
-<!-- IMPORT partials/header.tpl -->
 <article class="registration-container">
-  <p>{errorMessage}</p>
+  <p>{{errorMessage}}</p>
   <!-- IF error -->
+  {{#if error}}
     <div class="error">
-      <h1>{error.type}</h1>
-      <p>{error.message}</p>
+      <h1>{{error.type}}</h1>
+      <p>{{error.message}}</p>
     </div>
   <!-- ELSE -->
+  {{else}}
   <!-- IF token -->
-    <!-- IF verified -->
+    {{#if token}}
+  <!-- IF verified -->
+    {{#if verified}}
       <h2>[[global:registration]]</h2>
       <p>
         Bitte das Formular vollständig ausfüllen, um ein Konto anzulegen.
@@ -35,11 +38,12 @@
         <label for="password">[[users:password]]</label>
         <input id="password" name="password" type="password" required>
 
-        <input type="hidden" name="token" value="{token}">
+        <input type="hidden" name="token" value="{{token}}">
         <button type="submit" class="register-button"><span class="fa fa-send"></span> [[global:register]]</button>
       </form>
       </form>
-    <!-- ELSE -->
+  <!-- ELSE -->
+    {{else}}
       <div class="error">
         <h1>Die Einladung ist abgelaufen.</h1>
         <p>
@@ -47,19 +51,22 @@
           Aus Sicherheitsgründen laufen Einladungungen nach drei Tagen ab.
         </p>
       </div>
-    <!-- ENDIF verified -->
+  <!-- ENDIF verified -->
+    {{/if}}
   <!-- ELSE -->
-  <h2>Einladungscode eingeben</h2>
-  <p>
-    Um mit der Registrierung fortzufahren, bitte jetzt den Einladungscode aus der E-Mail eingeben.
-  </p>
-  <input id="invitation-token" type="text">
+    {{else}}
+      <h2>Einladungscode eingeben</h2>
+      <p>
+        Um mit der Registrierung fortzufahren, bitte jetzt den Einladungscode aus der E-Mail eingeben.
+      </p>
+      <input id="invitation-token" type="text">
 
-  <button type="button" id="verify-token">[[global:continue]]</button>
-  <div class="language-switcher">
-    <a href="?lang=en_US" data-language="en_US">English</a>
-  </div>
+      <button type="button" id="verify-token">[[global:continue]]</button>
+      <div class="language-switcher">
+        <a href="?lang=en_US" data-language="en_US">English</a>
+      </div>
   <!-- ENDIF token -->
+    {{/if}}
   <!-- ENDIF error -->
+  {{/if}}
 </article>
-<!-- IMPORT partials/footer.tpl -->

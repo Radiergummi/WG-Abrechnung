@@ -1,4 +1,3 @@
-<!-- IMPORT partials/header.tpl -->
 <article class="settings">
   <h1>[[settings:title]]</h1>
   <section class="settings-category settings-content">
@@ -29,11 +28,11 @@
         <ul>
           <li class="setting setting-first-name">
             <label for="first-name">[[settings:user.first_name]]</label>
-            <input id="first-name" type="text" value="{user.firstName}">
+            <input id="first-name" type="text" value="{{user.firstName}}">
           </li>
           <li class="setting setting-last-name">
             <label for="last-name">[[settings:user.last_name]]</label>
-            <input id="last-name" type="text" value="{user.lastName}">
+            <input id="last-name" type="text" value="{{user.lastName}}">
           </li>
         </ul>
       </li>
@@ -41,16 +40,19 @@
         <label for="role">[[users:role]]</label>
         <select id="role" disabled>
           <option
-            value="admin"<!-- IF user.isAdmin --> selected<!-- ENDIF user.isAdmin -->>[[global:admin_user]]</option>
+            value="admin"{{#if user.isAdmin}} selected{{/if}}>[[global:admin_user]]</option>
           <option
-            value="normal"<!-- IF !user.isAdmin --> selected<!-- ENDIF !user.isAdmin -->>[[global:normal_user]]</option>
+            value="normal"{{#unless user.isAdmin}} selected{{/unless}}>[[global:normal_user]]</option>
         </select>
       </li>
       <li class="setting setting-email-address">
         <label for="email-address">[[settings:user.email_address]]</label>
-        <input id="email-address" type="email" value="{user.email}">
+        <input id="email-address" type="email" value="{{user.email}}">
       </li>
     </ul>
+    <footer class="settings-actions">
+      <button type="button" data-settings="first-name,last-name,role,email-address"><span class="fa fa-save"></span> [[global:do_save]]</button>
+    </footer>
   </section>
   <section class="settings-category" id="settings-interface">
     <header class="settings-header">
@@ -72,6 +74,9 @@
         </select>
       </li>
     </ul>
+    <footer class="settings-actions">
+      <button type="button" data-settings="langauge"><span class="fa fa-save"></span> [[global:do_save]]</button>
+    </footer>
   </section>
   <section class="settings-category" id="settings-household">
     <header class="settings-header">
@@ -104,6 +109,9 @@
         </div>
       </li>
     </ul>
+    <footer class="settings-actions">
+      <button type="button" data-settings="household-type"><span class="fa fa-save"></span> [[global:do_save]]</button>
+    </footer>
   </section>
   <section class="settings-category" id="settings-user-management">
     <header class="settings-header">
@@ -123,23 +131,27 @@
           </thead>
           <tbody>
           <!-- BEGIN users -->
-          <tr id="{users._id}">
+          {{#each users}}
+          <tr id="{{this._id}}" data-user-id="{{this._id}}">
             <td class="picture">
               <div class="profile-picture">
-                <img src="/images/users/{users._id}.jpg" title="{users._id}">
+                <img src="/images/users/{{this._id}}.jpg" title="{{this._id}}">
               </div>
             </td>
-            <td class="first-name">{users.firstName}</td>
-            <td class="last-name">{users.lastName}</td>
-            <td class="role">[[global:{users.role}_user]]</td>
+            <td class="first-name">{{this.firstName}}</td>
+            <td class="last-name">{{this.lastName}}</td>
+            <td class="role">[[global:{{this.role}}_user]]</td>
             <td class="actions">
-              <a href="#modal-edit-user" class="edit-user button" data-user-id="{users._id}" data-on-modal-open-event="prepareEditUserModal" data-open-modal><span
+              <a href="#modal-edit-user" class="edit-user button" data-user-id="{{this._id}}"
+                 data-on-modal-open-event="prepareEditUserModal" data-open-modal><span
                 class="fa fa-edit"></span> [[global:edit]] </a>
-              <a href="#modal-delete-user" class="remove-user button danger" data-user-id="{users._id}"
-                 data-first-name="{users.firstName}" data-on-modal-open-event="prepareDeleteUserModal" data-open-modal><span
+              <a href="#modal-delete-user" class="remove-user button danger" data-user-id="{{this._id}}"
+                 data-first-name="{{this.firstName}}" data-on-modal-open-event="prepareDeleteUserModal"
+                 data-open-modal><span
                 class="fa fa-trash-o"></span> [[global:delete]]</a>
             </td>
           </tr>
+          {{/each}}
           <!-- END users -->
           </tbody>
         </table>
@@ -208,28 +220,28 @@
       <p>[[settings:user_management.edit_user.help_text]]</p>
 
       <label for="modified-first-name">[[users:first_name]]</label>
-      <input id="modified-first-name" type="text">
+      <input id="modified-first-name" name="firstName" type="text">
 
       <label for="modified-last-name">[[users:last_name]]</label>
-      <input id="modified-last-name" type="text">
+      <input id="modified-last-name" name="lastName" type="text">
 
       <label for="modified-role">[[users:role]]</label>
-      <select id="modified-role">
+      <select id="modified-role" name="role">
         <option value="admin">[[global:admin_user]]</option>
         <option value="normal">[[global:normal_user]]</option>
       </select>
 
       <label for="modified-username">[[users:username]]</label>
-      <input type="text" id="modified-username">
+      <input id="modified-username" name="username" type="text">
 
       <label for="modified-password">[[users:new_password]]</label>
-      <input type="password" id="modified-password">
+      <input id="modified-password" name="password" type="password">
 
       <label for="modified-email">[[users:email_address]]</label>
-      <input type="email" id="modified-email">
+      <input id="modified-email" name="email" type="email">
 
       <label for="modified-language">[[settings:language]]</label>
-      <select id="modified-language">
+      <select id="modified-language" name="language">
         <option value="de_DE" selected>[[settings:language.de_DE]]</option>
         <option value="en_US">[[settings:language.en_US]]</option>
       </select>
@@ -270,4 +282,3 @@
     </section>
   </div>
 </div>
-<!-- IMPORT partials/footer.tpl -->

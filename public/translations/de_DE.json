@@ -55,6 +55,7 @@
     "server_updated.message": "Der Server wurde aktualisiert.",
     "server_updated.reload":  "Neu laden",
     "server_updated.later":   "Später",
+    "server_error":           "Ein Server-seitiger Fehler ist aufgetreten",
     "dragndrop_drop_here":    "Bild hier ablegen, um es hochzuladen",
     "outside_dnd_area":       "Das Bild muss in den ausgezeichneten Flächen abgelegt werden."
   },
@@ -137,7 +138,10 @@
     "no_tags":             "Es wurden keine Tags angegeben.",
     "input.picture_label": "Bild der Rechnung:",
     "input.tag_label":     "Name des Tags",
-    "create_success":      "Die Rechnung wurde erfolgreich angelegt."
+    "create_success":      "Die Rechnung wurde erfolgreich angelegt.",
+    "delete.warning":      "Bist du dir sicher, dass du diese Rechnung löschen möchtest?",
+    "delete.error":        "Die Rechnung konnte nicht gelöscht werden.",
+    "delete.success":      "Die Rechnung wurde gelöscht."
   },
   "statistics":  {
     "month_title":          "Statistiken für %1",

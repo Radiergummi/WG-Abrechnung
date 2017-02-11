@@ -1,17 +1,37 @@
-var debug     = require('debug')('flatm8:meta:templates'),
-    fs        = require('fs'),
-    mkdirp    = require('mkdirp'),
-    path      = require('path'),
-    rimraf    = require('rmfr'),
+const debug     = require('debug')('flatm8:meta:templates'),
+      fs        = require('fs'),
+      fileHound = require('filehound'),
+      mkdirp    = require('mkdirp'),
+      path      = require('path'),
+      rimraf    = require('rmfr'),
 
-    Templates = module.exports = {};
+      // Templates = module.exports = {};
+      Templates = {},
+      T         = module.exports = {};
+
+T.compile = function(config) {
+  const publicTemplatesPath = path.join(config.basePath, 'public', 'templates'), // path to templates
+        viewsPath           = path.join(config.basePath, 'src', 'views'); // path to views
+
+  debug('view input path set to %s', viewsPath);
+  debug('template output path set to %s', publicTemplatesPath);
+
+  const views = fileHound.create()
+    .paths(path.join(viewsPath))
+    .ext('tpl')
+    .find();
+
+  views.then((files) => {
+    console.log(files);
+  });
+};
 
 /**
  *
  * @param {object} config
  * @returns {Promise}
  */
-Templates.compile = function (config) {
+Templates.compile = function(config) {
   var publicTemplatesPath = path.join(config.basePath, 'public', 'templates'), // path to templates
       viewsPath           = path.join(config.basePath, 'src', 'views'); // path to views
 
@@ -26,15 +46,15 @@ Templates.compile = function (config) {
    * @param {string} viewsPath
    * @returns {Promise}
    */
-  function getTemplates(directory, publicTemplatesPath, viewsPath) {
+  function getTemplates (directory, publicTemplatesPath, viewsPath) {
 
     // create a promise to start from
-    var innerTemplatePromise = new Promise(function (resolve, reject) {
+    var innerTemplatePromise = new Promise(function(resolve, reject) {
 
       debug('iterating over view directory %s', path.join(viewsPath, directory));
 
       // read the template directory
-      return fs.readdir(path.join(viewsPath, directory), function (error, files) {
+      return fs.readdir(path.join(viewsPath, directory), function(error, files) {
         if (error) {
           process.send({
             type:    'error',
@@ -51,11 +71,11 @@ Templates.compile = function (config) {
       });
     });
 
-    innerTemplatePromise.then(function (files) {
-      return new Promise(function (resolve, reject) {
+    innerTemplatePromise.then(function(files) {
+      return new Promise(function(resolve, reject) {
         var templateDirectory = path.join(publicTemplatesPath, directory);
 
-        return mkdirp(templateDirectory, function (error) {
+        return mkdirp(templateDirectory, function(error) {
           if (error) {
             debug('could not create template directory %s: $s', templateDirectory, error.message);
             return reject(error);
@@ -67,22 +87,21 @@ Templates.compile = function (config) {
       });
     });
 
-
-    innerTemplatePromise.then(function (files) {
+    innerTemplatePromise.then(function(files) {
       var fileSequence = Promise.resolve();
 
       debug('iterating over %s templates', files.length);
 
       // iterate over the files in the template folder
-      files.forEach(function (file) {
+      files.forEach(function(file) {
         var filePath = path.join(viewsPath, directory, file);
 
         debug('current file %s at %s', file, filePath);
 
-        fileSequence = fileSequence.then(function () {
+        fileSequence = fileSequence.then(function() {
 
           // retrieve statistics for the current file
-          fs.lstat(filePath, function (error, stats) {
+          fs.lstat(filePath, function(error, stats) {
             if (error) {
               debug('could not gather stats for %s: %s', filePath, error.message);
 
@@ -96,7 +115,7 @@ Templates.compile = function (config) {
               var currentDirectory = filePath.slice(viewsPath.length);
 
               debug('processing template directory %s (path: %s)', file, currentDirectory);
-              fileSequence.then(function () {
+              fileSequence.then(function() {
                 debug('running getTemplates on %s', currentDirectory);
 
                 return getTemplates(currentDirectory, publicTemplatesPath, viewsPath);
@@ -118,8 +137,7 @@ Templates.compile = function (config) {
     return innerTemplatePromise;
   }
 
-
-  function importPartials(template, templatesPath, viewsPath) {
+  function importPartials (template, templatesPath, viewsPath) {
     var file    = fs.readFileSync(path.join(viewsPath, template)).toString(),
         matches = null,
         regex   = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
@@ -158,17 +176,17 @@ Templates.compile = function (config) {
   /**
    * start processing templates
    */
-    .then(function () {
+    .then(function() {
       return getTemplates('', publicTemplatesPath, viewsPath)
     }).then(function() {
       process.send({
-        type: 'info',
+        type:    'info',
         message: 'Successfully compiled templates'
       });
     })
 
     //catch any errors
-    .catch(function (error) {
+    .catch(function(error) {
       process.send({
         type:    'error',
         message: 'error in templates: ' + error.message

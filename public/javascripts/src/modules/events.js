@@ -32,40 +32,44 @@ module.exports = function(app) {
    * registers an event listener in a try-catch block to catch errors in events.
    * optionally debounces events
    *
-   * @param {string|Array}     eventNames  a single or multiple events to attach a listener on
-   * @param {object|function}  [targets]   the event target to listen on
-   * @param {function|boolean} callback    the event callback to attach
-   * @param {boolean}          [debounce]  whether to debounce the event or not, defaults to false
+   * @param {string|Array}     eventNames                a single or multiple events to attach a listener on
+   * @param {object|function}  [targets]                 the event target to listen on
+   * @param {function|boolean} callback                  the event callback to attach
+   * @param {object}           [options]                 event options
+   * @param {boolean}          [options.capture]
+   * @param {boolean}          [options.once]
+   * @param {boolean}          [options.passive]
+   * @param {boolean}          [options.debounce]        whether to debounce the event, defaults to false
+   * @param {boolean}          [options.preventDefault]  whether to prevent the default event
+   * @param {boolean}          [options.propagate]       whether to stop propagation
    */
   app.on = function(eventNames, targets, callback, options) {
 
     // shift arguments if necessary
     if (typeof targets === 'function') {
-      options = callback;
+      options  = callback;
       callback = targets;
-      targets  = window;
-    }
-    
-    options = Object.assign({
-      capture: false,
-      once: false,
-      passive: false,
-      debounce: false,
-      preventDefault: false,
-      propagate: false
-    }, options);
+      targets  = [ window ];
+    } else {
 
-    // create array from target
-    targets = (targets instanceof NodeList || targets instanceof HTMLCollection
-        ? Array.prototype.slice.call(targets)
-        : [ targets ]
-    );
+      // create array from target
+      targets = app.dom(targets);
+    }
+
+    options = Object.assign({
+      capture:        false,
+      once:           false,
+      passive:        false,
+      debounce:       false,
+      preventDefault: false,
+      propagate:      false
+    }, options);
 
     // debounce the callback
     if (options.debounce) {
       callback = app.debounce(callback, 250);
     }
-    
+
     // split event names by space to allow assigning multiple events
     eventNames = eventNames.split(' ');
 
@@ -132,7 +136,7 @@ module.exports = function(app) {
         : eventNames.split(' ')
     );
 
-    // iterate over elements and events to attach all events to all elements
+    // iterate over elements and events to remove all events from all elements
     for (var t = 0; t < targets.length; t++) {
       for (var e = 0; e < eventNames.length; e++) {
         var eventName = eventNames[ e ],
@@ -150,5 +154,48 @@ module.exports = function(app) {
         target.removeEventListener(eventName, callback);
       }
     }
-  }
+  };
+
+  app.trigger = function(eventNames, targets, data) {
+
+    // shift arguments
+    if (
+      typeof data === 'undefined' &&
+      typeof targets === 'object' && !(
+        targets instanceof NodeList ||
+        targets instanceof HTMLCollection
+      )
+    ) {
+      data    = targets;
+      targets = window;
+    }
+
+    if (data) {
+      data = {
+        detail: data
+      }
+    }
+
+    // create array from target
+    targets = (targets instanceof NodeList
+        ? Array.prototype.slice.call(targets)
+        : [ targets ]
+    );
+
+    // split event names by space to allow assigning multiple events
+    eventNames = (eventNames instanceof Array
+        ? eventNames
+        : eventNames.split(' ')
+    );
+
+    // iterate over elements and events to attach all events to all elements
+    for (var t = 0; t < targets.length; t++) {
+      for (var e = 0; e < eventNames.length; e++) {
+        var eventName = eventNames[ e ],
+            target    = targets[ t ];
+
+        target.dispatchEvent(new CustomEvent(eventName, data));
+      }
+    }
+  };
 };

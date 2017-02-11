@@ -1,11 +1,10 @@
-<!-- IMPORT partials/header.tpl -->
 <nav class="statistics-navigation sub-navigation">
   <ul>
     <li>
       <a href="#" class="back-link">[[global:back]]</a>
     </li><li>
     <div class="select-box">
-      <div class="select-toggle"><span class="fa fa-angle-down"></span><span class="select-title">[[global:months.{month}]]</span></div>
+      <div class="select-toggle"><span class="fa fa-angle-down"></span><span class="select-title">[[global:months.{{month}}]]</span></div>
       <ul>
         <li><a href="/statistics/january">[[global:months.january]]</a></li>
         <li><a href="/statistics/february">[[global:months.february]]</a></li>
@@ -28,8 +27,7 @@
 </nav>
 <article class="statistics-main">
   <header>
-    <h1>[[statistics:month_title, {monthName}]]</h1>
+    <h1>[[statistics:month_title, {{monthName}}]]</h1>
   </header>
-  <section class="flat-spending-by-month month-{month}" data-month="{monthNumber}"></section>
+  <section class="flat-spending-by-month month-{{month}}" data-month="{{monthNumber}}"></section>
 </article>
-<!-- IMPORT partials/footer.tpl -->

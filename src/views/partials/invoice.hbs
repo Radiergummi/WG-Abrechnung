@@ -1,0 +1,43 @@
+<article class="invoice{{#if this.ownInvoice}} own-invoice{{/if}}" id="{{this._id}}">
+  <section class="invoice-image">
+    <img src="/images/invoices/{{user._id}}/{{this._id}}.jpg"
+         alt="[[invoices:title, {{this._id}}]]"
+    >
+  </section>
+  <section class="invoice-data">
+    <div class="invoice-id">{{this._id}}</div>
+    <div class="invoice-owner">
+      <div class="profile-picture">
+        <img src="/images/users/{{this.user._id}}.jpg" alt>
+      </div>
+      <span class="owner-name">{{this.user.firstName}} {{this.user.lastName}}</span>
+    </div>
+    [[invoices:date]]: <span class="invoice-creation-date">{{this.creationDate}}</span><br>
+    [[invoices:sum]]: {{#if this.sum}}<span
+    class="invoice-sum">{{this.sum}}</span>€{{else}}[[invoices:no_sum]]{{/if}}<br>
+    <div class="tags-label">[[invoices:tags]]:</div>
+    <div class="invoice-tags">
+      {{#if this.tags}}
+        {{#each this.tags}}
+          <div class="tag tag-{{this.color}}" id="{{this._id}}">
+            <span>{{this.name}}</span>
+          </div>
+        {{/each}}
+      {{else}}
+        <span class="no-tags">[[invoices:no_tags]]</span>
+      {{/if}}
+    </div>
+  </section>
+  <section class="invoice-actions">
+    <a class="button" href="/invoices/{{this._id}}"><span class="fa fa-eye"></span>
+      [[global:details]]</a>
+    <!-- IF userInvoices.ownInvoice -->
+    {{#if this.ownInvoice}}
+      <a class="button" href="/invoices/{{this._id}}/edit"><span class="fa fa-edit"></span>
+        [[global:edit]]</a><a class="button delete-invoice danger" href="/invoices/{{this._id}}/delete"><span
+      class="fa fa-trash-o"></span>
+      [[global:delete]]</a>
+    <!-- ENDIF userInvoices.ownInvoice -->
+    {{/if}}
+  </section>
+</article>

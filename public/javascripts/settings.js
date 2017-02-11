@@ -1,4 +1,4 @@
-webpackJsonp([5],{
+webpackJsonp([6],{
 
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
@@ -6,31 +6,31 @@ webpackJsonp([5],{
 	'use strict';
 	
 	var app  = __webpack_require__(1),
-	    main = __webpack_require__(59)(app);
+	    main = __webpack_require__(66)(app);
 	
 	
 	(function(app) {
 	  app.startup.push(function() {
-	    __webpack_require__(60)(app);
+	    __webpack_require__(67)(app);
 	
 	    app.elements.userList               = document.getElementsByClassName('users')[ 0 ];
-	    app.elements.sendInvitationButton   = document.getElementsByClassName('send-invite') [ 0 ];
-	    app.elements.invitationEmailAddress = document.getElementById('invite-email-address');
-	    app.elements.deleteUserButton       = document.getElementsByClassName('delete-user')[ 0 ];
-	    app.elements.saveUserButton         = document.getElementsByClassName('save-user')[ 0 ];
+	    app.elements.sendInvitationButton   = app.dom('.send-invite');
+	    app.elements.invitationEmailAddress = app.dom('#invite-email-address');
+	    app.elements.deleteUserButton       = app.dom('.delete-user');
+	    app.elements.saveUserButton         = app.dom('.save-user');
 	
 	    /**
 	     * attaches the invitation event listeners
 	     */
 	    app.listeners.addInvitationEvents = function() {
-	      app.on('click', app.elements.sendInvitationButton, app.events.sendInvitation);
+	      app.elements.sendInvitationButton.on('click', app.events.sendInvitation);
 	    };
 	
 	    /**
 	     * attaches the delete user event listeners
 	     */
 	    app.listeners.addDeleteUserEvents = function() {
-	      app.on('click', app.elements.deleteUserButton, app.events.deleteUser);
+	      app.elements.deleteUserButton.on('click', app.events.deleteUser);
 	    };
 	
 	    app.listeners.addEditUserEvents = function() {
@@ -43,12 +43,13 @@ webpackJsonp([5],{
 	     * @param {Event} event
 	     */
 	    app.events.sendInvitation = function(event) {
+	      var emailAddressField = app.elements.invitationEmailAddress[ 0 ];
 	
 	      // retrieve the email address from its field
-	      var emailAddress = app.elements.invitationEmailAddress.value;
+	      var emailAddress = emailAddressField.value;
 	
 	      // check if the email address is a valid one using the native HTML5 validation check
-	      if (emailAddress && app.elements.invitationEmailAddress.checkValidity()) {
+	      if (emailAddress && emailAddressField.checkValidity()) {
 	
 	        // add the sending class and disable the button
 	        event.target.disabled = true;
@@ -59,9 +60,7 @@ webpackJsonp([5],{
 	          if (error) {
 	
 	            // if we have an error, show a notification
-	            app.translate('[[settings:user_management.invite.notification_error, ' + error.message + ']]', function(translated) {
-	              app.notifications.error(translated);
-	            });
+	            app.notifications.error('[[settings:user_management.invite.notification_error, ' + error.message + ']]');
 	
 	            // log the full error to the console
 	            console.error(error);
@@ -75,9 +74,7 @@ webpackJsonp([5],{
 	          }
 	
 	          // everything went smoothly, show a notification
-	          app.translate('[[settings:user_management.invite.notification_success, ' + response.invitation.sentTo + ']]', function(translated) {
-	            app.notifications.success(translated);
-	          });
+	          app.notifications.success('[[settings:user_management.invite.notification_success, ' + response.invitation.sentTo + ']]');
 	
 	          // leave the user some time to see what's going on
 	          return setTimeout(function() {
@@ -93,9 +90,7 @@ webpackJsonp([5],{
 	      } else {
 	
 	        // the validation failed, show a notification
-	        app.translate('[[settings:user_management.invite.notification_valid_email]]', function(translated) {
-	          app.notifications.warning(translated);
-	        });
+	        app.notifications.warning('[[settings:user_management.invite.notification_valid_email]]');
 	      }
 	    };
 	
@@ -106,13 +101,13 @@ webpackJsonp([5],{
 	     */
 	    app.events.prepareDeleteUserModal = function(event) {
 	      app.debug('attaching prepare delete user modal data');
-	      var modal = document.getElementsByClassName('dialog-delete-user-wrapper')[ 0 ];
+	      var modal = app.dom('.dialog-delete-user-wrapper')[ 0 ];
 	
 	      // fill the name span element with the name received from the delete button data attributes
-	      modal.getElementsByClassName('name')[ 0 ].textContent = event.target.dataset.firstName;
+	      app.dom('.name', modal).text(event.target.dataset.firstName);
 	
 	      // pass the id of the user to delete on to the real delete button
-	      modal.getElementsByClassName('delete-user')[ 0 ].dataset[ 'userId' ] = event.target.dataset.userId;
+	      app.dom('.delete-user').data('userId', event.target.dataset.userId);
 	    };
 	
 	    /**
@@ -126,19 +121,15 @@ webpackJsonp([5],{
 	      if (event.target.dataset.userId === app.config.user._id) {
 	
 	        // if we have an error, show a notification
-	        app.translate('[[settings:user_management.delete.notification_error_delete_self]]', function(translated) {
-	          app.notifications.error(translated);
-	          app.modals.instance.close();
-	        });
+	        app.notifications.error('[[settings:user_management.delete.notification_error_delete_self]]');
+	        app.modals.instance.close();
 	      }
 	
 	      app.connectors.deleteUser(event.target.dataset.userId, function(error, deletedUser) {
 	        if (error) {
 	
 	          // if we have an error, show a notification
-	          app.translate('[[settings:user_management.delete.notification_error, ' + error.message + ']]', function(translated) {
-	            app.notifications.error(translated);
-	          });
+	          app.notifications.error('[[settings:user_management.delete.notification_error, ' + error.message + ']]');
 	
 	          // log the full error to the console
 	          console.error(error);
@@ -148,41 +139,56 @@ webpackJsonp([5],{
 	        }
 	
 	        // everything went smoothly, show a notification
-	        app.translate('[[settings:user_management.delete.notification_success, ' + deletedUser.firstName + ' ' + deletedUser.lastName + ']]', function(translated) {
-	          app.notifications.success(translated);
-	        });
+	        app.translate(
+	          '[[settings:user_management.delete.notification_success, ' + deletedUser.firstName + ' ' + deletedUser.lastName + ']]',
+	          function(translated) {
+	            app.notifications.success(translated);
+	          });
 	
 	        return setTimeout(function() {
 	          app.modals.instance.close();
 	
 	          // delete the user row
-	          document.getElementById(deletedUser._id).remove();
+	          app.dom('#' + deletedUser._id).remove();
 	        }, 500);
 	      });
 	    };
 	
 	    app.events.prepareEditUserModal = function(event) {
 	      return app.connectors.getUserDetails(event.target.dataset.userId, function(user) {
-	        var modal  = document.getElementsByClassName('modal-edit-user-wrapper')[ 0 ],
+	        var modal  = app.dom('.modal-edit-user-wrapper'),
 	            fields = {
-	              firstName: document.getElementById('modified-first-name'),
-	              lastName:  document.getElementById('modified-last-name'),
-	              role:      document.getElementById('modified-role'),
-	              username:  document.getElementById('modified-username'),
-	              password:  document.getElementById('modified-password'),
-	              email:     document.getElementById('modified-email'),
-	              language:  document.getElementById('modified-language'),
-	              saveUser:  modal.getElementsByClassName('save-user')
+	              firstName: app.dom('#modified-first-name', modal),
+	              lastName:  app.dom('#modified-last-name', modal),
+	              role:      app.dom('#modified-role', modal),
+	              username:  app.dom('#modified-username', modal),
+	              email:     app.dom('#modified-email', modal),
+	              language:  app.dom('#modified-language', modal),
+	              saveUser:  app.dom('.save-user', modal)
 	            };
 	
-	        fields.firstName.value                                                    = user.firstName;
-	        fields.lastName.value                                                     = user.lastName;
-	        fields.role.querySelector('[value="' + user.role + '"]').selected         = true;
-	        fields.username.value                                                     = user.authentication.username;
-	        fields.password.value                                                     = '********';
-	        fields.email.value                                                        = user.email;
-	        fields.language.querySelector('[value="' + user.language + '"]').selected = true;
-	        fields.saveUser.id                                                        = user._id;
+	        fields.firstName.value(user.firstName);
+	        fields.lastName.value(user.lastName);
+	        fields.role.children('[value="' + user.role + '"]').selected(true);
+	        fields.username.value(user.authentication.username);
+	        fields.email.value(user.email);
+	        fields.language.children('[value="' + user.language + '"]').selected(true);
+	        fields.saveUser.id(user._id).on('click', app.events.editUser);
+	      });
+	    };
+	
+	    app.events.editUser = function(event) {
+	      var modal = app.dom('.modal-edit-user-wrapper');
+	
+	      return app.connectors.editUser(event.target.id, {
+	        firstName: app.dom('#modified-first-name', modal).value(),
+	        lastName:  app.dom('#modified-last-name', modal).value(),
+	        role:      app.dom('#modified-role', modal).value(),
+	        username:  app.dom('#modified-username', modal).value(),
+	        password:  app.dom('#modified-password', modal).value(),
+	        email:     app.dom('#modified-email', modal).value(),
+	        language:  app.dom('#modified-language', modal).value(),
+	        saveUser:  app.dom('.save-user', modal).value()
 	      });
 	    };
 	
@@ -226,8 +232,6 @@ webpackJsonp([5],{
 	    };
 	
 	    app.connectors.createUser = function(userData, callback) {
-	
-	
 	      app.post('/api/users', userData, function(response) {
 	        if (response.ok) {
 	          return callback(response.responseText);
@@ -240,19 +244,32 @@ webpackJsonp([5],{
 	    app.connectors.getUserDetails = function(userId, callback) {
 	      return app.http.get('/api/users/' + userId, function(response) {
 	        if (response.ok) {
-	          return callback(response.responseText);
+	          return callback(JSON.parse(response.responseText));
 	        } else {
 	          return app.error('could not get user details for user ' + userId + ': ' + response.responseText.message.raw, response.responseText.message.translation);
 	        }
 	      });
 	    };
 	
-	    app.connectors.editUser = function(userId, userData, callback) {
+	    app.connectors.editUser = function(userId, userData) {
+	      if (userData.password.length <= 0) {
+	        delete userData.password;
+	      }
+	
 	      return app.http.put('/api/users/' + userId, userData, function(response) {
 	        if (response.ok) {
-	          return callback(response.responseText);
+	          // TODO: Update user fields throughout the app
+	          app.dom('[data-user-id="' + userId + '"]').trigger('flatm8:user_updated', {
+	            userId:    userId,
+	            firstName: userData.firstName,
+	            lastName:  userData.lastName
+	          });
+	          app.notifications.success('[[settings:user_management.edit.notification_success, ' + userData.firstName + ']]');
+	
+	          return setTimeout(app.modals.instance.close, 500);
 	        } else {
-	          return app.error('could not save user ' + userId + ': ' + response.responseText.message.raw, response.responseText.message.translation);
+	          var result = JSON.parse(response.responseText);
+	          return app.error('could not save user ' + userId + ': ' + result.message.raw, result.message.translation);
 	        }
 	      });
 	    };
@@ -266,13 +283,13 @@ webpackJsonp([5],{
 
 /***/ },
 
-/***/ 60:
+/***/ 67:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	module.exports = function(app) {
-	  var vanillaModal = __webpack_require__(61);
+	  var vanillaModal = __webpack_require__(68);
 	
 	  app.modals = {
 	    instance: null
@@ -311,7 +328,7 @@ webpackJsonp([5],{
 
 /***/ },
 
-/***/ 61:
+/***/ 68:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {

@@ -1,0 +1,39 @@
+<nav class="invoices-navigation sub-navigation">
+  <ul>
+    <li>
+      <a href="/invoices/create"><span class="fa fa-plus"></span> [[global:do_create]]</a>
+    </li>
+    <li>
+      <a href="/invoices/search"><span class="fa fa-search"></span> [[invoices:search]]</a>
+    </li>
+  </ul>
+</nav>
+<article class="invoices">
+  {{#if  userInvoices}}
+    <div class="timeline-item timeline-first" data-timeline-description="[[invoices:no_more_recent]]"></div>
+    {{#each userInvoices}}
+      {{>invoice}}
+      {{#unless @last}}
+        <div class="timeline-item timeline-separator timeline-within-range"></div>
+      {{/unless}}
+    {{/each}}
+    <div class="timeline-item timeline-data-available"></div>
+  {{else}}
+    <span class="no-invoices">[[invoices:no_invoices]]</span>
+  {{/if}}
+</article>
+<div id="modal-delete-invoice" class="hidden">
+  <div class="modal-content-wrapper modal-delete-invoice-wrapper dialog-warning">
+    <header class="modal-header">
+      <h2>[[settings:user_management.delete_user]]</h2>
+    </header>
+    <section class="modal-body">
+      <span class="dialog-message">[[settings:user_management.warning_delete_user]]</span>
+      <div class="actions">
+        <button type="button" class="delete-user danger"><span class="fa fa-trash-o"></span> [[global:delete]]</button>
+        <button type="button" class="cancel" data-close-modal><span class="fa fa-times"></span> [[global:cancel]]
+        </button>
+      </div>
+    </section>
+  </div>
+</div>

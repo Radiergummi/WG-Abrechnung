@@ -5,12 +5,11 @@
  require
  */
 
-function compile(config) {
-  var templates   = require('./templates'),
-      stylesheets = require('./stylesheets'),
+function compile (config) {
+  var stylesheets = require('./stylesheets'),
       javascripts = require('./javascripts');
 
-  function messenger(error, results) {
+  function messenger (error, results) {
     if (error) {
       return process.send({
         type:    'error',
@@ -27,10 +26,9 @@ function compile(config) {
   }
 
   return Promise.all([
-    templates.compile(config),
     stylesheets.compile(config),
     javascripts.compile(config)
-  ]).then(function (results) {
+  ]).then(function(results) {
     return messenger(null, results);
   }).catch(messenger);
 }

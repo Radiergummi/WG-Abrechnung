@@ -5,47 +5,60 @@
  require
  */
 
-var mongoose = require('mongoose'),
-    moment   = require('moment');
+const mongoose = require('mongoose'),
+      moment   = require('moment'),
+      Schema   = mongoose.Schema,
+      ObjectId = Schema.Types.ObjectId,
 
-var Tag      = require('./tag'),
-    ObjectId = mongoose.Schema.Types.ObjectId;
+      Tag      = require('./tag');
 
-var invoiceSchema = new mongoose.Schema({
+const invoiceSchema = new Schema({
   // _id: ObjectID(),
 
-  user: { type: ObjectId, ref: 'user', required: true },
+  user: {
+    type:     ObjectId,
+    ref:      'user',
+    required: true
+  },
 
   /**
    * the invoice creation date
    */
-  creationDate: { type: Date, required: true },
+  creationDate: {
+    type:     Date,
+    required: true
+  },
 
   /**
    * the invoice sum
    */
   sum: {
-    type: Number, get: function (sum) {
-      return sum / 100;
-    }
+    type: Number,
+    get:  sum => (sum / 100).toFixed(2),
+    set:  sum => sum * 100
   },
 
   /**
    * tags this invoice is assigned to
    */
-  tags: [
-    { type: ObjectId, ref: 'tag' }
-  ]
+  tags: [ {
+    type: ObjectId,
+    ref:  'tag'
+  } ]
 }, {
-  toObject: { getters: true },
-  toJSON:   { getters: true }
+  toObject: {
+    getters: true
+  },
+  toJSON:   {
+    getters: true
+  }
 });
 
-invoiceSchema.methods.getHTMLInputDate = function () {
+invoiceSchema.methods.getHTMLInputDate = function() {
   return new Date(this.creationDate.toString()).toISOString().substring(0, 10);
 };
 
-invoiceSchema.methods.getFormattedDate = function () {
+invoiceSchema.methods.getFormattedDate = function() {
   return moment(this.creationDate).format('Do MMMM YYYY');
 };
 

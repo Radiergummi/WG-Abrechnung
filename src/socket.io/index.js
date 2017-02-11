@@ -55,7 +55,8 @@ function requireModules() {
     'invoices',
     'statistics',
     'dashboard',
-    'settings'
+    'settings',
+    'tags'
   ];
 
   modules.forEach(function (module) {

@@ -5,7 +5,10 @@
       debug;
 
   if (typeof window === 'undefined') {
-    debug          = require('debug')('flatm8:translator');
+    //debug          = require('debug')('flatm8:translator');
+    debug = function() {
+      
+    }
   } else {
     if (window.hasOwnProperty('debug') && window.debug) {
       debug = console.debug.bind(console);

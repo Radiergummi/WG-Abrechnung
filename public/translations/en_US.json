@@ -49,6 +49,7 @@
     "server_updated.message": "the server has been updated",
     "server_updated.reload":  "reload",
     "server_updated.later":   "later",
+    "server_error":           "a server side error occurred",
     "dragndrop_drop_here":    "Drop image here",
     "outside_dnd_area":       "The image has to be dropped on the designated area"
   },
@@ -115,7 +116,10 @@
     "no_tags":             "no tags available yet.",
     "input.picture_label": "invoice image:",
     "input.tag_label":     "Enter tag name",
-    "create_success":      "the invoice has been saved successfully"
+    "create_success":      "the invoice has been saved successfully",
+    "delete.warning":      "are you sure you want to delete this invoice?",
+    "delete.error":        "an error occurred while deleting the invoice.",
+    "delete.success":      "the invoice has been deleted."
   },
   "statistics":  {
     "month_title":          "Statistics for %1",

@@ -9,8 +9,8 @@ var helper         = require('./helper'),
     setupPageRoute = helper.setupPageRoute;
 
 module.exports = function(router, middleware, controllers) {
-  var middlewares = [ middleware.checkAuth, middleware.csrf ],
-      checkInvoiceOwnershipMiddlewares = [ middleware.checkAuth, middleware.checkInvoicePermissions ];
+  var middlewares                      = [ middleware.checkAuth, middleware.csrf ],
+      checkInvoiceOwnershipMiddlewares = [ middleware.checkAuth, middleware.csrf, middleware.checkInvoicePermissions ];
 
   setupPageRoute(router, '/invoices', middleware, middlewares, controllers.viewAll);
   setupPageRoute(router, '/invoices/all', middleware, middlewares, controllers.redirectToInvoices);

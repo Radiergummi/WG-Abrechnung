@@ -6,6 +6,7 @@
  */
 
 var colors  = require('colors'),
+    fs = require('fs'),
     nconf   = require('nconf'),
     winston = require('winston');
 
@@ -40,21 +41,21 @@ controllers.handle404Errors = function(req, res, next) {
     })
   }
 
-  next(error);
+  return next(error);
 };
 
 controllers.handleErrors = function(error, req, res, next) {
   if (typeof error === 'string') {
-    res.status(500).send(error);
-    return winston.error(error);
+    winston.error(error);
+    return res.status(500).send(error);
   }
 
   if (error.code === 'EBADCSRFTOKEN') {
     return res.status(403).json({
-      status: 403,
-      reason: 'invalid-csrf',
+      status:  403,
+      reason:  'invalid-csrf',
       message: {
-        raw: 'invalid CSRF token',
+        raw:         'invalid CSRF token',
         translation: '[[global:server_error]]'
       }
     });
@@ -103,6 +104,17 @@ controllers.handleErrors = function(error, req, res, next) {
         message: {
           raw:         'Not authorized to request ' + req.url,
           translation: '[[global:not_authorized]]'
+        }
+      });
+    }
+
+    if (error.status === 403) {
+      return res.json({
+        status:  403,
+        reason:  'invalid-csrf',
+        message: {
+          raw:         'invalid CSRF token',
+          translation: '[[global:server_error]]'
         }
       });
     }
