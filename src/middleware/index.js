@@ -19,7 +19,6 @@ var favicon          = require('serve-favicon'),
     express          = require('express'),
     cookieParser     = require('cookie-parser'),
     bodyParser       = require('body-parser'),
-    //templates        = require('templates.js'),
     hbs              = require('express-handlebars'),
     compression      = require('compression'),
     expressValidator = require('express-validator'),
@@ -131,7 +130,4 @@ module.exports = function(app) {
 };
 
 function registerTemplateHelpers () {
-  /*templates.registerHelper('format_date_string', function(data) {
-    return moment(data).format('LLLL:SS');
-  });*/
 }

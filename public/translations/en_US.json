@@ -112,6 +112,8 @@
     "date":                "date",
     "sum":                 "sum",
     "no_sum":              "no sum available yet.",
+    "note":                "note",
+    "no_note":             "no note available yet.",
     "tags":                "tags",
     "no_tags":             "no tags available yet.",
     "input.picture_label": "invoice image:",

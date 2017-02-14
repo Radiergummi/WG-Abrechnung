@@ -122,7 +122,7 @@
     justify-content: flex-start;
     flex-wrap:       wrap;
 
-    li:last-child {
+    &.taggle_list > li:last-child {
       margin: 0 0 0 .75rem;
 
       input {
@@ -136,7 +136,7 @@
 
   .tag {
     margin:        .25rem;
-    padding:       .25rem .25rem .25rem .5rem;
+    padding:       .25rem;
     border:        1px solid rgba(0, 0, 0, .1);
     border-radius: 4px;
     background:    #b3e5fc;
@@ -145,11 +145,16 @@
     text-overflow: ellipsis;
     white-space:   nowrap;
     overflow:      hidden;
-    max-width:     25%;
+    line-height:   1.2rem;
     transition:    opacity .125s;
 
     .taggle_text {
       vertical-align: top;
+    }
+
+    &.taggle {
+      max-width:    25%;
+      padding-left: .5rem;
     }
 
     &.taggle_hot {
@@ -230,6 +235,7 @@
     border-radius: 2px;
     background:    #fff;
     box-shadow:    0 2px 5px rgba(0, 0, 0, .1);
+    z-index:       1;
 
     @include clearfix();
 
@@ -246,34 +252,32 @@
     }
 
     .invoice-image {
-      float:        left;
-      width:        200px;
-      height:       200px;
-      border-right: 1px solid rgba(0, 0, 0, .2);
-      overflow:     hidden;
-
-      img {
-        position:   relative;
-        height:     auto;
-        width:      100%;
-        top:        50%;
-        left:       10%;
-        transform:  translate(-10%, -50%);
-        transition: all .5s;
-
-        &.image-error {
-          width:     50px !important;
-          left:      calc(50% - 25px);
-          top:       calc(50% - 25px);
-          transform: none !important;
-        }
-      }
+      position:            relative;
+      float:               left;
+      width:               200px;
+      height:              200px;
+      border-right:        1px solid rgba(0, 0, 0, .2);
+      overflow:            hidden;
+      background-size:     cover;
+      background-repeat:   no-repeat;
+      background-position: center center;
+      transition:          all .5s;
 
       &:hover {
-        img {
-          width:     120%;
-          transform: translate(-15%, -50%);
-        }
+        background-size: 100%;
+      }
+
+      &::before {
+        position:        absolute;
+        content:         '';
+        display:         block;
+        top:             0;
+        left:            0;
+        width:           100%;
+        height:          100%;
+        background:      #fff url(/images/noImage.svg) no-repeat center center;
+        background-size: 40px 40px;
+        z-index:         -1;
       }
     }
 
@@ -408,27 +412,27 @@
     }
 
     .invoice-data {
-      padding:     20px;
-      font-size:   18px;
-      line-height: 2;
+      display:        flex;
+      flex-direction: column;
+      padding:        20px;
+      font-size:      18px;
+      line-height:    2;
 
-      & > span {
-        font-weight: bold;
+      .row {
+        display:        flex;
+        flex-direction: row;
+        align-items:    baseline;
       }
 
-      .tags-label {
-        display:        inline-block;
-        vertical-align: middle;
-        padding:        2px 0;
-        font-weight:    normal;
+      .label {
+        flex-basis: 10%;
       }
 
-      .invoice-tags {
-        display:        inline-block;
-        vertical-align: middle;
-
-        @include clearfix();
-
+      .value {
+        flex-basis:  90%;
+        flex-grow:   1;
+        margin-left: 1rem;
+        font-weight: 500;
       }
 
       .invoice-id {
@@ -443,6 +447,15 @@
         font-size:     12px;
         background:    rgba(0, 0, 0, .05);
         color:         rgba(0, 0, 0, .5);
+      }
+
+      .invoice-note p {
+        line-height:   1.4;
+        background:    rgba(250, 235, 215, 0.45);
+        border-radius: 4px;
+        padding:       .2rem .5rem;
+        text-shadow:   1px 1px #fff;
+        border:        1px solid rgba(0, 0, 0, .05);
       }
     }
   }

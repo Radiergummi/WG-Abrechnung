@@ -17,7 +17,7 @@ module.exports = function(router, middleware, controllers) {
   router.post('/api/user/picture',
     middleware.checkAuth,
     middleware.upload.single('profilePicture'),
-//  middleware.csrf,
+    middleware.csrf,
     controllers.user.savePicture
   );
 

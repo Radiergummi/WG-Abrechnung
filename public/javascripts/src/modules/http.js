@@ -229,9 +229,8 @@ module.exports = function(app) {
     }
 
     if (data instanceof FormData) {
-      console.log('is FD')
+      // ok
     } else {
-      app.debug('data is no formdata yet');
       const formData = new FormData();
 
       for (let key in data) {
@@ -251,7 +250,6 @@ module.exports = function(app) {
     data.set('_csrf', document.body.dataset.csrfToken);
 
     app.debug('PUT ' + url);
-    app.debug(data);
     return app.http.request('put', url, data, success, failure, events);
   };
 };

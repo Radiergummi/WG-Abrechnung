@@ -40,7 +40,6 @@ module.exports = function(middleware) {
         callback = defaultCallback;
       }
 
-
       debug('creating base view variables');
       var baseVariables                  = {};
       baseVariables.loggedIn             = req.hasOwnProperty('user');
@@ -75,11 +74,15 @@ module.exports = function(middleware) {
       baseVariables.bodyClass     = buildBodyClass(req);
       baseVariables.url           = (req.baseUrl + req.path).replace(/^\/api/, '');
       baseVariables.cacheBuster   = Date.now();
+      baseVariables.csrfToken     = (req.csrfToken
+          ? req.csrfToken()
+          : ''
+      );
       baseVariables.clientScripts = (variables.clientScripts
-        ? [ { name: 'base' } ].concat(variables.clientScripts)
-        : [ { name: 'base' } ]);
+          ? [ { name: 'base' } ].concat(variables.clientScripts)
+          : [ { name: 'base' } ]
+      );
 
-      debug('merging view variables');
       deepExtend(variables, baseVariables);
       variables.pageTitle = (variables.pageTitle ? variables.pageTitle + ' | ' : '') + nconf.get('name');
 

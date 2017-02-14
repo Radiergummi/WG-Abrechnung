@@ -1,8 +1,5 @@
 <article class="invoice{{#if this.ownInvoice}} own-invoice{{/if}}" id="{{this._id}}">
-  <section class="invoice-image">
-    <img src="/images/invoices/{{user._id}}/{{this._id}}.jpg"
-         alt="[[invoices:title, {{this._id}}]]"
-    >
+  <section class="invoice-image" style="background-image: url(/images/invoices/{{user._id}}/{{this._id}}.jpg)">
   </section>
   <section class="invoice-data">
     <div class="invoice-id">{{this._id}}</div>
@@ -18,11 +15,13 @@
     <div class="tags-label">[[invoices:tags]]:</div>
     <div class="invoice-tags">
       {{#if this.tags}}
+        <ul>
         {{#each this.tags}}
-          <div class="tag tag-{{this.color}}" id="{{this._id}}">
+          <li class="tag tag-{{this.color}}" id="{{this._id}}">
             <span>{{this.name}}</span>
-          </div>
+          </li>
         {{/each}}
+        </ul>
       {{else}}
         <span class="no-tags">[[invoices:no_tags]]</span>
       {{/if}}
@@ -31,13 +30,11 @@
   <section class="invoice-actions">
     <a class="button" href="/invoices/{{this._id}}"><span class="fa fa-eye"></span>
       [[global:details]]</a>
-    <!-- IF userInvoices.ownInvoice -->
     {{#if this.ownInvoice}}
       <a class="button" href="/invoices/{{this._id}}/edit"><span class="fa fa-edit"></span>
         [[global:edit]]</a><a class="button delete-invoice danger" href="/invoices/{{this._id}}/delete"><span
       class="fa fa-trash-o"></span>
       [[global:delete]]</a>
-    <!-- ENDIF userInvoices.ownInvoice -->
     {{/if}}
   </section>
 </article>

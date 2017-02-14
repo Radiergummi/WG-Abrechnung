@@ -118,7 +118,7 @@ middleware.csrf = csurf({});
 middleware.upload = multer({
   storage:    multerStorage,
   fileFilter: function(req, file, callback) {
-    if (file.mimetype.match('image\/jp(e)?g')) {
+    if (file.mimetype.match('jpg|jpeg|png|gif')) {
       return callback(null, true);
     }
 

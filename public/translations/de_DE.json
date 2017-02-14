@@ -134,6 +134,8 @@
     "date":                "Datum",
     "sum":                 "Summe",
     "no_sum":              "Noch keine Summe angegeben.",
+    "note":                "Notiz",
+    "no_note":             "Noch keine Notiz angegeben.",
     "tags":                "Tags",
     "no_tags":             "Es wurden keine Tags angegeben.",
     "input.picture_label": "Bild der Rechnung:",

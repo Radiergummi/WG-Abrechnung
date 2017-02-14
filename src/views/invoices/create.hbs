@@ -28,10 +28,11 @@
       <label for="invoice-sum">[[invoices:sum]]:</label>
       <input id="invoice-sum" type="number" name="sum" step="0.01" placeholder="0,00€">
 
+      <label for="invoice-note">[[invoices:note]]:</label>
+      <textarea id="invoice-note"></textarea>
+
       <label for="invoice-tag">[[invoices:tags]]:</label>
-      <div class="invoice-tags">
-        <input id="invoice-tag" type="text" placeholder="[[invoices:input.tag_label]]">
-      </div>
+      <div class="invoice-tags"></div>
     </section>
     <section class="invoice-actions">
       <a class="button" href="/invoices"><span class="fa fa-arrow-left"></span> [[global:back]]</a>

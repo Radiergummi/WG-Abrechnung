@@ -11,9 +11,10 @@ const debug   = require('debug')('flatm8:controllers:invoices'),
 const invoices = module.exports = {};
 
 invoices.redirectToInvoices = (req, res, next) => res.redirect('/invoices');
-invoices.viewSingle         = function(req, res, next) {
+
+invoices.viewSingle = function(req, res, next) {
   var vars = {
-//    clientScripts: [ { name: 'invoices.single' } ],
+//  clientScripts: [ { name: 'invoices.single' } ],
     invoicesActive: true,
     success:        req.query.success
   };
@@ -23,10 +24,11 @@ invoices.viewSingle         = function(req, res, next) {
       return next(error);
     }
 
-    vars.pageTitle                 = 'Rechnung ' + req.params.id;
-    vars.userInvoices              = JSON.parse(JSON.stringify(data));
-    vars.userInvoices.creationDate = data.getFormattedDate();
-    vars.userInvoices.ownInvoice   = (vars.userInvoices.user._id == req.user._id);
+    vars.pageTitle                     = 'Rechnung ' + req.params.id;
+    vars.invoice                       = data;
+    vars.invoice.formattedCreationDate = data.getFormattedDate();
+    vars.invoice.ownInvoice            = (String(vars.invoice.user._id) === String(req.user._id));
+    vars.invoice.tags                  = data.tags.filter(tag => !!tag);
 
     return res.render('invoices/single', vars);
   });
@@ -35,7 +37,8 @@ invoices.viewSingle         = function(req, res, next) {
 invoices.viewAll = function(req, res, next) {
   var vars  = {
         clientScripts:  [ { name: 'invoices.all' } ],
-        invoicesActive: true
+        invoicesActive: true,
+        pageTitle:      'Rechnungen'
       },
       limit = (req.params.pageNum ? (Math.floor(req.params.pageNum) * 2 + 3) : 4);
 
@@ -44,14 +47,13 @@ invoices.viewAll = function(req, res, next) {
       return next(error);
     }
 
-    vars.userInvoices = JSON.parse(JSON.stringify(data));
+    vars.invoices = data.map(invoice => {
+      invoice.creationDate = invoice.getFormattedDate();
+      invoice.ownInvoice   = (String(invoice.user._id) === String(req.user._id));
+      invoice.tags.filter(tag => !!tag);
 
-    for (var i = 0; i < vars.userInvoices.length; i++) {
-      vars.userInvoices[ i ].creationDate = data[ i ].getFormattedDate();
-      vars.userInvoices[ i ].ownInvoice   = (vars.userInvoices[ i ].user._id == req.user._id);
-    }
-
-    vars.pageTitle = 'Rechnungen';
+      return invoice;
+    });
 
     return res.render('invoices/all', vars);
   });
@@ -62,11 +64,9 @@ invoices.create = function(req, res, next) {
     clientScripts:  [ { name: 'invoices.create' } ],
     invoicesActive: true,
     todayDate:      new Date().toISOString().substring(0, 10),
-    pageTitle:      'Neu',
-    csrfToken:      req.csrfToken()
+    pageTitle:      'Neu'
   };
 
-  debug(`requested invoice creation form with CSRF ${vars.csrfToken}`);
   return res.render('invoices/create', vars);
 };
 
@@ -81,11 +81,9 @@ invoices.delete = function(req, res, next) {
 
 invoices.edit = function(req, res, next) {
   var vars = {
-    clientScripts:  [ { name: 'invoices.edit'
-    } ],
+    clientScripts:  [ { name: 'invoices.edit' } ],
     invoicesActive: true,
-    pageTitle:      'Rechnung bearbeiten',
-    csrfToken:      req.csrfToken()
+    pageTitle:      'Rechnung bearbeiten'
   };
 
   Invoice.getById(req.params.id, function(error, invoice) {

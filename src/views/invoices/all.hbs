@@ -9,9 +9,9 @@
   </ul>
 </nav>
 <article class="invoices">
-  {{#if  userInvoices}}
+  {{#if  invoices}}
     <div class="timeline-item timeline-first" data-timeline-description="[[invoices:no_more_recent]]"></div>
-    {{#each userInvoices}}
+    {{#each invoices}}
       {{>invoice}}
       {{#unless @last}}
         <div class="timeline-item timeline-separator timeline-within-range"></div>

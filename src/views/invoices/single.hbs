@@ -3,38 +3,50 @@
     <li>
       <a href="/invoices" class="back-link"><span class="fa fa-arrow-left"></span> [[global:back]]</a>
     </li>
-    {{#if userInvoices.ownInvoices}}
+    {{#if invoice.ownInvoice}}
       <li>
-        <a href="/invoices/{{userInvoices._id}}/edit"><span class="fa fa-edit"></span> [[global:edit]]</a>
+        <a href="/invoices/{{invoice._id}}/edit"><span class="fa fa-edit"></span> [[global:edit]]</a>
       </li>
       <li>
-        <a href="/invoices/{{userInvoices._id}}/delete"><span class="fa fa-save"></span> [[global:delete]]</a>
+        <a href="/invoices/{{invoice._id}}/delete"><span class="fa fa-save"></span> [[global:delete]]</a>
       </li>
     {{/if}}
   </ul>
 </nav>
 <div class="single-invoice">
-  <article class="invoice" id="{{userInvoices._id}}">
+  <article class="invoice" id="{{invoice._id}}">
     <section class="invoice-data">
-      <div class="invoice-id">{{userInvoices._id}}</div>
-      [[invoices:date]]: <span class="invoice-creation-date">{{userInvoices.creationDate}}</span><br>
-      [[invoices:sum]]: <span class="invoice-sum">{{userInvoices.sum}}</span>€<br>
-      <span class="tags-label">[[invoices:tags]]:</span>
-      <div class="invoice-tags">
-        {{#if userInvoices.tags}}
-          {{#each userInvoices.tags}}
-            <div class="tag tag-{{this.color}}" id="{{this._id}}">
-              <span>{{this.name}}</span>
-            </div>
-          {{/each}}
+      <div class="invoice-id">{{invoice._id}}</div>
+      <div class="row invoice-creation-date">
+        <span class="label">[[invoices:date]]:</span>
+        <span class="value">{{invoice.formattedCreationDate}}</span>
+      </div>
+      <div class="row invoice-sum">
+        <span class="label">[[invoices:sum]]:</span>
+        <span class="value">{{invoice.sum}}€</span>
+      </div>
+      <div class="row invoice-note">
+        <span class="label">[[invoices:note]]:</span>
+        <p class="value">{{invoice.note}}</p>
+      </div>
+      <div class="row invoice-tags">
+        <span class="label">[[invoices:tags]]:</span>
+        {{#if invoice.tags}}
+          <ul class="value">
+            {{#each invoice.tags}}
+              <li class="tag tag-{{this.color}}" id="{{this._id}}">
+                <span>{{this.name}}</span>
+              </li>
+            {{/each}}
+          </ul>
         {{else}}
-          <span class="no-tags">[[invoices:no_tags]]</span>
+          <span class="value no-tags">[[invoices:no_tags]]</span>
         {{/if}}
       </div>
     </section>
     <section class="invoice-image">
-      <img src="/images/invoices/{{user._id}}/{{userInvoices._id}}.jpg"
-           alt="Rechnung {{userInvoices._id}}">
+      <img src="/images/invoices/{{user._id}}/{{invoice._id}}.jpg"
+           alt="Rechnung {{invoice._id}}">
     </section>
   </article>
 </div>

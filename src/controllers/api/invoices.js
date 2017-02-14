@@ -6,9 +6,10 @@
  */
 
 var debug        = require('debug')('flatm8:api:invoices'),
-    file         = require('../../meta/file'),
     nconf        = require('nconf'),
     path         = require('path'),
+    sharp        = require('sharp'),
+    file         = require('../../meta/file'),
     Tag          = require('../../tag'),
     Invoice      = require('../../invoice'),
     invoiceModel = require('../../models/invoice'),
@@ -84,73 +85,103 @@ invoicesApi.getInvoice = function(req, res, next) {
 invoicesApi.createInvoice = function(req, res, next) {
   debug('trying to create a new invoice');
 
-  new Promise(function(resolve, reject) {
-    var tags = [];
-    if (typeof req.body.tags === 'string' && req.body.tags.length !== 0) {
-      tags = req.body.tags.split(',');
-    } else {
-      tags = req.body.tags;
-    }
+  const invoiceData = {
+    user: req.user._id,
+    date: req.body.creationDate || new Date(),
+    sum:  req.body.sum || undefined,
+    note: req.body.note || undefined,
+    tags: req.body.tags
+  };
 
-    debug(`invoice has been tagged as ${tags.join(', ')}`);
+  if (typeof invoiceData.tags === 'string' && invoiceData.tags.length > 0) {
+    invoiceData.tags = invoiceData.tags.split(',');
+  }
 
-    Invoice.createNew({
-      user:         req.user._id,
-      creationDate: req.body.creationDate || new Date(),
-      sum:          req.body.sum || undefined,
-      tags:         tags
-    }, function(error, newInvoice) {
-      if (error) {
-        debug(`error creating the invoice: ${error.message}`);
-        return reject(error);
-      }
+  if (invoiceData.tags.length < 1) {
+    debug('invoice has no changed or added tags');
+    return invoice;
+  }
 
-      debug('invoice created successfully');
-      return resolve(newInvoice);
-    });
-  })
+  debug(`new invoice has the following tags: %s`, invoiceData.tags.join(', '));
 
-  /**
-   * save the image file
-   */
-    .then(function(newInvoice) {
+  function processTag (tagName) {
+    return new Promise((resolve, reject) => {
 
-      debug(`trying to save image for invoice ${newInvoice.id}`);
-      return new Promise(function(resolve, reject) {
-        if (!req.file) {
+      debug('processing tag %s', tagName);
 
-          debug('invoice has no image associated');
-          return resolve();
+      // try to get the tag by name
+      Tag.getByName(tagName, (error, tag) => {
+        if (error) {
+          debug('error retrieving tag %s: %s', tagName, error);
+          return reject(error);
         }
 
-        file.write(`public/images/invoices/${req.user._id}/${newInvoice._id}.jpg`,
-          req.file.buffer,
-          function(error) {
-            if (error) {
+        // if we have no tag, it doesn't exist yet
+        if (!tag) {
+          debug('tag %s does not exist yet', tagName);
 
-              debug(`image could not be saved: ${error.message}`);
+          // ...so we create a new tag
+          return Tag.createNew({
+            tagName: tagName
+          }, (error, newTag) => {
+            if (error) {
+              debug('could not create tag %s: %s', tagName, error);
               return reject(error);
             }
 
-            debug('image has been saved successfully');
-            return resolve(newInvoice);
-          }
-        );
+            debug('created tag %s with ID %s', tagName, newTag._id);
+
+            // resolve with the new ID
+            return resolve(newTag._id);
+          });
+        }
+
+        debug('tag %s exists and has ID %s', tagName, tag._id);
+
+        // the tag exists, so we resolve with the existing ID
+        return resolve(tag._id);
+      });
+    });
+  }
+
+  return Promise.all(invoiceData.tags.map(processTag)).then(tagIds => {
+    debug('got tags: ', tagIds);
+    invoiceData.tags = Array.from(new Set(tagIds));
+    return invoiceData;
+  }).then(data => new Promise((resolve, reject) => {
+      debug(`invoice has been tagged as ${data.tags.join(', ')}`);
+
+      Invoice.createNew(data, function(error, newInvoice) {
+        if (error) {
+          debug(`error creating the invoice: ${error.message}`);
+          return reject(error);
+        }
+
+        debug('invoice created successfully');
+        return resolve(newInvoice);
       });
     })
+  )
+  /**
+   * save the image file
+   */
+    .then(newInvoice => {
+      debug(`trying to save image for invoice ${newInvoice.id}`);
 
-    /**
-     * catch any errors
-     */
-    .catch(function(error) {
-      return res.status(500).send({
-        status:  500,
-        reason:  'db-error',
-        message: {
-          raw:         'could not save invoice: ' + error.message,
-          translation: '[[global:server_error]]'
-        }
-      });
+      if (!req.file) {
+        return;
+      }
+
+      return sharp(req.file.buffer)
+        .jpeg({ quality: 80 })
+        .toFile(path.join(
+          nconf.get('path'),
+          '/public/images/invoices/',
+          String(req.user._id),
+          String(newInvoice._id) + '.jpg'
+        ))
+        .catch(error => debug('image could not be saved: %s', error))
+        .then(info => newInvoice);
     })
 
 
@@ -161,6 +192,21 @@ invoicesApi.createInvoice = function(req, res, next) {
       res.status(204);
       res.set('Location', '/invoices/' + newInvoice._id + '?success=true');
       res.send({});
+    })
+
+    /**
+     * catch any errors
+     */
+    .catch(function(error) {
+      debug('invoice creation failed: ', error);
+      return res.status(500).send({
+        status:  500,
+        reason:  'db-error',
+        message: {
+          raw:         'could not save invoice: ' + error.message,
+          translation: '[[global:server_error]]'
+        }
+      });
     })
 };
 
@@ -184,7 +230,7 @@ invoicesApi.editInvoice = function(req, res, next) {
         return resolve(invoice);
       });
   }).then(invoice => {
-    if (typeof newData.tags === 'string') {
+    if (typeof newData.tags === 'string' && newData.tags.length > 0) {
       newData.tags = newData.tags.split(',');
     }
 
@@ -248,6 +294,10 @@ invoicesApi.editInvoice = function(req, res, next) {
 
     if (newData.date) {
       invoice.date = newData.date;
+    }
+
+    if (newData.note) {
+      invoice.note = newData.note;
     }
 
     invoice.save(error => {

@@ -142,35 +142,32 @@ module.exports = function(app) {
        * this uses flatm8's HTTP module for the request.
        */
       app.connectors.uploadProfilePicture = function() {
-        var file = document.getElementById('file-input').files[ 0 ];
+        const file = document.getElementById('file-input').files[ 0 ],
+              data = new FormData();
 
-        if (file.type.match('image\/jp(e)?g')) {
-          var data = new FormData();
-          data.append('profilePicture', file);
-          data.append('user', app.config.user.id);
-          //data.append('_csrf', document.body.dataset.csrfToken);
+        data.append('profilePicture', file);
+        data.append('user', app.config.user.id);
+        //data.append('_csrf', document.body.dataset.csrfToken);
 
-          // post the picture to the server
-          return app.http.post('/api/user/picture', data, function(response) {
+        // post the picture to the server
+        return app.http.post('/api/user/picture', data, function(response) {
 
-            // if the response is okay (= 200 or 204 set as status code)
-            if (response.ok) {
+          // if the response is okay (= 200 or 204 set as status code)
+          if (response.ok) {
 
-              // iterate over the images in the profile picture container, replace
-              // the current content with the image present on the server
-              app.dom('img', app.elements.profilePicture).each(function(index, picture) {
-                picture.src = '/api/user/picture?cacheBuster=' + Date.now();
-              });
+            // iterate over the images in the profile picture container, replace
+            // the current content with the image present on the server
+            app.dom('img', app.elements.profilePicture).each(function(index, picture) {
+              picture.src = '/api/user/picture?cacheBuster=' + Date.now();
+            });
 
-              app.helpers.closeProfilePictureUploadModal();
-              return app.notifications.success('[[account:upload_profile_picture.success]]');
-            } else {
-              return app.error('POST failed: Error ' + response.status + ' - ' + response.statusText, '[[account:upload_profile_picture.error]]');
-            }
-          });
-        } else {
-          return app.error('wrong file type: ' + file.type, '[[account:upload_profile_picture.wrong_type]]');
-        }
+            app.helpers.closeProfilePictureUploadModal();
+            return app.notifications.success('[[account:upload_profile_picture.success]]');
+          } else {
+            return app.error('POST failed: Error ' + response.status + ' - ' + response.statusText, '[[account:upload_profile_picture.error]]');
+          }
+        });
+
       };
 
       app.helpers.openProfilePictureUploadModal = function() {
@@ -199,15 +196,17 @@ module.exports = function(app) {
       };
 
       app.templates.profilePictureUploadModal = (function() {
-        var profilePicturePath = '/images/users/' + (app.config.user.hasProfilePicture ? app.config.user._id : 'default') + '.jpg',
+        var profilePicturePath = '/images/users/' + (app.config.user.hasProfilePicture
+                ? app.config.user._id
+                : 'default'),
             userPrimaryColor   = app.config.user.color,
             userSecondaryColor = app.config.user.color.replace(/, 1\)$/, ', .2)');
 
         return app.helpers.createTranslatedElement('<div class="upload-modal">' +
           '<header><h2>[[account:upload_profile_picture]]</h2></header>' +
           '<article>' +
-          '<section class="preview" style="background: linear-gradient(135deg, ' + userSecondaryColor + ' 0%,' + userPrimaryColor + ' 100%);">' +
-          '<div class="current-picture"><img src="' + profilePicturePath + '" alt></div>' +
+          '<section class="preview" style="background-image: url(' + profilePicturePath + '_preview.jpg)">' +
+          '<div class="current-picture"><img src="' + profilePicturePath + '.jpg" alt></div>' +
           '</section>' +
           '<section class="upload-controls">' +
           '<input type="file" name="profilePicture" id="file-input">' +

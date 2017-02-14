@@ -31,7 +31,6 @@ module.exports = function(app, element, config) {
     let tagNode = app.dom(tagElement),
         tagName = app.dom('.taggle_text', tagElement).text();
 
-    app.debug('trying to get color for ' + tagName, tagNode);
     app.io.emit('tags.getColor', {
       tagName: tagName
     }, (error, tagColor) => {

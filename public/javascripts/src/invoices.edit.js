@@ -5,19 +5,19 @@
  require
  */
 
-const flatpickr          = require('./libraries/flatpickr'),
-      taggle             = require('./libraries/taggle'),
-      compare            = require('./libraries/objectComparator'),
-      unsavedChanges     = require('./libraries/unsavedChanges'),
-      app                = require('./app'),
-      main               = require('./main')(app),
+const flatpickr             = require('./libraries/flatpickr'),
+      taggle                = require('./libraries/taggle'),
+      compare               = require('./libraries/objectComparator'),
+      UnsavedChangesWatcher = require('./libraries/unsavedChangesWatcher'),
+      app                   = require('./app'),
+      main                  = require('./main')(app),
 
-      getFirstDayOfMonth = function(date) {
+      getFirstDayOfMonth    = function(date) {
         let baseDate = new Date(date);
 
         return new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);
       },
-      getLastDayOfMonth  = function(date) {
+      getLastDayOfMonth     = function(date) {
         let baseDate = new Date(date);
 
         return new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 0);
@@ -25,10 +25,11 @@ const flatpickr          = require('./libraries/flatpickr'),
 
 (function(app) {
   app.startup.push(function() {
-    app.elements.invoice     = {
+    app.elements.invoice = {
       id:   app.dom('.invoice-id'),
       date: app.dom('#invoice-creation-date'),
       sum:  app.dom('#invoice-sum'),
+      note: app.dom('#invoice-note'),
       tags: app.dom('.invoice-tags')
     };
 
@@ -38,6 +39,7 @@ const flatpickr          = require('./libraries/flatpickr'),
       id:   app.dom('.invoice').id(),
       date: app.elements.invoice.date.value(),
       sum:  app.elements.invoice.sum.value(),
+      note:  app.elements.invoice.note.value(),
       tags: app.dom('[name="tags"]').map(tag => tag.value)
     };
 
@@ -55,17 +57,22 @@ const flatpickr          = require('./libraries/flatpickr'),
     };
 
     app.events.saveInvoiceChanges = function(event) {
-      console.log(event);
       let data = compare(app, invoiceData, {
         id:   app.dom('.invoice').id(),
         date: app.elements.invoice.date.value(),
         sum:  app.elements.invoice.sum.value(),
+        note: app.elements.invoice.note.value(),
         tags: app.dom('[name="tags"]').map(tag => tag.value)
       });
 
       data.invoicePicture = new File([], '');
+
       app.http.put('/api/invoices/' + invoiceData.id, data, response => {
         if (response.ok) {
+
+          // destroy the unsaved changes listener, since we're about to leave the page
+          unsavedChanges.destroy();
+
           return window.location.href = response.headers.get('Location');
         }
 
@@ -74,12 +81,12 @@ const flatpickr          = require('./libraries/flatpickr'),
     };
 
     // warn for unsaved changes
-    let watcher = new unsavedChanges(app, [
+    let unsavedChanges = new UnsavedChangesWatcher(app, [
       app.elements.invoice.date,
       app.elements.invoice.sum,
       app.elements.invoice.tags
     ]);
-    
+
     app.listeners.addInvoiceFormListeners();
   });
 })(app);

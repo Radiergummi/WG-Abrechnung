@@ -44,7 +44,12 @@ const invoiceSchema = new Schema({
   tags: [ {
     type: ObjectId,
     ref:  'tag'
-  } ]
+  } ],
+
+  /**
+   * optional note for additional invoice notes
+   */
+  note: String
 }, {
   toObject: {
     getters: true

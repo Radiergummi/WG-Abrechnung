@@ -154,8 +154,10 @@
       }
 
       .preview {
-        padding:    20px;
-        background: url(https://farm2.staticflickr.com/1619/26756716365_6bf1ae1317_c.jpg) 0 30%;
+        padding:             20px;
+        background-size:     100% 100%;
+        background-repeat:   no-repeat;
+        background-position: center center;
       }
 
       .upload-controls {
