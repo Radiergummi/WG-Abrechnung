@@ -6,6 +6,8 @@ That way, everyone pays the same amount and you get some neat stats about your m
 ## About
 This is a project intended to ease the way me and the people I'm sharing a flat with calculate their share in our monthly grocery shopping calculation. Up until now, we just went through all the receipts at the end of the month, while those having spent less than the others paid their difference. Obviously, this is a time consuming activity, so we thought *how could we possibly nerd the hell out of this?*
 
+![screenshot](http://i.imgur.com/e8HV481.png)
+
 ## Installation
 
     # Clone the repository
