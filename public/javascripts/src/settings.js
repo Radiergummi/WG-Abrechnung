@@ -3,7 +3,6 @@
 var app  = require('./app'),
     main = require('./main')(app);
 
-
 (function(app) {
   app.startup.push(function() {
     require('./libraries/vanilla-modal')(app);
@@ -124,7 +123,7 @@ var app  = require('./app'),
         if (error) {
 
           // if we have an error, show a notification
-          app.notifications.error('[[settings:user_management.delete.notification_error, ' + error.message + ']]');
+          app.notifications.error(`[[settings:user_management.delete.notification_error, ${error.message}]]`);
 
           // log the full error to the console
           console.error(error);
@@ -134,11 +133,7 @@ var app  = require('./app'),
         }
 
         // everything went smoothly, show a notification
-        app.translate(
-          '[[settings:user_management.delete.notification_success, ' + deletedUser.firstName + ' ' + deletedUser.lastName + ']]',
-          function(translated) {
-            app.notifications.success(translated);
-          });
+        app.notifications.success(`[[settings:user_management.delete.notification_success, ${deletedUser.firstName} ${deletedUser.lastName}]]`);
 
         return setTimeout(function() {
           app.modals.instance.close();

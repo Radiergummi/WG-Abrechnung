@@ -5,15 +5,15 @@
  require
  */
 
-var debug    = require('debug')('flatm8:invoice'),
-    mongo    = require('mongodb'),
-    mongoose = require('mongoose'),
-    moment   = require('moment');
+const debug    = require('debug')('flatm8:invoice'),
+      mongo    = require('mongodb'),
+      mongoose = require('mongoose'),
+      moment   = require('moment');
 
-var invoiceModel = require('./models/invoice'),
-    Tag          = require('./tag');
+const invoiceModel = require('./models/invoice'),
+      Tag          = require('./tag');
 
-var Invoice = module.exports = {};
+const Invoice = module.exports = {};
 
 /**
  * @callback invoiceCallback
@@ -46,6 +46,13 @@ Invoice.getById = function(id, callback, populate) {
 
   query.exec(function(error, invoice) {
     if (error) {
+      return callback(error);
+    }
+
+    if (!invoice) {
+      let error    = new Error('Invoice does not exist');
+      error.status = 404;
+
       return callback(error);
     }
 
@@ -208,45 +215,168 @@ Invoice.getOwnPaginated = function(id, skip, limit, callback) {
 };
 
 Invoice.createNew = function(data, callback) {
-  new Promise(function(resolve) {
-    if (data.tags.length !== 0) {
-      var tagPromises = [];
+  function processTag (tagName) {
+    return new Promise((resolve, reject) => {
 
-      for (var i = 0; i < data.tags.length; i++) {
-        var tagName = data.tags[ i ];
-        tagPromises.push(new Promise(function(resolve, reject) {
-          Tag.getByName(tagName, function(error, tag) {
+      debug('processing tag %s', tagName);
+
+      // try to get the tag by name
+      Tag.getByName(tagName, (error, tag) => {
+        if (error) {
+          debug('error retrieving tag %s: %s', tagName, error);
+          return reject(error);
+        }
+
+        // if we have no tag, it doesn't exist yet
+        if (!tag) {
+          debug('tag %s does not exist yet', tagName);
+
+          // ...so we create a new tag
+          return Tag.createNew({
+            tagName: tagName
+          }, (error, newTag) => {
             if (error) {
+              debug('could not create tag %s: %s', tagName, error);
               return reject(error);
             }
 
-            return resolve(tag);
+            debug('created tag %s with ID %s', tagName, newTag._id);
+
+            // resolve with the new ID
+            return resolve(newTag._id);
           });
-        }));
-      }
+        }
 
-      return resolve(Promise.all(tagPromises));
-    }
+        debug('tag %s exists and has ID %s', tagName, tag._id);
 
-    return resolve([]);
-  }).then(function(tags) {
-    return new invoiceModel({
+        // the tag exists, so we resolve with the existing ID
+        return resolve(tag._id);
+      });
+    });
+  }
+
+  return Promise.all(data.tags.map(processTag))
+    .then(tagIds => Array.from(new Set(tagIds)))
+    .then((tags) => new invoiceModel({
       user:         data.user,
       creationDate: data.creationDate || new Date(),
-      sum:          data.sum * 100 || undefined,
+      sum:          data.sum || undefined,
+      note:         data.note,
       tags:         tags
+    }))
+    .then(function(newInvoice) {
+      newInvoice.save(function(error) {
+        if (error) {
+          return callback(error);
+        }
+
+        return callback(null, newInvoice);
+      });
+    }).catch(function(error) {
+      return callback(error);
     });
-  }).then(function(newInvoice) {
-    newInvoice.save(function(error) {
+};
+
+/**
+ * updates an invoice
+ *
+ * @param   {object}            data
+ * @param   {function}          callback
+ * @returns {Promise.<object>}
+ */
+Invoice.update = function(data, callback) {
+  return new Promise((resolve, reject) => {
+    invoiceModel
+      .findOne({ _id: data.id })
+      .exec((error, invoice) => {
+        if (error) {
+          debug('could not find invoice %s: %s', data.id, error.message);
+
+          return reject(error);
+        }
+
+        debug('found invoice %s', invoice.id);
+        return resolve(invoice);
+      });
+  }).then(invoice => {
+    if (typeof data.tags === 'string' && data.tags.length > 0) {
+      data.tags = data.tags.split(',');
+    }
+
+    if (data.tags.length < 1) {
+      debug('invoice has no changed or added tags');
+      return invoice;
+    }
+
+    debug(`invoice %s has the following tags: %s`, data.id, data.tags.join(', '));
+
+    function processTag (tagName) {
+      return new Promise((resolve, reject) => {
+
+        debug('processing tag %s', tagName);
+
+        // try to get the tag by name
+        Tag.getByName(tagName, (error, tag) => {
+          if (error) {
+            debug('error retrieving tag %s: %s', tagName, error);
+            return reject(error);
+          }
+
+          // if we have no tag, it doesn't exist yet
+          if (!tag) {
+            debug('tag %s does not exist yet', tagName);
+
+            // ...so we create a new tag
+            return Tag.createNew({
+              tagName: tagName
+            }, (error, newTag) => {
+              if (error) {
+                debug('could not create tag %s: %s', tagName, error);
+                return reject(error);
+              }
+
+              debug('created tag %s with ID %s', tagName, newTag._id);
+
+              // resolve with the new ID
+              return resolve(newTag._id);
+            });
+          }
+
+          debug('tag %s exists and has ID %s', tagName, tag._id);
+
+          // the tag exists, so we resolve with the existing ID
+          return resolve(tag._id);
+        });
+      });
+    }
+
+    return Promise.all(data.tags.map(processTag)).then(tagIds => {
+      debug('got tags: ', tagIds);
+      invoice.tags = Array.from(new Set(tagIds));
+      return invoice;
+    });
+  }).then(invoice => {
+    if (data.sum) {
+      invoice.sum = data.sum;
+    }
+
+    if (data.date) {
+      invoice.date = data.date;
+    }
+
+    if (data.note) {
+      invoice.note = data.note;
+    }
+
+    return invoice.save(error => {
       if (error) {
+        debug('could not save invoice %s: %s', data.id, error);
         return callback(error);
       }
 
-      return callback(null, newInvoice);
+      return callback(null, invoice);
     });
-  }).catch(function(error) {
-    return callback(error);
-  });
+  })
 };
 
 Invoice.remove = function(id, callback) {
@@ -475,7 +605,6 @@ Invoice.find = function(parameters, callback) {
       return callback(null, filteredInvoices);
     });
   }
-
 
   return query.exec(function(error, data) {
     if (error) {

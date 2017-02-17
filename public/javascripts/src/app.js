@@ -3,7 +3,7 @@
 /**
  * main client app
  */
-var app = module.exports =  {
+var app = module.exports = {
   elements:   {}, // dom elements being used in the script
   listeners:  {}, // functions that attach listeners
   events:     {}, // event callbacks
@@ -31,13 +31,13 @@ var app = module.exports =  {
   app.init = function() {
     document.addEventListener("DOMContentLoaded", function() {
       try {
-        
+
         app.elements.overlay = document.getElementById('overlay');
         app.connectors.getConfig(function() {
           window.debug = app.config.debug;
           if (window.debug) {
             window.app = app;
-            app.debug = console.debug.bind(console);
+            app.debug  = console.debug.bind(console);
           } else {
             app.debug = function() {
             }
@@ -52,7 +52,7 @@ var app = module.exports =  {
             }
           }
         });
-        
+
         window.dispatchEvent(new Event('flatm8:ready'));
 
         return app;
@@ -66,8 +66,8 @@ var app = module.exports =  {
    * load base dependencies
    */
   app.translator = require('./modules/translator');
-  app.translate = function(text, callback) {
-    return app.translator.translate(text, document.documentElement.lang, callback);
+  app.translate = function(text) {
+    return app.translator.translate(text, document.documentElement.lang);
   };
 
   require('./modules/notifications')(app);

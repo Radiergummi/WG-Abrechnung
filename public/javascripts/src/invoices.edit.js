@@ -61,7 +61,7 @@ const flatpickr             = require('./libraries/flatpickr'),
         id:   app.dom('.invoice').id(),
         date: app.elements.invoice.date.value(),
         sum:  app.elements.invoice.sum.value(),
-        note: app.elements.invoice.note.value(),
+        note: app.elements.invoice.note[ 0 ].innerText,
         tags: app.dom('[name="tags"]').map(tag => tag.value)
       });
 

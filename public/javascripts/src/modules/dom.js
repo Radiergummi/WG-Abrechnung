@@ -319,6 +319,14 @@ module.exports = function(app) {
     });
   };
 
+  DOMElement.prototype.html = function(html) {
+    if (typeof html === 'undefined') {
+      return this.elementSet[ 0 ].innerHTML;
+    }
+
+    return this.each((index, element) => element.innerHTML = html);
+  };
+
   DOMElement.prototype.remove = function() {
     return this.each((index, element) => element.remove());
   };
@@ -371,7 +379,7 @@ module.exports = function(app) {
       'select',
       'textarea',
       'button'
-      ].indexOf(elementType) !== -1);
+    ].indexOf(elementType) !== -1);
   };
 
   /**
@@ -423,13 +431,12 @@ module.exports = function(app) {
   };
 
   app.helpers.createTranslatedElement = function(elementString) {
-    var parser = new DOMParser();
+    const parser = new DOMParser();
 
-    return new Promise(function(resolve) {
-      app.translator.translate(elementString, app.config.language, function(translatedElementString) {
-        resolve(parser.parseFromString(translatedElementString, 'text/html').body.childNodes[ 0 ]);
-      });
-    });
+    return app.translate(elementString)
+      .then(translatedElementString =>
+        parser.parseFromString(translatedElementString, 'text/html').body.childNodes[ 0 ]
+      );
   };
 
   app.events.imageError = function(image) {

@@ -181,10 +181,7 @@ module.exports = function(app) {
    * @param options
    */
   notificationModule.prototype.info = function(message, options) {
-    var current = this;
-    app.translate(message, function(translated) {
-      current.create('info', translated, options);
-    });
+    app.translate(message).then(translated => current.create('info', translated, options));
   };
 
 
@@ -195,10 +192,7 @@ module.exports = function(app) {
    * @param options
    */
   notificationModule.prototype.success = function(message, options) {
-    var current = this;
-    app.translate(message, function(translated) {
-      current.create('success', translated, options);
-    });
+    app.translate(message).then(translated => current.create('success', translated, options));
   };
 
 
@@ -209,10 +203,7 @@ module.exports = function(app) {
    * @param options
    */
   notificationModule.prototype.warning = function(message, options) {
-    var current = this;
-    app.translate(message, function(translated) {
-      current.create('warning', translated, options);
-    });
+    app.translate(message).then(translated => current.create('warning', translated, options));
   };
 
 
@@ -223,10 +214,7 @@ module.exports = function(app) {
    * @param options
    */
   notificationModule.prototype.error = function(message, options) {
-    var current = this;
-    app.translate(message, function(translated) {
-      current.create('error', translated, options);
-    });
+    app.translate(message).then(translated => current.create('error', translated, options));
   };
 
 
@@ -237,10 +225,7 @@ module.exports = function(app) {
    * @param options
    */
   notificationModule.prototype.confirmation = function(message, options) {
-    var current = this;
-    app.translate(message, function(translated) {
-      current.create('confirmation', translated, options);
-    });
+    app.translate(message).then(translated => current.create('confirmation', translated, options));
   };
 
 

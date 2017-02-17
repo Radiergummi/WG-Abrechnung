@@ -5,7 +5,7 @@ webpackJsonp([4],[
 	'use strict';
 	
 	var app  = __webpack_require__(1),
-	    main = __webpack_require__(66)(app);
+	    main = __webpack_require__(69)(app);
 	
 	(function(app) {
 	  

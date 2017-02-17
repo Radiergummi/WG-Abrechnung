@@ -5,11 +5,11 @@ webpackJsonp([2],{
 
 	'use strict';
 	
-	const flatpickr             = __webpack_require__(69),
-	      taggle                = __webpack_require__(72),
-	      UnsavedChangesWatcher = __webpack_require__(74),
+	const flatpickr             = __webpack_require__(73),
+	      taggle                = __webpack_require__(76),
+	      UnsavedChangesWatcher = __webpack_require__(78),
 	      app                   = __webpack_require__(1),
-	      main                  = __webpack_require__(66)(app);
+	      main                  = __webpack_require__(69)(app);
 	
 	(function(app) {
 	
@@ -45,9 +45,7 @@ webpackJsonp([2],{
 	      app.on('drop', document.body, function(event) {
 	        event.preventDefault();
 	        event.stopPropagation();
-	        app.translate('[[global:outside_dnd_area]]', function(translated) {
-	          app.notifications.info(translated);
-	        });
+	        app.notifications.info('[[global:outside_dnd_area]]');
 	
 	        return false;
 	      });
@@ -73,7 +71,7 @@ webpackJsonp([2],{
 	      );
 	      data.append('creationDate', app.elements.newInvoice.date.value());
 	      data.append('sum', app.elements.newInvoice.sum.value());
-	      data.append('note', app.elements.newInvoice.note.value());
+	      data.append('note', app.elements.newInvoice.note[ 0 ].innerText);
 	      data.append('tags', app.dom('[name="tags"]').map(tag => tag.value));
 	      data.append('_csrf', document.body.dataset.csrfToken);
 	
@@ -151,14 +149,14 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 69:
+/***/ 73:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	const Flatpickr       = __webpack_require__(70),
+	const Flatpickr       = __webpack_require__(74),
 	      language        = document.documentElement.lang.substring(0, 2),
-	      locale          = __webpack_require__(71).de,
+	      locale          = __webpack_require__(75).de,
 	      now             = new Date(),
 	      firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 	
@@ -208,7 +206,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 70:
+/***/ 74:
 /***/ function(module, exports, __webpack_require__) {
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -1931,7 +1929,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 71:
+/***/ 75:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* German locals for flatpickr */
@@ -1957,12 +1955,12 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 72:
+/***/ 76:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	const Taggle = __webpack_require__(73);
+	const Taggle = __webpack_require__(77);
 	
 	/**
 	 * creates a new tag input using taggle
@@ -2029,7 +2027,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 73:
+/***/ 77:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* !
@@ -2934,7 +2932,7 @@ webpackJsonp([2],{
 
 /***/ },
 
-/***/ 74:
+/***/ 78:
 /***/ function(module, exports) {
 
 	'use strict';

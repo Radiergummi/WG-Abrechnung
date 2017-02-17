@@ -1,300 +1,560 @@
 'use strict';
 
-(function(translator) {
-  var translationRegex = /\[\[\w+:[\w\.]+((?!\[\[).)*?\]\]/g,
-      debug;
+/*
+ global module,
+ require
+ */
 
-  if (typeof window === 'undefined') {
-    //debug          = require('debug')('flatm8:translator');
-    debug = function() {
-      
-    }
-  } else {
-    if (window.hasOwnProperty('debug') && window.debug) {
-      debug = console.debug.bind(console);
-    } else {
-      debug = function() {
-      }
-    }
-  }
-  module.exports = translator;
+/**
+ * translates text in arbitrary languages
+ */
+class Translator {
 
-  var languages = {};
-
-
-  translator.escape = function(text) {
-    return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]') : text;
-  };
-
-  translator.unescape = function(text) {
-    return typeof text === 'string' ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]') : text;
-  };
-
-  translator.addLanguage = function(code, translations) {
-    languages[ code ] = translations;
-  };
-
-  translator.getLanguage = function(code) {
-    return languages[ code ];
-  };
-
-  translator.translate = function(text, language, callback) {
-    debug('translating %s', (text.length > 10 ? text.substring(0, 10) + '...' : text));
-
-    if (typeof language === 'function') {
-      callback = language;
-      language = 'en_US';
-    }
-
-    // if we received no text, return whatever came
-    if (!text) {
-      debug('got no text, return initial value');
-      return callback(text);
-    }
-
-    // check the input for translation indicators
-    var keys = text.match(translationRegex);
-
-    // if we have no translation indicators, return whatever came
-    if (!keys) {
-      debug('no translation indicators, return initial value');
-      return callback(text);
-    }
+  /**
+   * create a new translator instance
+   */
+  constructor () {
 
     /**
-     * translate the keys. In case we have multiple translations in the input
-     * text, we run a callback on finish that tries to match the indicator
-     * regex again. If it matches, we run the translateKeys function again.
+     * the language cache
+     *
+     * @type {object}
      */
-    return translator.translateKeys(keys, text, language, function(translated) {
-      keys = translated.match(translationRegex);
+    this.languages = {};
 
-      if (!keys) {
-        debug('got no more keys');
-        return callback(translated);
-      } else {
-        debug('translating left keys');
-        return translator.translateKeys(keys, translated, language, callback);
-      }
-    });
-  };
+    /**
+     * create the debugger function. will use the debug module
+     * in node and console.debug in browsers
+     *
+     * @type {function}
+     */
+    this.debug = (Translator.isBrowser()
+        ? /*(window.debug) ?*/ (...args) => console.debug(...args) /*: () => {
+       }*/
+        : require('debug')('flatm8:translator')
+    );
+  }
 
   /**
-   * translates multiple keys by running translateKey on them.
+   * translate a text with one or more translation strings
    *
-   * @param   {Array}    keys      an array of keys to translate
-   * @param   {string}   text      possibly already translated text
-   * @param   {string}   language  the language to translate to
-   * @param   {function} callback  a callback to run once the keys have been translated
-   * @returns {*}
+   * @param   {string}           text the text to translate
+   * @param   {string}           languageCode the language to translate to
+   * @returns {Promise.<string>} the translated text
    */
-  translator.translateKeys = function(keys, text, language, callback) {
-    var keyCount = keys.length;
+  translate (text, languageCode) {
+    this.debug('going to translate %s', text.substring(0, 50));
 
-    debug('translating %s keys', keyCount);
-
-    if (!keyCount) {
-      debug('got no more keys');
-      return callback(text);
+    if (typeof languageCode === 'undefined') {
+      languageCode = Translator.getLanguage();
     }
 
-    var data = {
-      text: text
-    };
+    // regex for valid text in namespace / key
+    const validText        = 'a-zA-Z0-9\\-_.\\/',
+          validTextRegex   = new RegExp('[' + validText + ']'),
+          invalidTextRegex = new RegExp('[^' + validText + '\\]]');
 
-    // iterate over keys
-    keys.forEach(function(key) {
-      debug('processing key %s', key);
+    // current cursor position
+    let cursor = 0;
 
-      // translate the key
-      translator.translateKey(key, data, language, function(translated) {
+    // last break of the input string
+    let lastBreak = 0;
 
-        debug('translated %s to %s', key, (translated.text.length > 10 ? translated.text.substring(0, 10) + '...' : translated.text));
+    // length of the input string
+    let textLength = text.length;
 
-        // decrement the key counter to know when to run the callback on
-        // the last key
-        keyCount--;
+    // array to hold the promises for the translations
+    // and the strings of untranslated text in between
+    let toTranslate = [];
 
-        if (keyCount <= 0) {
-          return callback(translated.text);
+    /**
+     * split a translator string into an array of tokens, but
+     * don't split by commas inside other translator strings
+     *
+     * @param   {string} text the text to split
+     * @returns {Array}       a list of matches
+     */
+    function split (text) {
+      let textLength = text.length,
+          results    = [],
+          iteration  = 0,
+          brk        = 0,
+          level      = 0;
+
+      // iterate over every two characters
+      while (iteration + 2 <= textLength) {
+
+        // if we have a translator token
+        if (text.slice(iteration, iteration + 2) === '[[') {
+          level += 1;
+          iteration += 1;
+        } else if (text.slice(iteration, iteration + 2) === ']]') {
+          level -= 1;
+          iteration += 1;
+        } else if (
+          level === 0 &&
+          text[ iteration ] === ',' &&
+          text[ iteration - 1 ] !== '\\'
+        ) {
+          results.push(text.slice(brk, iteration).trim());
+          iteration += 1;
+          brk = iteration;
         }
+        iteration += 1;
+      }
+      results.push(text.slice(brk, textLength + 1).trim());
+
+      return results;
+    }
+
+    // the loooop, we'll go to where the cursor
+    // is equal to the length of the string since
+    // slice doesn't include the ending index
+    while (cursor + 2 <= textLength) {
+
+      // if the current position in the string looks
+      // like the beginning of a translation string
+      if (text.slice(cursor, cursor + 2) === '[[') {
+
+        // split the string from the last break
+        // to the character before the cursor
+        // add that to the result array
+        toTranslate.push(text.slice(lastBreak, cursor));
+
+        // set the cursor position past the beginning
+        // brackets of the translation string
+        cursor += 2;
+
+        // set the last break to our current
+        // spot since we just broke the string
+        lastBreak = cursor;
+
+        // the current level of nesting of the translation strings
+        let level = 0,
+            sliced;
+
+        // validating the current string is actually a translation
+        let textBeforeColonFound = false,
+            colonFound           = false,
+            textAfterColonFound  = false,
+            commaAfterNameFound  = false;
+
+        while (cursor + 2 <= textLength) {
+          sliced = text.slice(cursor, cursor + 2);
+
+          // found some text after the double bracket,
+          // so this is probably a translation string
+          if (
+            !textBeforeColonFound &&
+            validTextRegex.test(sliced[ 0 ])
+          ) {
+            textBeforeColonFound = true;
+            cursor += 1;
+
+            // found a colon, so this is probably a translation string
+          } else if (
+            textBeforeColonFound && !colonFound &&
+            sliced[ 0 ] === ':'
+          ) {
+            colonFound = true;
+            cursor += 1;
+
+            // found some text after the colon,
+            // so this is probably a translation string
+          } else if (
+            colonFound && !textAfterColonFound &&
+            validTextRegex.test(sliced[ 0 ])
+          ) {
+            textAfterColonFound = true;
+            cursor += 1;
+          } else if (
+            textAfterColonFound && !commaAfterNameFound &&
+            sliced[ 0 ] === ','
+          ) {
+            commaAfterNameFound = true;
+            cursor += 1;
+
+            // a space or comma was found before the name
+            // this isn't a translation string, so back out
+          } else if (
+            !(
+              textBeforeColonFound &&
+              colonFound &&
+              textAfterColonFound &&
+              commaAfterNameFound
+            ) &&
+            invalidTextRegex.test(sliced[ 0 ])
+          ) {
+            cursor += 1;
+            lastBreak -= 2;
+
+            if (level > 0) {
+              level -= 1;
+            } else {
+              break;
+            }
+
+            // if we're at the beginning of another translation string,
+            // we're nested, so add to our level
+
+          } else if (sliced === '[[') {
+            level += 1;
+            cursor += 2;
+
+            // if we're at the end of a translation string
+          } else if (sliced === ']]') {
+
+            // if we're at the base level, then this is the end
+            if (level === 0) {
+
+              // so grab the name and args
+              let result = split(text.slice(lastBreak, cursor)),
+                  name   = result[ 0 ],
+                  args   = result.slice(1);
+
+              // add the translation promise to the array
+              toTranslate.push(this.translateKey(name, args, languageCode));
+
+              // skip past the ending brackets
+              cursor += 2;
+
+              // set this as our last break
+              lastBreak = cursor;
+
+              // and we're no longer in a translation string,
+              // so continue with the main loop
+              break;
+            }
+
+            // otherwise we lower the level
+            level -= 1;
+
+            // and skip past the ending brackets
+            cursor += 2;
+          } else {
+
+            // otherwise just move to the next character
+            cursor += 1;
+          }
+        }
+      }
+
+      // move to the next character
+      cursor += 1;
+    }
+
+    // add the remaining text after the last translation string
+    toTranslate.push(text.slice(lastBreak, cursor + 2));
+
+    // and return a promise for the concatenated translated string
+    return Promise
+      .all(toTranslate)
+      .then(translated => translated.join(''));
+  }
+
+  /**
+   * translates a translation key
+   *
+   * @param   {string}           name         the name of the key to translate
+   * @param   {Array}            args         arguments for the translation
+   * @param   {string}           languageCode the code of the language to translate to
+   * @returns {Promise.<string>}              the translated string
+   */
+  translateKey (name, args, languageCode) {
+    this.debug(`translating key ${name}`);
+
+    let result    = name.split(':', 2),
+        namespace = result[ 0 ],
+        key       = result[ 1 ];
+
+    if (namespace && !key) {
+      this.debug(`Missing key in translation token "${name}"`);
+
+      return Promise.resolve('[[' + namespace + ']]');
+    }
+
+    const translation     = this.getTranslation(languageCode, namespace, key),
+          argsToTranslate = args
+            .map((arg) => Translator.prepareString(arg))
+            .map((arg) => this.translate(arg));
+
+    // so we can await all promises at once
+    argsToTranslate.unshift(translation);
+
+    return Promise.all(argsToTranslate).then((result) => {
+      let translated     = result[ 0 ],
+          translatedArgs = result.slice(1);
+
+      if (!translated) {
+        this.debug(`Missing translation "${name}"`);
+
+        return key;
+      }
+
+      let out = translated;
+
+      translatedArgs.forEach((arg, iteration) => {
+        let escaped = arg.replace(/%/g, '&#37;').replace(/\\,/g, '&#44;');
+        out         = out.replace(new RegExp('%' + (iteration + 1), 'g'), escaped);
       });
+
+      return out;
     });
-  };
+  }
 
   /**
-   * translates a key by parsing the translator string, loading the appropriate language file
-   * if necessary.
+   * prepares a string for translation by performing several steps:
+   *  1. collapse white-space
+   *  2. decode HTML entities
+   *  3. encode HTML
    *
-   * @param   {string}   key        the key to translate
-   * @param   {object}   data       carrier object reference to translate multiple keys
-   * @param   {string}   data.text  the translated text
-   * @param   {string}   language   the language to translate to
-   * @param   {function} callback   a callback to apply on the translated string
-   * @returns {*}
+   * @param   {string} text the text to prepare
+   * @returns {string}
    */
-  translator.translateKey = function(key, data, language, callback) {
+  static prepareString (text) {
+    let encodeMap = {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          '/': '&#x2F;',
+          '`': '&#x60;',
+          '=': '&#x3D;'
+        },
+        decodeMap = {
+          'amp':  '&',
+          'apos': '\'',
+          '#x27': '\'',
+          '#x2F': '/',
+          '#39':  '\'',
+          '#47':  '/',
+          'lt':   '<',
+          'gt':   '>',
+          'nbsp': ' ',
+          'quot': '"'
+        };
 
-    debug('translating key %s into %s', key, language);
+    return String(text)
 
-    // stringify key
-    key           = '' + key;
-    var variables = key.split(/[,][\s]*/);
+    // collapse whitespace
+      .replace(/\s+/g, ' ')
 
-    debug('key "%s" contains %s variable(s)', key, variables.length - 1);
+      // decode HTML entities
+      .replace(/&([^;]+);/gm, function(match, entity) {
+        return decodeMap[ entity ] || match
+      })
 
-    // remove indicator signs, split by category separator
-    var parsedKey = key.replace('[[', '').replace(']]', '').split(':');
-    parsedKey     = [ parsedKey[ 0 ] ].concat(parsedKey.slice(1).join(':'));
+      // encode HTML
+      .replace(/[&<>"'`=\/]/g, function(s) {
+        return encodeMap[ s ];
+      });
+  }
 
-    // if we don't have category and string name, return whatever came
-    if (!(parsedKey[ 0 ] && parsedKey[ 1 ])) {
-      return callback(data);
+  /**
+   * escapes a text string in the translator format
+   *
+   * @static
+   * @param   {string} text the unescaped string
+   * @returns {string}      the escaped string
+   */
+  static escape (text) {
+    return (typeof text === 'string'
+        ? text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]')
+        : text
+    );
+  }
+
+  /**
+   * un-escapes a text string
+   *
+   * @static
+   * @param   {string} text the escaped string
+   * @returns {string}      the unescaped string
+   */
+  static unescape (text) {
+    return (typeof text === 'string'
+        ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]')
+        : text
+    );
+  }
+
+  /**
+   * get the default language
+   *
+   * @returns {string}
+   */
+  static getLanguage () {
+    if (typeof window !== 'undefined' && document.documentElement.lang) {
+      return document.documentElement.lang;
     }
 
-    var category = parsedKey[ 0 ],
-        value    = ('' + parsedKey[ 1 ]).split(',')[ 0 ];
+    return 'de_DE';
+  }
 
-    debug('key %s indicates category "%s" and value "%s"', key, category, value);
+  static isBrowser () {
+    return (new Function("try {return this===window;}catch(e){ return false;}"))();
+  }
 
-    // load the language file if not available
-    return translator.loadLanguage(language, function(languageData) {
+  /**
+   * adds a language to the cache
+   *
+   * @param {string} languageCode the language code
+   * @param {object} translations the translation strings
+   */
+  addLanguage (languageCode, translations) {
+    this.languages[ languageCode ] = translations;
+  }
 
-      debug('loaded language %s', language);
+  /**
+   * retrieves a translation from cache
+   *
+   * @param   {string} languageCode               the translation namespace
+   * @param   {string} [namespace]                the namespace of the translation key
+   * @param   {string} [key]                      the name of the translation key
+   * @returns {Promise.<object>|Promise.<string>} the translation strings or the translated key
+   */
+  getTranslation (languageCode, namespace, key) {
+    let translation;
 
-      if (!languageData.hasOwnProperty(category)) {
-        return callback(key);
-      }
+    translation = this.loadLanguage(languageCode).catch(function() {
+      return {};
+    });
 
-      // retrieve the translation string from the languages object
-      var string = languageData[ category ][ value ];
+    if (typeof namespace === 'string') {
+      if (typeof key === 'string') {
+        return translation.then(data => {
+          if (!data.hasOwnProperty(namespace) || !data[ namespace ].hasOwnProperty(key)) {
+            return '';
+          }
 
-      debug('translation for %s:%s was found', category, value);
-
-      // if we found a translation at all, replace variables
-      if (string) {
-
-        // iterate over variables
-        for (var i = 1; i < variables.length; i++) {
-          debug('replacing variable %s', variables[ i ].replace(']]', ''));
-
-          // replace %i with the variable content
-          string = string.replace('%' + i, function() {
-            return variables[ i ].replace(']]', '');
-          });
-        }
-
-        // replace the original key with the translation
-        data.text = data.text.replace(key, function() {
-          return string;
+          return data[ namespace ][ key ];
         });
-      } else {
-        string    = key.split(':');
-        data.text = data.text.replace(key, string[ string.length - 1 ].replace(']]', ''))
       }
 
-      // return the callback with the updated reference
-      return callback(data);
-    });
-  };
+      return translation.then(data => data[ namespace ]);
+    }
+
+    return translation;
+  }
 
   /**
-   * load a language from file if not loaded yet. works in both server and client-side environments.
+   * loads a language file. determines environment and calls
+   * the matching loader function
    *
-   * @param   {string} language    the language code
-   * @param   {function} callback  a callback to execute once the language is ready
-   * @returns {*}
+   * @param   {string}           languageCode
+   * @returns {Promise.<object>}
    */
-  translator.loadLanguage = function(language, callback) {
+  loadLanguage (languageCode) {
 
-    debug('loading language %s', language);
+    // check if we have the language in cache
+    if (this.languages.hasOwnProperty(languageCode)) {
+      this.debug(`language ${languageCode} has already been loaded`);
 
-    // if the language is loaded, return early
-    if (languages.hasOwnProperty(language)) {
-
-      debug('language %s has been loaded already', language);
-      return callback(languages[ language ]);
+      // the language has been loaded already, so resolve it
+      return Promise.resolve(this.languages[ languageCode ]);
     }
 
-    // whether we are within a Node.JS context or a browser context
-    if (typeof window === 'undefined') {
-      debug('translator is running on server side');
-      return loadLanguageFileServer(language, callback);
-    } else {
-      debug('translator is running on client side');
-      return loadLanguageFileClient(language, callback);
+    // TODO: Replace this with a more sophisticated check
+    if (Translator.isBrowser()) {
+      this.debug('seems to be a browser environment');
+
+      // load the language file on the client, catch loading errors
+      return this.loadLanguageFileClient(languageCode).catch(error => this.debug(error));
     }
-  };
 
-  function loadLanguageFileClient (language, callback) {
-    if (window.fetch) {
-      debug('fetch API is available');
+    this.debug('seems to be a server environment');
 
-      /**
-       * Yay, fetch API is available!
-       */
-      return fetch('/translations/' + language + '.json').then(function(response) {
+    // load the language file on the server, catch loading errors
+    return this.loadLanguageFileServer(languageCode).catch(error => this.debug(error));
+  }
+
+  /**
+   * loads a language client side
+   *
+   * @param   {string}           languageCode
+   * @returns {Promise.<Object>}
+   */
+  loadLanguageFileClient (languageCode) {
+    this.debug(`trying to load language ${languageCode} client-side`);
+
+    // check for fetch API availability
+    if (window.hasOwnProperty('fetch')) {
+
+      // fetch the translation
+      return window.fetch(`/translations/${languageCode}.json`).then((response) => {
         if (response.ok) {
-          debug('response is okay. parsing JSON');
+          this.debug('response is okay. parsing JSON');
 
-          return response.json().then(function(data) {
-            debug('received translation file for %s', language);
+          return response.json().then((data) => {
+            this.debug('received translation file for %s', languageCode);
 
-            languages[ language ] = data;
+            this.languages[ languageCode ] = data;
 
-            return callback(languages[ language ]);
+            return this.languages[ languageCode ];
           });
         } else {
-
-          return debug('Could not fetch %s translation file', language);
+          debug(`Could not fetch ${languageCode} translation file`);
+          return Promise.reject(`Could not fetch ${languageCode} translation file`);
         }
       })
     } else {
-      debug('fetch API is not available');
+      this.debug('fetch API is not available');
 
       /**
        * No fetch API... falling back to XMLHttpRequest.
+       *
        * @type {XMLHttpRequest}
        */
-      var request = new XMLHttpRequest();
-      request.overrideMimeType("application/json");
-      request.open('GET', '/translations/' + language + '.json', true);
-      request.onreadystatechange = function() {
+      return new Promise((resolve, reject) => {
 
-        // when the data is available, fire the callback
-        if (request.readyState == 4 && request.status == "200") {
+        const request = new XMLHttpRequest();
+        request.overrideMimeType("application/json");
+        request.open('GET', '/translations/' + languageCode + '.json', true);
+        request.onreadystatechange = () => {
 
-          debug('response is okay. parsing JSON');
-          languages[ language ] = JSON.parse(request.responseText);
+          // when the data is available, fire the callback
+          if (request.readyState == 4 && request.status == "200") {
 
-          debug('received translation file for %s', language);
-          return callback(languages[ language ]);
-        } else {
-          return debug('Could not fetch %s translation file', language);
-        }
-      };
+            this.debug('response is okay. parsing JSON');
+            this.languages[ languageCode ] = JSON.parse(request.responseText);
 
-      debug('sending request for translation file');
-      request.send(null);
+            this.debug('received translation file for %s', languageCode);
+            return resolve(this.languages[ languageCode ]);
+          } else {
+            return reject(`Could not fetch ${languageCode} translation file`);
+          }
+        };
+
+        this.debug('sending request for translation file');
+        request.send(null);
+      });
     }
   }
 
-  function loadLanguageFileServer (language, callback) {
-    try {
-      debug('trying to require language file for %s', language);
-      languages[ language ] = require('../../../translations/' + language + '.json');
-    }
-    catch (error) {
-      debug('could not require language file for %s (%s)', language, error.message);
-      throw new Error('Language file could not be loaded: ' + error.message + '. Shutting down.');
-    }
+  /**
+   * loads a language server side
+   *
+   * @param   {string}           languageCode
+   * @returns {Promise.<Object>}
+   */
+  loadLanguageFileServer (languageCode) {
+    const debug = this.debug;
+    debug(`trying to load ${languageCode} server-side`);
+    return new Promise((resolve, reject) => {
+      try {
+        this.languages[ languageCode ] = require(`../../../translations/${languageCode}.json`);
 
-    return callback(languages[ language ]);
+        debug(`language ${languageCode} has been required`);
+        resolve(this.languages[ languageCode ]);
+      }
+      catch (error) {
+        debug(`missing language file for ${languageCode}: ${error}`);
+        this.languages[ languageCode ] = { missing: true };
+        return reject({});
+      }
+    });
   }
+}
 
-})(
-  (typeof module !== 'undefined' && typeof module.exports === 'object'
-      ? module.exports
-      : {}
-  )
-);
+module.exports = new Translator;

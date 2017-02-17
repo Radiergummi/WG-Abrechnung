@@ -5,12 +5,12 @@
  require
  */
 
-var colors  = require('colors'),
-    fs = require('fs'),
-    nconf   = require('nconf'),
-    winston = require('winston');
+const colors  = require('colors'),
+      fs      = require('fs'),
+      nconf   = require('nconf'),
+      winston = require('winston');
 
-var controllers            = require('./main');
+const controllers          = require('./main');
 controllers.helpers        = require('./helpers');
 controllers.dashboard      = require('./dashboard');
 controllers.invoices       = require('./invoices');
@@ -61,7 +61,7 @@ controllers.handleErrors = function(error, req, res, next) {
     });
   }
 
-  var path  = nconf.get('path'),
+  let path  = nconf.get('path'),
       stack = error.stack.toString().split(path).join(''),
       origin,
       file,

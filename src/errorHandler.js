@@ -5,8 +5,8 @@
  require
  */
 
-var nconf   = require('nconf'),
-    winston = require('winston');
+const nconf   = require('nconf'),
+      winston = require('winston');
 require('colors');
 
 /**
@@ -20,7 +20,7 @@ require('colors');
  * @param res
  * @param next
  */
-module.exports = function (error, req, res, next) {
+module.exports = function(error, req, res, next) {
   if (typeof error === 'string') {
     res.status(500).send(error);
     return console.error(error);
@@ -34,12 +34,12 @@ module.exports = function (error, req, res, next) {
 
   try {
     origin = error.stack.match((new RegExp(path.replace(/\//g, '\\/') + '\/(.*)+:([0-9]+):([0-9]+)'))).slice(1);
-    file   = origin[ 0 ].split(path).join('') + (origin[ 0 ].indexOf('(') !== - 1 ? ')' : '');
+    file   = origin[ 0 ].split(path).join('') + (origin[ 0 ].indexOf('(') !== -1 ? ')' : '');
     line   = origin[ 1 ];
   }
   catch (e) {
     origin = error.stack.match(/at (.[^:])+:([0-9]+):([0-9]+)/).slice(1);
-    file   = (origin[ 0 ].indexOf('(') !== - 1 ? ')' : '') + ' [from module]';
+    file   = (origin[ 0 ].indexOf('(') !== -1 ? ')' : '') + ' [from module]';
     line   = origin[ 1 ];
   }
 

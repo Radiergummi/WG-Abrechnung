@@ -40,9 +40,7 @@ const flatpickr             = require('./libraries/flatpickr'),
       app.on('drop', document.body, function(event) {
         event.preventDefault();
         event.stopPropagation();
-        app.translate('[[global:outside_dnd_area]]', function(translated) {
-          app.notifications.info(translated);
-        });
+        app.notifications.info('[[global:outside_dnd_area]]');
 
         return false;
       });
@@ -68,7 +66,7 @@ const flatpickr             = require('./libraries/flatpickr'),
       );
       data.append('creationDate', app.elements.newInvoice.date.value());
       data.append('sum', app.elements.newInvoice.sum.value());
-      data.append('note', app.elements.newInvoice.note.value());
+      data.append('note', app.elements.newInvoice.note[ 0 ].innerText);
       data.append('tags', app.dom('[name="tags"]').map(tag => tag.value));
       data.append('_csrf', document.body.dataset.csrfToken);
 

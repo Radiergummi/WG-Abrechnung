@@ -457,6 +457,10 @@
         text-shadow:   1px 1px #fff;
         border:        1px solid rgba(0, 0, 0, .05);
       }
+
+      .invoice-tags .tag:first-child {
+        margin-left: 0;
+      }
     }
   }
 }
@@ -607,7 +611,8 @@
 
       }
 
-      input + label {
+      input + label,
+      #invoice-note + label {
         margin-top: 20px;
       }
 

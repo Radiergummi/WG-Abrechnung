@@ -6,12 +6,11 @@ webpackJsonp([6],{
 	'use strict';
 	
 	var app  = __webpack_require__(1),
-	    main = __webpack_require__(66)(app);
-	
+	    main = __webpack_require__(69)(app);
 	
 	(function(app) {
 	  app.startup.push(function() {
-	    __webpack_require__(67)(app);
+	    __webpack_require__(80)(app);
 	
 	    app.elements.userList               = document.getElementsByClassName('users')[ 0 ];
 	    app.elements.sendInvitationButton   = app.dom('.send-invite');
@@ -129,7 +128,7 @@ webpackJsonp([6],{
 	        if (error) {
 	
 	          // if we have an error, show a notification
-	          app.notifications.error('[[settings:user_management.delete.notification_error, ' + error.message + ']]');
+	          app.notifications.error(`[[settings:user_management.delete.notification_error, ${error.message}]]`);
 	
 	          // log the full error to the console
 	          console.error(error);
@@ -139,11 +138,7 @@ webpackJsonp([6],{
 	        }
 	
 	        // everything went smoothly, show a notification
-	        app.translate(
-	          '[[settings:user_management.delete.notification_success, ' + deletedUser.firstName + ' ' + deletedUser.lastName + ']]',
-	          function(translated) {
-	            app.notifications.success(translated);
-	          });
+	        app.notifications.success(`[[settings:user_management.delete.notification_success, ${deletedUser.firstName} ${deletedUser.lastName}]]`);
 	
 	        return setTimeout(function() {
 	          app.modals.instance.close();
@@ -283,13 +278,13 @@ webpackJsonp([6],{
 
 /***/ },
 
-/***/ 67:
+/***/ 80:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	module.exports = function(app) {
-	  var vanillaModal = __webpack_require__(68);
+	  var vanillaModal = __webpack_require__(81);
 	
 	  app.modals = {
 	    instance: null
@@ -328,7 +323,7 @@ webpackJsonp([6],{
 
 /***/ },
 
-/***/ 68:
+/***/ 81:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {

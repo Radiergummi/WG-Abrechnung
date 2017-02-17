@@ -9,7 +9,7 @@
       </div>
       <span class="owner-name">{{this.user.firstName}} {{this.user.lastName}}</span>
     </div>
-    [[invoices:date]]: <span class="invoice-creation-date">{{this.creationDate}}</span><br>
+    [[invoices:date]]: <span class="invoice-creation-date">{{this.formattedCreationDate}}</span><br>
     [[invoices:sum]]: {{#if this.sum}}<span
     class="invoice-sum">{{this.sum}}</span>€{{else}}[[invoices:no_sum]]{{/if}}<br>
     <div class="tags-label">[[invoices:tags]]:</div>

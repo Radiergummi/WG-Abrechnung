@@ -11,6 +11,7 @@
 @import "settings";
 
 textarea,
+div[contenteditable="true"],
 select,
 input[type="text"],
 input[type="search"],
@@ -61,9 +62,9 @@ input[type="submit"],
   font-family:     $font-family-interactive;
   font-weight:     $font-weight-thin;
   cursor:          pointer;
+  user-select:     none;
 
   &:disabled {
-
     cursor: default;
   }
 
@@ -78,12 +79,16 @@ input[type="submit"],
 
   &.danger {
     background: #f47575;
+
+    &:focus,
+    &:hover {
+      background: #f44336;
+    }
   }
 
   &.seamless {
     border:     0;
     background: none;
-
   }
 }
 
@@ -94,6 +99,10 @@ label.in-focus {
 textarea {
   display: block;
   resize:  vertical;
+}
+
+div[contenteditable="true"] {
+  padding: .5rem 12px;
 }
 
 select {
@@ -154,12 +163,14 @@ img.image-error {
 }
 
 .sub-navigation {
-  margin:     20px auto 15px;
-  padding:    0;
-  text-align: center;
+  display:         flex;
+  justify-content: center;
+  margin:          20px auto 15px;
+  padding:         0;
+  text-align:      center;
 
   & > ul {
-    display:       inline-block;
+    display:       flex;
     border:        1px solid #03a9f4;
     border-radius: 4px;
     box-shadow:    0 2px 5px rgba(0, 0, 0, .1);

@@ -16,14 +16,11 @@ var app  = require('./app'),
 
     app.events.appendTokenToUrl = function(event) {
       if (!app.elements.token.value) {
-        return app.translate('[[clientErrors:empty_token_input]]', function(translated) {
-          app.notifications.warning(translated);
-        });
+        app.notifications.warning('[[clientErrors:empty_token_input]]');
       }
 
       return window.location.href = window.location.origin + window.location.pathname.replace(/\/?$/, '/') + app.elements.token.value + window.location.search;
     };
-
 
     app.listeners.addTokenVerificationEvents();
   });

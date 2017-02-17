@@ -34,6 +34,14 @@
 
     var connString = this.buildConnectionString();
 
+    /**
+     * use the native promise for mongoose
+     * 
+     * @see https://github.com/Automattic/mongoose/issues/4291#issuecomment-230312093
+     * @type {Promise}
+     */
+    mongoose.Promise = global.Promise;
+
     // Connect to mongo db
     mongoose.connect(connString, connOptions);
     winston.info('[database]'.white + ' Database connection established.');

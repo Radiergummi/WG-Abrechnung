@@ -24,7 +24,8 @@
       <label for="invoice-sum">[[invoices:sum]]:</label> <input id="invoice-sum" type="number" name="sum" step="0.01"
                                                                 value="{{invoice.sum}}">
 
-      <label for="invoice-note">[[invoices:note]]:</label> <textarea id="invoice-note"></textarea>
+      <label for="invoice-note">[[invoices:note]]:</label>
+      <div id="invoice-note" contenteditable="true">{{invoice.note}}</div>
       <span class="tags-label">[[invoices:tags]]:</span>
       <div class="invoice-tags" data-tags="{{invoice.tagList}}"></div>
     </section>

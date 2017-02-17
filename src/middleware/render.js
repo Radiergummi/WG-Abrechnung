@@ -9,7 +9,7 @@ var debug      = require('debug')('flatm8:render'),
     nconf      = require('nconf');
 
 var file       = require('../meta/file'),
-    translator = require('../../public/javascripts/src/modules/translator');
+    Translator = require('../../public/javascripts/src/modules/translator');
 
 /**
  * Override res.render to do any pre/post processing
@@ -97,7 +97,7 @@ module.exports = function(middleware) {
         debug('set template language to %s', baseVariables.language);
 
         debug('translating template');
-        translator.translate(str, baseVariables.language, function(translatedStr) {
+        Translator.translate(str, baseVariables.language).then((translatedStr) => {
 
           debug('template translated. calling callback');
           return callback(error, translatedStr);

@@ -1,45 +1,138 @@
-.modal-root {
-  .modal-overlay {
-    display:                    block;
-    position:                   fixed;
-    content:                    "";
-    top:                        0;
-    left:                       0;
-    right:                      0;
-    bottom:                     0;
-    padding:                    50px;
-    background:                 rgba(0, 0, 0, 0.6);
-    z-index:                    -1;
-    opacity:                    0;
-    transition:                 opacity 0.2s, z-index 0s 0.2s;
-    text-align:                 center;
-    overflow:                   hidden;
-    overflow-y:                 auto;
-    white-space:                nowrap;
-    -webkit-overflow-scrolling: touch;
+.modal {
+  position:                   fixed;
+  overflow:                   auto;
+  -webkit-overflow-scrolling: touch;
+  z-index:                    1111;
+  top:                        0;
+  right:                      0;
+  bottom:                     0;
+  left:                       0;
+  display:                    flex;
+  justify-content:            center;
+  align-items:                center;
+}
 
-    @media screen and (max-width: 900px) {
-      padding: 10px 0;
-    }
+.vex-scrollbar-measure {
+  position: absolute;
+  top:      -9999px;
+  width:    50px;
+  height:   50px;
+  overflow: scroll;
+}
 
-    & > * {
-      display:        inline-block;
-      white-space:    normal;
-      vertical-align: middle;
-      text-align:     left;
-    }
+.modal-overlay {
+  animation:  vex-fadein 0.5s;
 
-    &::before {
-      display:        inline-block;
-      overflow:       hidden;
-      width:          0;
-      height:         100%;
-      vertical-align: middle;
-      content:        "";
-    }
+  position:   fixed;
+  background: rgba(0, 0, 0, 0.6);
+  top:        0;
+  right:      0;
+  bottom:     0;
+  left:       0;
+
+  .modal.vex-closing & {
+    animation: vex-fadeout 0.5s;
+  }
+}
+
+.modal-content {
+  animation:     vex-show 0.5s;
+
+  position:      absolute;
+  background:    #fff;
+  border-radius: 4px;
+
+  .modal.vex-closing & {
+    animation: vex-hide 0.5s;
   }
 
-  .modal {
+  .modal-header {
+    padding:       1rem 1rem .75rem;
+    border-bottom: 4px solid rgba(0, 0, 0, .1);
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+}
+
+.modal-warning {
+  .modal-header {
+    border-bottom-color: #f47575;
+  }
+
+  .vex-dialog-button-primary {
+    background: #f47575;
+
+    &:focus,
+    &:hover {
+      background: #f44336;
+    }
+  }
+}
+
+.modal-close::before {
+  font-family: Arial, sans-serif;
+  content:     "×";
+  color:       rgba(0, 0, 0, .2);
+
+  &:hover {
+    color: #03a9f4;
+  }
+}
+
+.vex-dialog-form {
+  margin: 0;
+}
+
+.vex-dialog-buttons {
+  display:         flex;
+  justify-content: flex-end;
+  padding:         1rem;
+}
+
+.vex-dialog-button {
+  text-rendering:              optimizeLegibility;
+  -webkit-appearance:          none;
+
+  cursor:                      pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  & + .vex-dialog-button {
+    margin-left: .5rem;
+  }
+}
+
+.vex-loading-spinner {
+  animation:  vex-rotation 0.7s linear infinite;
+
+  box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+
+  position:   fixed;
+  z-index:    1112;
+  margin:     auto;
+  top:        0;
+  right:      0;
+  bottom:     0;
+  left:       0;
+  height:     2em;
+  width:      2em;
+  background: #fff;
+}
+
+// Prevent background scrolling when vex is open
+// https://github.com/HubSpot/vex/issues/18
+body.vex-open {
+  overflow: hidden;
+}
+
+/**
+ *
+ * Legacy
+ *
+ */
+.modal-root {
+  .legacy-modal {
     position:      relative;
     max-width:     90%;
     overflow-x:    hidden;
@@ -68,32 +161,5 @@
         color: #03a9f4;
       }
     }
-  }
-
-  &.modal-visible {
-    overflow: hidden;
-
-    .modal-overlay {
-      z-index:    99;
-      opacity:    1;
-      transition: opacity 0.2s;
-    }
-
-    .modal {
-      z-index:    100;
-      opacity:    1;
-      transform:  scale(1);
-      transition: opacity 0.2s, transform 0.2s;
-    }
-  }
-
-
-  .modal-header {
-    padding:       15px 25px 10px;
-    border-bottom: 4px solid rgba(0, 0, 0, .1);
-  }
-
-  .dialog-warning .modal-header {
-    border-bottom-color: #f47575;
   }
 }

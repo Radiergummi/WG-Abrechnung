@@ -24,6 +24,7 @@ invoices.viewSingle = function(req, res, next) {
       return next(error);
     }
 
+    debug('found invoice %s:', data._id, data);
     vars.pageTitle                     = 'Rechnung ' + req.params.id;
     vars.invoice                       = data;
     vars.invoice.formattedCreationDate = data.getFormattedDate();
@@ -48,8 +49,8 @@ invoices.viewAll = function(req, res, next) {
     }
 
     vars.invoices = data.map(invoice => {
-      invoice.creationDate = invoice.getFormattedDate();
-      invoice.ownInvoice   = (String(invoice.user._id) === String(req.user._id));
+      invoice.formattedCreationDate = invoice.getFormattedDate();
+      invoice.ownInvoice            = (String(invoice.user._id) === String(req.user._id));
       invoice.tags.filter(tag => !!tag);
 
       return invoice;

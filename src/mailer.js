@@ -137,15 +137,8 @@ var colors            = require('colors'),
         })
       })
       .then(function(html) {
-        var language = data.user.language || nconf.get('language') || 'en_US';
-
-        return new Promise(function(resolve) {
-
-          // translate the email
-          Translator.translate(html, 'de_DE', function(translated) {
-            resolve(translated);
-          });
-        });
+        let language = data.user.language || nconf.get('language') || 'de_DE' || 'en_US';
+        return Translator.translate(html, language);
       })
       .then(function(html) {
 
@@ -187,33 +180,30 @@ var colors            = require('colors'),
       })
     })
       .then(function(html) {
-        return new Promise(function(resolve) {
 
-          // translate the email
-          Translator.translate(html, language, function(translated) {
-            resolve(translated);
-          });
-        });
+        // translate the email
+        return Translator.translate(html, language);
       })
       .then(function(html) {
-        return new Promise(function(resolve) {
 
-          // create a config object for the mailer
-          Translator.translate(data.subject, language, function(translatedSubject) {
-            resolve({
-              _raw:     data,
-              to:       emailAddress,
-              from:     nconf.get('name') + ' <' + nconf.get('mail:sender') + '>',
-              subject:  translatedSubject,
-              html:     html,
-              text:     htmlToText.fromString(html, {
-                ignoreImage: true
-              }),
-              template: template
-            });
-          });
-        });
-      }).then(function(mailerConfig) {
+        // create a config object for the mailer
+        return Translator.translate(data.subject, language)
+
+      })
+      .then(translatedSubject => {
+        return {
+          _raw:     data,
+          to:       emailAddress,
+          from:     nconf.get('name') + ' <' + nconf.get('mail:sender') + '>',
+          subject:  translatedSubject,
+          html:     html,
+          text:     htmlToText.fromString(html, {
+            ignoreImage: true
+          }),
+          template: template
+        }
+      })
+      .then(function(mailerConfig) {
 
         // send the email
         mailer.transmit(mailerConfig, callback);
@@ -240,7 +230,6 @@ var colors            = require('colors'),
       }
 
       response.transport = transport;
-
 
       winston.info('[mailer]'.white + ' Successfully sent an email to %s', data.to);
       return callback(null, response);
