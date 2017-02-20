@@ -9,7 +9,7 @@ var debug      = require('debug')('flatm8:render'),
     nconf      = require('nconf');
 
 var file       = require('../meta/file'),
-    Translator = require('../../public/javascripts/src/modules/translator');
+    Translator = require('../meta/translator');
 
 /**
  * Override res.render to do any pre/post processing

@@ -15,7 +15,7 @@ var colors            = require('colors'),
     winston           = require('winston'),
 
     User              = require('./user'),
-    Translator        = require('../public/javascripts/src/modules/translator'),
+    Translator        = require('./meta/translator'),
 
     /**
      * predefined mail transport connectors

@@ -5,40 +5,40 @@
  require
  */
 
-var fs      = require('fs'),
-    path    = require('path'),
-    nconf   = require('nconf'),
-    winston = require('winston'),
-    moment  = require('moment');
+const fs      = require('fs'),
+      path    = require('path'),
+      nconf   = require('nconf'),
+      winston = require('winston'),
+      moment  = require('moment');
 
 /**
  * Middleware modules
  */
-var favicon          = require('serve-favicon'),
-    logger           = require('morgan'),
-    express          = require('express'),
-    cookieParser     = require('cookie-parser'),
-    bodyParser       = require('body-parser'),
-    hbs              = require('express-handlebars'),
-    compression      = require('compression'),
-    expressValidator = require('express-validator'),
-    mongoose         = require('mongoose'),
-    passport         = require('passport'),
-    session          = require('express-session'),
-    siofu            = require('socketio-file-upload'),
-    flash            = require('connect-flash');
+const favicon          = require('serve-favicon'),
+      logger           = require('morgan'),
+      express          = require('express'),
+      cookieParser     = require('cookie-parser'),
+      bodyParser       = require('body-parser'),
+      hbs              = require('express-handlebars'),
+      compression      = require('compression'),
+      expressValidator = require('express-validator'),
+      mongoose         = require('mongoose'),
+      passport         = require('passport'),
+      session          = require('express-session'),
+      siofu            = require('socketio-file-upload'),
+      flash            = require('connect-flash');
 
-var db     = require('../database').initialize(),
-    jobs   = require('../jobs'),
-    auth   = require('../authentication'),
-    render = require('./render');
+const db     = require('../database').initialize(),
+      jobs   = require('../jobs'),
+      auth   = require('../authentication'),
+      render = require('./render');
 
 /**
  * load the moment.js locale
  */
 moment.locale(nconf.get('language'));
 
-var middleware = {};
+let middleware = {};
 
 module.exports = function(app) {
   middleware = require('./middleware')(app);
@@ -74,7 +74,7 @@ module.exports = function(app) {
   // if we are in dev mode, enable the Morgan request logger. It will log all requests made to
   // the server to the winston log using a custom WinstonStream object.
   if (nconf.get('environment') === 'development') {
-    var winstonStream = {
+    let winstonStream = {
       write: function(message) {
         //winston.verbose('[request] ' + message.replace(/\n$/, ''));
       }
@@ -94,10 +94,14 @@ module.exports = function(app) {
   app.use(compression());
   app.use(cookieParser());
   app.use(express.static(path.join(nconf.get('path'), 'public')));
-  app.enable('view cache');
+
+  if (nconf.get('environment') === 'production') {
+    app.enable('view cache');
+  }
+
   app.use(siofu.router);
 
-  var cookie = {
+  let cookie = {
     // Set maximum login time to two weeks
     maxAge: 1000 * 60 * 60 * 24 * 14
   };

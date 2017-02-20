@@ -77,8 +77,8 @@ function start (debugLevel) {
     // fork the worker process and detach it from the launcher process
     instance = fork(path.join(__dirname, 'app.js'), [], {
       env:      environmentVariables,
-      detached: true,
-      stdio:    [ 'ignore', 'ignore', 'ignore', 'ipc' ]
+      detached: true
+//      stdio:    [ 'ipc' ]
     }).on('error', function(error) {
       console.error('[init]'.white + ' could not fork worker: ', error);
     });

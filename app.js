@@ -7,24 +7,24 @@
  __dirname
  */
 
-var cluster         = require('cluster'),
-    fs              = require('fs'),
-    path            = require('path'),
-    url             = require('url'),
+const cluster = require('cluster'),
+      fs      = require('fs'),
+      path    = require('path'),
+      url     = require('url'),
 
-    async           = require('async'),
-    colors          = require('colors'),
-    fork            = require('child_process').fork,
-    nconf           = require('nconf'),
-    moment          = require('moment'),
-    winston         = require('winston'),
+      async   = require('async'),
+      colors  = require('colors'),
+      fork    = require('child_process').fork,
+      nconf   = require('nconf'),
+      moment  = require('moment');
 
+let winston         = require('winston'),
     runningInstance = true,
     runningInstancePidFile,
     runningInstancePid;
 
 // load config
-var configPath = (process.env.CONFIG)
+const configPath = (process.env.CONFIG)
   ? process.env.CONFIG
   : path.join(__dirname, 'config.json');
 
@@ -34,9 +34,10 @@ nconf.file({ file: path.resolve(configPath) });
 nconf.set('path', path.resolve(__dirname));
 
 // update debug according to environment variable
-if (process.env.DEBUG) {
-  nconf.set('environment', 'development');
-}
+nconf.set('environment', (process.env.DEBUG
+    ? 'development'
+    : 'production'
+));
 
 // setup the logger
 winston = setupLogger(winston);
@@ -64,7 +65,7 @@ start();
 /**
  * Starts the app
  */
-function start() {
+function start () {
   // write lock file
   fs.writeFileSync('./pidfile', process.pid);
 
@@ -78,8 +79,8 @@ function start() {
   // prepare the assets
   prepareAssets();
 
-  var webserver = require('./src/server'),
-      sockets   = require('./src/socket.io');
+  const webserver = require('./src/server'),
+        sockets   = require('./src/socket.io');
 
   // start the server
   sockets.initialize(webserver.server);
@@ -92,8 +93,8 @@ function start() {
  * @param {Error} error  the exception object
  * @returns void
  */
-function exceptionHandler(error) {
-  var path  = nconf.get('path'),
+function exceptionHandler (error) {
+  let path  = nconf.get('path'),
       stack = (stack ? error.stack.toString().split(path).join('') : ''),
       origin;
 
@@ -104,7 +105,7 @@ function exceptionHandler(error) {
     origin = [ '[module internal]', '', '' ];
   }
 
-  var file = origin[ 0 ].split(path).join('') + (origin[ 0 ].indexOf('(') !== - 1 ? ')' : ''),
+  let file = origin[ 0 ].split(path).join('') + (origin[ 0 ].indexOf('(') !== -1 ? ')' : ''),
       line = origin[ 1 ];
 
   console.error('');
@@ -123,7 +124,7 @@ function exceptionHandler(error) {
  * @param {number} [code]  an optional exit code
  * @returns {number}       the exit code to return to the shell
  */
-function shutdown(code) {
+function shutdown (code) {
   if (code > 0) {
     winston.error('[app]'.white + ' Shutting down process ' + process.pid.toString().bold + ' due to an error.');
   } else {
@@ -132,7 +133,7 @@ function shutdown(code) {
 
   // remove lock file
   try {
-    fs.unlinkSync('./pidfile', function (error) {
+    fs.unlinkSync('./pidfile', function(error) {
       if (error) {
         winston.error('[app]'.white + ' Could not remove PIDFile, you will have to do this by yourself to start the app again.');
       }
@@ -142,18 +143,17 @@ function shutdown(code) {
     winston.error('[app]'.white + ' Could not remove PIDFile, you will have to do this by yourself to start the app again.');
   }
 
-  require('./src/jobs').instance.stop(function () {
+  require('./src/jobs').instance.stop(function() {
     winston.info('[jobs]'.white + ' Agenda has been stopped.');
   });
 
   return process.exit(code || 0);
 }
 
-function reload() {
+function reload () {
   winston.info('[meta]'.white + ' Reloading static assets');
-  require('templates.js').flush();
 
-  prepareAssets(function (error, results) {
+  prepareAssets(function(error, results) {
     if (error) {
       winston.error(error);
     }
@@ -170,7 +170,7 @@ function reload() {
 /**
  * Compiles all assets
  */
-function prepareAssets(callback) {
+function prepareAssets (callback) {
   var meta = fork('./src/meta', [], {
     stdio: [ 'ipc' ]
   });
@@ -181,17 +181,29 @@ function prepareAssets(callback) {
     action: 'compile.all',
     config: {
       basePath: nconf.get('path'),
-      debug: (nconf.get('environment') === 'development')
+      debug:    (nconf.get('environment') === 'development')
     }
   });
 
-  meta.on('message', function (event) {
+  meta.on('message',
+
+    /**
+     * logs the message
+     *
+     * @param   {object} event
+     * @param   {string} event.module
+     * @param   {string} event.type
+     * @param   {string} event.message
+     * @param   {Array}  event.results
+     * @returns {*}
+     */
+    function(event) {
     if (typeof event !== 'object') {
       return;
     }
 
     if (winston.hasOwnProperty(event.type)) {
-      return winston[ event.type ]('[meta]'.white + ' ' + event.message);
+      return winston[ event.type ](`[meta/${event.module}] `.white + event.message);
     }
 
     if (nconf.get('environment') === 'development') {
@@ -207,12 +219,12 @@ function prepareAssets(callback) {
 /**
  * Configures Winston Logger
  */
-function setupLogger(winstonInstance) {
+function setupLogger (winstonInstance) {
   winstonInstance.remove(winstonInstance.transports.Console);
 
   if (process.env.OUTPUT === 'stdout') {
     winstonInstance.add(winstonInstance.transports.Console, {
-      timestamp:   function () {
+      timestamp:   function() {
         return moment().format('D.mm.YYYY @ HH:mm:ss:SSS');
       },
       prettyPrint: true,

@@ -5,32 +5,41 @@
  require
  */
 
-function compile (config) {
-  var stylesheets = require('./stylesheets'),
+const stylesheets = require('./stylesheets'),
       javascripts = require('./javascripts');
 
+function compile (config) {
   function messenger (error, results) {
-    if (error) {
+    if (!!error) {
       return process.send({
         type:    'error',
-        message: error.message,
+        message: JSON.stringify(error),
         results: results
       });
     }
 
     return process.send({
+      module:  'assets',
       type:    'info',
-      message: 'assets were successfully compiled',
+      message: 'All assets were successfully compiled',
       results: results
     });
   }
+
+  process.send({
+    module:  'assets',
+    type:    'info',
+    message: 'Starting to compile assets'
+  });
 
   return Promise.all([
     stylesheets.compile(config),
     javascripts.compile(config)
   ]).then(function(results) {
     return messenger(null, results);
-  }).catch(messenger);
+  }).catch((error) => {
+    return messenger(error);
+  });
 }
 
 process.on('message', function(event) {
