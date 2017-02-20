@@ -47,6 +47,10 @@ Anyway, much to come, I'm excited!
 The DOM library was overhauled, too - I implemented lots of additional methods to work with nodes. It does compete pretty well as a lightweight abstraction layer now. The transform to more ES6 code is advancing, too.  
 Next on the list is a revamp of the way modals or dialogs are created, since I can't help but find vanilla-modals horrible to code, and somewhere in the back of my mind a little voice whispers "just switch it over to Backbone, you'll do it anyway..." - so maybe I'll do that; Would be a huge load of work to essentially create all clientside code again, but the app would profit overall, I think.
 
+*Update 2017/02/20:* A relatively small change, but it eases development hugely: I implemented watchers for Gulp (SCSS compilation), Webpack (JS compilation) and Express-Handlebars (View caching) to re-compile all assets once the source files are updated. That removes the need to restart the whole app if client side files are changed while in development mode.  
+Apart from this, I also upgraded to Webpack v2, which enables the usage of ES6 imports throughout the client source and speeds compilation up significantly. I'll check the other packages too, maybe there'll be more to update.
+I don't plan to implement the same for the server side source, since it would require huge changes to the way flatm8 works, which just isn't worth the development convenience.
+
 Once the current way of handling receipts works, I'm planning to integrate OCR (using tesseract, maybe) somehow, so the receipts get parsed automatically. That would eliminate the need to enter the sum manually and allow to create detailed product statistics. As far as I've seen, though, that is a non-trivial task which'd require some serious engineering.  
 
 ### Secure plaintext password retrieval concept
