@@ -64,6 +64,7 @@ input[type="submit"],
   cursor:          pointer;
   user-select:     none;
 
+
   &:disabled {
     cursor: default;
   }
@@ -361,7 +362,6 @@ img.image-error {
   text-align: left;
 }
 
-q
 .page-error {
   max-width:     600px;
   margin:        100px auto;

@@ -33,14 +33,14 @@ module.exports = function(app, element, config) {
      * @param instance
      */
     onOpen:  function(selectedDates, dateStr, instance) {
-      let label = app.dom(`label[for="${instance.element.id}"]`);
+      const label = app.dom(`label[for="${instance.element.id}"]`);
 
       if (label) {
         label.addClass('in-focus');
       }
     },
     onClose: function(selectedDates, dateStr, instance) {
-      let label = app.dom(`label[for="${instance.element.id}"]`);
+      const label = app.dom(`label[for="${instance.element.id}"]`);
 
       if (label) {
         label.addClass('in-focus');

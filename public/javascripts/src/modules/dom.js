@@ -383,6 +383,22 @@ module.exports = function(app) {
   };
 
   /**
+   * checks whether an element is in the current viewport
+   *
+   * @returns {boolean}
+   */
+  DOMElement.prototype.isInViewport = function() {
+    let rect = this.elementSet[ 0 ].getBoundingClientRect();
+
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+  };
+
+  /**
    * wrapper function for the DOM library (minimal jQuery-like interface)
    *
    * @param   {string|Array|Node|Element|HTMLElement|HTMLCollection|NodeList} selector
@@ -425,9 +441,9 @@ module.exports = function(app) {
   };
 
   app.helpers.createElement = function(elementString) {
-    var parser = new DOMParser();
+    const parser = new DOMParser();
 
-    return parser.parseFromString(elementString, 'text/html').body.childNodes[ 0 ];
+    return Promise.resolve(parser.parseFromString(elementString, 'text/html').body.childNodes[ 0 ]);
   };
 
   app.helpers.createTranslatedElement = function(elementString) {

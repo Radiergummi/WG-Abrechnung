@@ -22,6 +22,7 @@ var app = module.exports = {
         return console.error(error);
       }
 
+
       app.config = data;
 //    Object.freeze(app.config);
       return callback();
@@ -66,9 +67,14 @@ var app = module.exports = {
    * load base dependencies
    */
   app.translator = require('./modules/translator');
-  app.translate = function(text) {
-    return app.translator.translate(text, document.documentElement.lang);
-  };
+  app.translate = text => app.translator.translate(text, document.documentElement.lang);
+
+
+
+  /**
+   * add a no-op function
+   */
+  app.noop = function() {};
 
   require('./modules/notifications')(app);
   require('./modules/errorHandler')(app);

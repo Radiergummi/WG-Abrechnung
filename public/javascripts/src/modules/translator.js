@@ -28,10 +28,10 @@ class Translator {
      *
      * @type {function}
      */
-    this.debug = (Translator.isBrowser()
-        ? /*(window.debug) ?*/ (...args) => console.debug(...args) /*: () => {
-       }*/
-        : require('debug')('flatm8:translator')
+    this.debug = (window.debug
+        ? (...args) => console.debug(...args)
+        : () => {
+      }
     );
   }
 
@@ -392,10 +392,6 @@ class Translator {
     return 'de_DE';
   }
 
-  static isBrowser () {
-    return (new Function("try {return this===window;}catch(e){ return false;}"))();
-  }
-
   /**
    * adds a language to the cache
    *
@@ -455,29 +451,6 @@ class Translator {
       return Promise.resolve(this.languages[ languageCode ]);
     }
 
-    // TODO: Replace this with a more sophisticated check
-    if (Translator.isBrowser()) {
-      this.debug('seems to be a browser environment');
-
-      // load the language file on the client, catch loading errors
-      return this.loadLanguageFileClient(languageCode).catch(error => this.debug(error));
-    }
-
-    this.debug('seems to be a server environment');
-
-    // load the language file on the server, catch loading errors
-    return this.loadLanguageFileServer(languageCode).catch(error => this.debug(error));
-  }
-
-  /**
-   * loads a language client side
-   *
-   * @param   {string}           languageCode
-   * @returns {Promise.<Object>}
-   */
-  loadLanguageFileClient (languageCode) {
-    this.debug(`trying to load language ${languageCode} client-side`);
-
     // check for fetch API availability
     if (window.hasOwnProperty('fetch')) {
 
@@ -530,30 +503,6 @@ class Translator {
         request.send(null);
       });
     }
-  }
-
-  /**
-   * loads a language server side
-   *
-   * @param   {string}           languageCode
-   * @returns {Promise.<Object>}
-   */
-  loadLanguageFileServer (languageCode) {
-    const debug = this.debug;
-    debug(`trying to load ${languageCode} server-side`);
-    return new Promise((resolve, reject) => {
-      try {
-        this.languages[ languageCode ] = require(`../../../translations/${languageCode}.json`);
-
-        debug(`language ${languageCode} has been required`);
-        resolve(this.languages[ languageCode ]);
-      }
-      catch (error) {
-        debug(`missing language file for ${languageCode}: ${error}`);
-        this.languages[ languageCode ] = { missing: true };
-        return reject({});
-      }
-    });
   }
 }
 

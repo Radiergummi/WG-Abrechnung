@@ -6554,7 +6554,7 @@ input[type="submit"],
   user-select: none;
 }
 
-/* line 67, public/stylesheets/src/style.scss */
+/* line 68, public/stylesheets/src/style.scss */
 button:disabled,
 input[type="button"]:disabled,
 input[type="submit"]:disabled,
@@ -6562,7 +6562,7 @@ input[type="submit"]:disabled,
   cursor: default;
 }
 
-/* line 71, public/stylesheets/src/style.scss */
+/* line 72, public/stylesheets/src/style.scss */
 button:hover:not(:disabled),
 input[type="button"]:hover:not(:disabled),
 input[type="submit"]:hover:not(:disabled),
@@ -6570,7 +6570,7 @@ input[type="submit"]:hover:not(:disabled),
   background: #0277bd;
 }
 
-/* line 75, public/stylesheets/src/style.scss */
+/* line 76, public/stylesheets/src/style.scss */
 button:focus,
 input[type="button"]:focus,
 input[type="submit"]:focus,
@@ -6579,7 +6579,7 @@ input[type="submit"]:focus,
   outline: 0;
 }
 
-/* line 80, public/stylesheets/src/style.scss */
+/* line 81, public/stylesheets/src/style.scss */
 button.danger,
 input[type="button"].danger,
 input[type="submit"].danger,
@@ -6587,7 +6587,7 @@ input[type="submit"].danger,
   background: #f47575;
 }
 
-/* line 83, public/stylesheets/src/style.scss */
+/* line 84, public/stylesheets/src/style.scss */
 button.danger:focus, button.danger:hover,
 input[type="button"].danger:focus,
 input[type="button"].danger:hover,
@@ -6598,7 +6598,7 @@ input[type="submit"].danger:hover,
   background: #f44336;
 }
 
-/* line 89, public/stylesheets/src/style.scss */
+/* line 90, public/stylesheets/src/style.scss */
 button.seamless,
 input[type="button"].seamless,
 input[type="submit"].seamless,
@@ -6607,46 +6607,46 @@ input[type="submit"].seamless,
   background: none;
 }
 
-/* line 95, public/stylesheets/src/style.scss */
+/* line 96, public/stylesheets/src/style.scss */
 label.in-focus {
   color: #03a9f4 !important;
 }
 
-/* line 99, public/stylesheets/src/style.scss */
+/* line 100, public/stylesheets/src/style.scss */
 textarea {
   display: block;
   resize: vertical;
 }
 
-/* line 104, public/stylesheets/src/style.scss */
+/* line 105, public/stylesheets/src/style.scss */
 div[contenteditable="true"] {
   padding: .5rem 12px;
 }
 
-/* line 108, public/stylesheets/src/style.scss */
+/* line 109, public/stylesheets/src/style.scss */
 select {
   padding: 7px 12px 5px;
 }
 
-/* line 111, public/stylesheets/src/style.scss */
+/* line 112, public/stylesheets/src/style.scss */
 select:focus {
   border-radius: 4px 4px 0 0;
 }
 
-/* line 116, public/stylesheets/src/style.scss */
+/* line 117, public/stylesheets/src/style.scss */
 main article {
   max-width: 80%;
   margin: 50px auto;
 }
 
 @media screen and (max-width: 1100px) {
-  /* line 116, public/stylesheets/src/style.scss */
+  /* line 117, public/stylesheets/src/style.scss */
   main article {
     max-width: initial;
   }
 }
 
-/* line 124, public/stylesheets/src/style.scss */
+/* line 125, public/stylesheets/src/style.scss */
 main article code {
   display: inline-block;
   padding: 2px 8px;
@@ -6654,7 +6654,7 @@ main article code {
   background: #e5e5e5;
 }
 
-/* line 131, public/stylesheets/src/style.scss */
+/* line 132, public/stylesheets/src/style.scss */
 main article.dialog {
   max-width: 400px;
   padding: 2rem;
@@ -6663,12 +6663,12 @@ main article.dialog {
   text-align: center;
 }
 
-/* line 138, public/stylesheets/src/style.scss */
+/* line 139, public/stylesheets/src/style.scss */
 main article.dialog.warning {
   border-color: #ff6f74;
 }
 
-/* line 144, public/stylesheets/src/style.scss */
+/* line 145, public/stylesheets/src/style.scss */
 #overlay {
   position: fixed;
   top: 0;
@@ -6678,17 +6678,17 @@ main article.dialog.warning {
   z-index: 9;
 }
 
-/* line 152, public/stylesheets/src/style.scss */
+/* line 153, public/stylesheets/src/style.scss */
 #overlay.darken {
   background: rgba(0, 0, 0, 0.5);
 }
 
-/* line 156, public/stylesheets/src/style.scss */
+/* line 157, public/stylesheets/src/style.scss */
 #overlay.disabled {
   display: none;
 }
 
-/* line 165, public/stylesheets/src/style.scss */
+/* line 166, public/stylesheets/src/style.scss */
 .sub-navigation {
   display: flex;
   justify-content: center;
@@ -6697,7 +6697,7 @@ main article.dialog.warning {
   text-align: center;
 }
 
-/* line 172, public/stylesheets/src/style.scss */
+/* line 173, public/stylesheets/src/style.scss */
 .sub-navigation > ul {
   display: flex;
   border: 1px solid #03a9f4;
@@ -6705,14 +6705,14 @@ main article.dialog.warning {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* line 178, public/stylesheets/src/style.scss */
+/* line 179, public/stylesheets/src/style.scss */
 .sub-navigation > ul li {
   display: inline-block;
   vertical-align: top;
   height: 36px;
 }
 
-/* line 183, public/stylesheets/src/style.scss */
+/* line 184, public/stylesheets/src/style.scss */
 .sub-navigation > ul li a {
   display: block;
   padding: 10px 20px;
@@ -6721,18 +6721,18 @@ main article.dialog.warning {
   transition: all .125s;
 }
 
-/* line 190, public/stylesheets/src/style.scss */
+/* line 191, public/stylesheets/src/style.scss */
 .sub-navigation > ul li a.control-active, .sub-navigation > ul li a:hover {
   background: #03a9f4;
   color: #fff;
 }
 
-/* line 197, public/stylesheets/src/style.scss */
+/* line 198, public/stylesheets/src/style.scss */
 .sub-navigation > ul li + li > :first-child {
   border-left: 1px solid #03a9f4;
 }
 
-/* line 201, public/stylesheets/src/style.scss */
+/* line 202, public/stylesheets/src/style.scss */
 .sub-navigation > ul li .select-box {
   position: relative;
   height: 36px;
@@ -6746,17 +6746,17 @@ main article.dialog.warning {
   transition: background .125s;
 }
 
-/* line 213, public/stylesheets/src/style.scss */
+/* line 214, public/stylesheets/src/style.scss */
 .sub-navigation > ul li .select-box:hover:not(.visible) {
   background: #03a9f4;
 }
 
-/* line 216, public/stylesheets/src/style.scss */
+/* line 217, public/stylesheets/src/style.scss */
 .sub-navigation > ul li .select-box:hover:not(.visible) .select-toggle {
   color: #fff;
 }
 
-/* line 221, public/stylesheets/src/style.scss */
+/* line 222, public/stylesheets/src/style.scss */
 .sub-navigation > ul li .select-box .select-toggle {
   color: #03a9f4;
   cursor: pointer;
@@ -6765,23 +6765,23 @@ main article.dialog.warning {
   transition: color .125s;
 }
 
-/* line 228, public/stylesheets/src/style.scss */
+/* line 229, public/stylesheets/src/style.scss */
 .sub-navigation > ul li .select-box .select-toggle .select-title {
   margin-left: 8px;
   padding-left: 8px;
 }
 
-/* line 233, public/stylesheets/src/style.scss */
+/* line 234, public/stylesheets/src/style.scss */
 .sub-navigation > ul li .select-box .select-toggle .fa {
   transition: transform .2s;
 }
 
-/* line 238, public/stylesheets/src/style.scss */
+/* line 239, public/stylesheets/src/style.scss */
 .sub-navigation > ul li .select-box.visible .select-toggle .fa {
   transform: rotate(180deg);
 }
 
-/* line 242, public/stylesheets/src/style.scss */
+/* line 243, public/stylesheets/src/style.scss */
 .sub-navigation > ul li .select-box ul {
   max-height: 0;
   overflow: hidden;
@@ -6798,17 +6798,17 @@ main article.dialog.warning {
   transition: max-height .3s, opacity .1s linear, top 0 linear .3s;
 }
 
-/* line 257, public/stylesheets/src/style.scss */
+/* line 258, public/stylesheets/src/style.scss */
 .sub-navigation > ul li .select-box ul li {
   display: block;
 }
 
-/* line 260, public/stylesheets/src/style.scss */
+/* line 261, public/stylesheets/src/style.scss */
 .sub-navigation > ul li .select-box ul li a {
   border: 0;
 }
 
-/* line 266, public/stylesheets/src/style.scss */
+/* line 267, public/stylesheets/src/style.scss */
 .sub-navigation > ul li .select-box.visible ul {
   max-height: 1000px;
   top: calc(100% - 2px);
@@ -6816,13 +6816,13 @@ main article.dialog.warning {
   transition: top 0 linear 0;
 }
 
-/* line 277, public/stylesheets/src/style.scss */
+/* line 278, public/stylesheets/src/style.scss */
 .page-register .site-header,
 .page-login .site-header {
   display: none;
 }
 
-/* line 282, public/stylesheets/src/style.scss */
+/* line 283, public/stylesheets/src/style.scss */
 .registration-container,
 .login-container {
   width: calc(100% - 10px);
@@ -6835,26 +6835,26 @@ main article.dialog.warning {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* line 293, public/stylesheets/src/style.scss */
+/* line 294, public/stylesheets/src/style.scss */
 .registration-container p,
 .login-container p {
   line-height: 1.4;
 }
 
-/* line 297, public/stylesheets/src/style.scss */
+/* line 298, public/stylesheets/src/style.scss */
 .registration-container form,
 .login-container form {
   text-align: left;
 }
 
-/* line 301, public/stylesheets/src/style.scss */
+/* line 302, public/stylesheets/src/style.scss */
 .registration-container h1,
 .login-container h1 {
   color: #fff;
   margin-bottom: 25px;
 }
 
-/* line 306, public/stylesheets/src/style.scss */
+/* line 307, public/stylesheets/src/style.scss */
 .registration-container input,
 .login-container input {
   background: #03a9f4;
@@ -6863,7 +6863,7 @@ main article.dialog.warning {
   color: #fff;
 }
 
-/* line 313, public/stylesheets/src/style.scss */
+/* line 314, public/stylesheets/src/style.scss */
 .registration-container input:focus,
 .login-container input:focus {
   background: #fff;
@@ -6871,27 +6871,27 @@ main article.dialog.warning {
   border: 2px solid #fff;
 }
 
-/* line 319, public/stylesheets/src/style.scss */
+/* line 320, public/stylesheets/src/style.scss */
 .registration-container input::-webkit-input-placeholder,
 .login-container input::-webkit-input-placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* line 323, public/stylesheets/src/style.scss */
+/* line 324, public/stylesheets/src/style.scss */
 .registration-container input#user, .registration-container input#pass,
 .login-container input#user,
 .login-container input#pass {
   width: calc(100% - 30px);
 }
 
-/* line 328, public/stylesheets/src/style.scss */
+/* line 329, public/stylesheets/src/style.scss */
 .registration-container input#invitation-token,
 .login-container input#invitation-token {
   width: 100%;
   margin-top: 50px;
 }
 
-/* line 334, public/stylesheets/src/style.scss */
+/* line 335, public/stylesheets/src/style.scss */
 .registration-container button,
 .login-container button {
   width: 100%;
@@ -6901,7 +6901,7 @@ main article.dialog.warning {
   cursor: pointer;
 }
 
-/* line 341, public/stylesheets/src/style.scss */
+/* line 342, public/stylesheets/src/style.scss */
 .registration-container button:hover, .registration-container button:focus,
 .login-container button:hover,
 .login-container button:focus {
@@ -6909,7 +6909,7 @@ main article.dialog.warning {
   color: #0277bd;
 }
 
-/* line 348, public/stylesheets/src/style.scss */
+/* line 349, public/stylesheets/src/style.scss */
 .registration-container label,
 .login-container label {
   display: inline-block;
@@ -6917,20 +6917,19 @@ main article.dialog.warning {
   color: #fff;
 }
 
-/* line 353, public/stylesheets/src/style.scss */
+/* line 354, public/stylesheets/src/style.scss */
 .registration-container label[for="user"], .registration-container label[for="pass"],
 .login-container label[for="user"],
 .login-container label[for="pass"] {
   width: 30px;
 }
 
-/* line 360, public/stylesheets/src/style.scss */
+/* line 361, public/stylesheets/src/style.scss */
 .registration-container {
   text-align: left;
 }
 
-/* line 364, public/stylesheets/src/style.scss */
-q
+/* line 365, public/stylesheets/src/style.scss */
 .page-error {
   max-width: 600px;
   margin: 100px auto;
@@ -6940,15 +6939,13 @@ q
 }
 
 @media screen and (max-width: 600px) {
-  /* line 364, public/stylesheets/src/style.scss */
-  q
-.page-error {
+  /* line 365, public/stylesheets/src/style.scss */
+  .page-error {
     margin: 20px;
   }
 }
 
 /* line 376, public/stylesheets/src/style.scss */
-q
 .page-error h1 {
   font-size: 56px;
   color: #f47575;
@@ -6957,14 +6954,12 @@ q
 
 @media screen and (max-width: 320px) {
   /* line 376, public/stylesheets/src/style.scss */
-  q
-.page-error h1 {
+  .page-error h1 {
     font-size: 32px;
   }
 }
 
 /* line 386, public/stylesheets/src/style.scss */
-q
 .page-error p {
   margin: 50px auto 0;
   color: #666;
