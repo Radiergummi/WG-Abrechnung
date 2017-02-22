@@ -16,7 +16,8 @@ const cluster = require('cluster'),
       colors  = require('colors'),
       fork    = require('child_process').fork,
       nconf   = require('nconf'),
-      moment  = require('moment');
+      moment  = require('moment'),
+      opn     = require('opn');
 
 let winston         = require('winston'),
     runningInstance = true,
@@ -66,6 +67,9 @@ start();
  * Starts the app
  */
 function start () {
+  const webserver = require('./src/server'),
+        sockets   = require('./src/socket.io');
+
   // write lock file
   fs.writeFileSync('./pidfile', process.pid);
 
@@ -79,12 +83,13 @@ function start () {
   // prepare the assets
   prepareAssets();
 
-  const webserver = require('./src/server'),
-        sockets   = require('./src/socket.io');
-
   // start the server
   sockets.initialize(webserver.server);
   webserver.listen(nconf.get('port'));
+
+  if (nconf.get('environment') === 'development') {
+    opn(nconf.get('url'));
+  }
 }
 
 /**
@@ -95,7 +100,7 @@ function start () {
  */
 function exceptionHandler (error) {
   let path  = nconf.get('path'),
-      stack = (stack ? error.stack.toString().split(path).join('') : ''),
+      stack = (error.stack ? error.stack.toString().split(path).join('') : ''),
       origin;
 
   try {
@@ -171,9 +176,10 @@ function reload () {
  * Compiles all assets
  */
 function prepareAssets (callback) {
-  var meta = fork('./src/meta', [], {
-    stdio: [ 'ipc' ]
-  });
+  const meta    = fork('./src/meta', [], {
+          stdio: [ 'ipc' ]
+        }),
+        sockets = require('./src/socket.io');
 
   winston.info('[meta]'.white + ' forked asset compiler worker with PID %s', meta.pid);
 
@@ -190,30 +196,39 @@ function prepareAssets (callback) {
     /**
      * logs the message
      *
-     * @param   {object} event
-     * @param   {string} event.module
-     * @param   {string} event.type
-     * @param   {string} event.message
-     * @param   {Array}  event.results
+     * @param   {object}  event
+     * @param   {string}  event.module
+     * @param   {string}  event.type
+     * @param   {string}  event.message
+     * @param   {Array}   event.results
+     * @param   {boolean} event.finished
      * @returns {*}
      */
     function(event) {
-    if (typeof event !== 'object') {
-      return;
-    }
+      if (typeof event !== 'object') {
+        return;
+      }
 
-    if (winston.hasOwnProperty(event.type)) {
-      return winston[ event.type ](`[meta/${event.module}] `.white + event.message);
-    }
+      if (nconf.get('environment') === 'development' && event.results) {
+        winston.info(event.results);
+      }
 
-    if (nconf.get('environment') === 'development') {
-      winston.info(event.results);
-    }
+      if (event.type === 'error') {
+        return winston.error(`[meta/${event.module}] `.white + event.message);
+      }
 
-    if (event.type === 'success') {
-      return winston.info('[meta]'.white + ' Successfully compiled assets');
-    }
-  });
+      if (event.finished) {
+        sockets.server.sockets.emit('app.reload', {
+          date: Date.now()
+        });
+
+        return winston.info(`[meta/${event.module}] `.white + event.message);
+      }
+
+      if (event.type === 'success') {
+        return winston.info('[meta]'.white + ' Successfully compiled assets');
+      }
+    });
 }
 
 /**

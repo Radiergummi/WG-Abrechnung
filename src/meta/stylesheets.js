@@ -91,9 +91,10 @@ Stylesheets.compile = function(config) {
       }
 
       process.send({
-        module:  'stylesheets',
-        type:    'info',
-        message: 'Successfully compiled SCSS'
+        module:   'stylesheets',
+        type:     'info',
+        message:  'Successfully compiled SCSS',
+        finished: true
       });
 
       return resolve(gulpStream);

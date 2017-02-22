@@ -22,5 +22,10 @@ module.exports = function(app) {
     });
   };
 
+  app.events.onServerReload = function() {
+    return window.location.reload();
+  };
+
   app.io.on('app.updated', app.events.onServerUpdate);
+  app.io.on('app.reload', app.events.onServerReload);
 };

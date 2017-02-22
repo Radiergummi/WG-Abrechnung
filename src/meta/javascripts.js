@@ -116,7 +116,7 @@ Javascripts.compile = function(config) {
   return new Promise(function(resolve, reject) {
     let lastProgressValue = 0,
         rateLimit         = (debug ? 1 : 5),
-        progressHandler = new ProgressPlugin((percentage, message) => {
+        progressHandler   = new ProgressPlugin((percentage, message) => {
           let progress = Math.round(percentage * 100);
 
           // if current percentage is divisible by rateLimit and the number is
@@ -172,24 +172,27 @@ Javascripts.compile = function(config) {
 
       if (statistics.warnings.length > 0) {
         process.send({
-          module:  'javascripts',
-          type:    'error',
-          message: statistics.warnings
+          module:   'javascripts',
+          type:     'error',
+          message:  statistics.warnings,
+          finished: true
         });
       }
 
       if (debug) {
         process.send({
-          module:  'javascripts',
-          type:    'info',
-          message: stats.toString({ colors: true })
+          module:   'javascripts',
+          type:     'info',
+          message:  stats.toString({ colors: true }),
+          finished: true
         });
       }
 
       process.send({
-        module:  'javascripts',
-        type:    'info',
-        message: 'Successfully compiled JS'
+        module:   'javascripts',
+        type:     'info',
+        message:  'Successfully compiled JS',
+        finished: true
       });
 
       return resolve();
