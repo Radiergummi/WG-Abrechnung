@@ -28,10 +28,10 @@ const favicon          = require('serve-favicon'),
       siofu            = require('socketio-file-upload'),
       flash            = require('connect-flash');
 
-const db     = require('../database').initialize(),
-      jobs   = require('../jobs'),
-      auth   = require('../authentication'),
-      render = require('./render');
+const Database = require('../database.new').init(),
+      jobs     = require('../jobs'),
+      auth     = require('../authentication'),
+      render   = require('./render');
 
 /**
  * load the moment.js locale
@@ -111,7 +111,7 @@ module.exports = function(app) {
   }
 
   app.use(session({
-    store:             db.sessionStore(session),
+    store:             Database.sessionStore(session),
     secret:            nconf.get('secret'),
     key:               'express.sid',
     cookie:            cookie,

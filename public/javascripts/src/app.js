@@ -3,7 +3,7 @@
 /**
  * main client app
  */
-var app = module.exports = {
+const app = module.exports = {
   elements:   {}, // dom elements being used in the script
   listeners:  {}, // functions that attach listeners
   events:     {}, // event callbacks
@@ -21,7 +21,6 @@ var app = module.exports = {
       if (error) {
         return console.error(error);
       }
-
 
       app.config = data;
 //    Object.freeze(app.config);
@@ -45,7 +44,7 @@ var app = module.exports = {
           }
 
           // call all startup scripts
-          for (var i = 0; i < app.startup.length; i++) {
+          for (let i = 0; i < app.startup.length; i++) {
             try {
               app.startup[ i ].call(app);
             } catch (error) {
@@ -69,12 +68,11 @@ var app = module.exports = {
   app.translator = require('./modules/translator');
   app.translate = text => app.translator.translate(text, document.documentElement.lang);
 
-
-
   /**
    * add a no-op function
    */
-  app.noop = function() {};
+  app.noop = function() {
+  };
 
   require('./modules/notifications')(app);
   require('./modules/errorHandler')(app);

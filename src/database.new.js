@@ -5,33 +5,55 @@
  require
  */
 
-const colors     = require('colors'),
-      mongoose   = require('mongoose'),
+const mongoose   = require('mongoose'),
       mongoAdmin = mongoose.mongo.Admin,
       mongoStore = require('connect-mongo'),
-      winston    = require('winston'),
-      nconf      = require('nconf');
-/**
- * Returns a mongo database handle
- */
-(function(module) {
+      nconf      = require('nconf'),
+      winston    = require('winston');
 
-    /**
-     * initializes the database connection
-     *
-     * @param {function} [callback]  a callback to execute once the db is connected
-     * @returns {exports}
-     */
-  module.initialize = function(callback) {
+require('colors');
+
+/**
+ * reference to the current instance
+ *
+ * @type {null|Database}
+ */
+let instance = null;
+
+/**
+ * creates a new database connection
+ */
+class Database {
+
+  /**
+   * initializes the database connection
+   *
+   * @param {function} [callback]  a callback to execute once the db is connected
+   */
+  constructor (callback) {
+    if (!instance) {
+      instance = this.init(callback);
+    }
+
+    return instance;
+  }
+
+  /**
+   * initializes the database connection
+   *
+   * @param   {function} [callback]  a callback to execute once the db is connected
+   * @returns {Database}
+   */
+  static init (callback) {
     callback = callback || function() {
       };
 
-    let connOptions = {
+    let connectionString  = Database.buildConnectionString(),
+        connectionOptions = {
           auth: {
             authdb: "admin"
           }
-        },
-        connString  = this.buildConnectionString();
+        };
 
     /**
      * use the native promise for mongoose
@@ -42,10 +64,25 @@ const colors     = require('colors'),
     mongoose.Promise = global.Promise;
 
     // Connect to mongo db
-    mongoose.connect(connString, connOptions);
+    mongoose.connect(connectionString, connectionOptions);
     winston.info('[database]'.white + ' Database connection established.');
 
+    callback(this);
+
     return this;
+  }
+
+  static get connection () {
+    return mongoose.connection.db;
+  }
+
+  /**
+   * retrieves the native connection client
+   *
+   * @returns {exports.connection|*|net.Socket|null}
+   */
+  static get nativeClient () {
+    return mongoose.connection;
   };
 
   /**
@@ -54,11 +91,11 @@ const colors     = require('colors'),
    * @param   {object} session
    * @returns {*}
    */
-  module.sessionStore = function(session) {
-    const mongo = mongoStore(session);
+  static sessionStore (session) {
+    const sessionStore = mongoStore(session);
 
     try {
-      return new mongo({
+      return new sessionStore({
         mongooseConnection: mongoose.connection,
         stringify:          false
       });
@@ -76,31 +113,15 @@ const colors     = require('colors'),
    * @param   {string} name the collection name
    * @returns {*}
    */
-  module.collection = function(name) {
+  static collection (name) {
     try {
       return mongoose.connection.collection(name);
-    } catch (error) {
+    }
+
+    catch (error) {
       winston.error('[database]'.white + ' Could not retrieve mongoose collection %s', name);
       winston.error('[database]'.white + ' %s', error.message);
     }
-  };
-
-  /**
-   * retrieves the current database connection
-   *
-   * @returns {*}
-   */
-  module.connection = function() {
-    return mongoose.connection.db;
-  };
-
-  /**
-   * retrieves the native connection client
-   *
-   * @returns {exports.connection|*|net.Socket|null}
-   */
-  module.nativeClient = function() {
-    return mongoose.connection;
   };
 
   /**
@@ -108,8 +129,8 @@ const colors     = require('colors'),
    *
    * @param {function} callback
    */
-  module.status = function(callback) {
-    new mongoAdmin(this.connection()).serverStatus(function(error, data) {
+  static status (callback) {
+    new mongoAdmin(Database.connection).serverStatus(function(error, data) {
       if (error) {
         return callback(error);
       }
@@ -121,24 +142,33 @@ const colors     = require('colors'),
   /**
    * creates a connection string for mongo
    *
+   * @static
    * @returns {string}
    */
-  module.buildConnectionString = function() {
+  static buildConnectionString () {
 
     // optionally use authentication
-    let usernamePassword = '';
+    let authenticationDetails = '';
 
-    if (nconf.get('database:username') && nconf.get('database:password')) {
-      usernamePassword = nconf.get('database:username') + ':' + encodeURIComponent(nconf.get('database:password')) + '@';
+    if (
+      nconf.get('database:username') &&
+      nconf.get('database:password')
+    ) {
+      let username = nconf.get('database:username'),
+          password = nconf.get('database:password');
+
+      authenticationDetails = `${username}:${encodeURIComponent(password)}@`;
     }
 
     // Sensible defaults for Mongo, if not set
     if (!nconf.get('database:host')) {
       nconf.set('database:host', '127.0.0.1');
     }
+
     if (!nconf.get('database:port')) {
       nconf.set('database:port', 27017);
     }
+
     if (!nconf.get('database:name')) {
       nconf.set('database:name', '0');
     }
@@ -155,6 +185,8 @@ const colors     = require('colors'),
     }
 
     // build connection string
-    return 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('database:name');
+    return `mongodb://${authenticationDetails}${servers.join()}/${nconf.get('database:name')}`;
   }
-}(exports));
+}
+
+module.exports = Database;

@@ -78,7 +78,6 @@ module.exports = function(app) {
       actions = actions.slice(0, 2);
     }
 
-
     var domNode       = document.createElement('div');
     domNode.className = 'notification ' + type;
 
@@ -112,7 +111,6 @@ module.exports = function(app) {
       }
     }
 
-
     /**
      * move previous notifications further up on the page
      * to make space for the new notification
@@ -125,7 +123,6 @@ module.exports = function(app) {
         notificationItems[ j ].style.bottom = ((j + 1) * 80 + 30) + 'px';
       }
     }
-
 
     /**
      * append notification to document
@@ -144,13 +141,11 @@ module.exports = function(app) {
       }, notificationModule.options.dismissAfter);
     }
 
-
     domNode.addEventListener('mouseenter', function() {
       if (type !== 'confirmation') {
         clearTimeout(domNode.dismissTimer);
       }
     });
-
 
     /**
      * restart automatic removal if the mouse leaves the notification
@@ -173,7 +168,6 @@ module.exports = function(app) {
     });
   };
 
-
   /**
    * wrapper for info notifications
    *
@@ -183,7 +177,6 @@ module.exports = function(app) {
   notificationModule.prototype.info = function(message, options) {
     app.translate(message).then(translated => current.create('info', translated, options));
   };
-
 
   /**
    * wrapper for success notifications
@@ -195,7 +188,6 @@ module.exports = function(app) {
     app.translate(message).then(translated => current.create('success', translated, options));
   };
 
-
   /**
    * wrapper for warning notifications
    *
@@ -205,7 +197,6 @@ module.exports = function(app) {
   notificationModule.prototype.warning = function(message, options) {
     app.translate(message).then(translated => current.create('warning', translated, options));
   };
-
 
   /**
    * wrapper for error notifications
@@ -217,7 +208,6 @@ module.exports = function(app) {
     app.translate(message).then(translated => current.create('error', translated, options));
   };
 
-
   /**
    * wrapper for confirmation notifications
    *
@@ -228,18 +218,16 @@ module.exports = function(app) {
     app.translate(message).then(translated => current.create('confirmation', translated, options));
   };
 
-
   notificationModule.prototype.createId = function(count) {
-    var result   = '';
-    var possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result   = '',
+        possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
-    for (var i = 0; i < count; i++) {
+    for (let i = 0; i < count; i++) {
       result += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
     return result;
   };
-
 
   app.notifications = new notificationModule();
 };

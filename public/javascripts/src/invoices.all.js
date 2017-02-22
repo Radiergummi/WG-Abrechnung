@@ -31,10 +31,10 @@ const app  = require('./app'),
     };
 
     app.listeners.removeInvoiceEvents = function() {
-      app.off('DOMContentLoaded', app.events.lastInvoiceVisible);
-      app.off('load', app.events.lastInvoiceVisible);
-      app.off('scroll', app.events.lastInvoiceVisible);
-      app.off('resize', app.events.lastInvoiceVisible);
+      app.off('DOMContentLoaded', document);
+      app.off('load', document);
+      app.off('scroll', document);
+      app.off('resize', document);
     };
 
     app.events.lastInvoiceVisible = function(event) {
@@ -155,7 +155,7 @@ const app  = require('./app'),
       app.dom('.timeline-data-available').remove();
 
       // insert loading indicator
-      app.templates.invoiceTimelineLoading
+      app.templates.invoiceTimelineLoading()
         .then(element => app.elements.invoicesContainer.append(element));
 
       app.io.emit('invoices.getPaginated', {
@@ -167,107 +167,77 @@ const app  = require('./app'),
           return console.error(error);
         }
 
-        // wait a second
-        setTimeout(function() {
+        // remove the loading indicator
+        app.dom('.timeline-loading').remove();
 
-          // remove the loading indicator
-          app.dom('.timeline-loading').remove();
+        if (invoices.length > 0) {
+          const invoicePromises = invoices.reduce((current, invoice) => {
+            if (!current) {
+              return;
+            }
 
-          if (invoices.length > 0) {
-            const invoicePromises = invoices.map(invoice => {
-              app.templates.invoiceTimelineSeparator()
+            return current.then(
+              () => app.templates.invoiceTimelineSeparator()
                 .then(element => app.elements.invoicesContainer.append(element))
-                .then(app.templates.invoiceCard(invoice))
+                .then(() => app.templates.invoiceCard(invoice))
                 .then(element => app.elements.invoicesContainer.append(element))
+            )
+          }, Promise.resolve())
+            .then(() => history.pushState(null, 'Rechnungen | Seite' + page, '/invoices/page/' + page))
+            .then(() => app.templates.invoiceTimelineAvailabilityIndicator())
+            .then(element => app.elements.invoicesContainer.append(element));
+        } else {
+          app.listeners.removeInvoiceEvents();
+          app.templates.invoiceTimelineEnd()
+            .then(element => {
+              app.dom('.timeline-item.timeline-last').remove();
+              app.elements.invoicesContainer.append(element)
             });
-
-            Promise.all(invoicePromises)
-              .then(() => history.pushState(null, 'Rechnungen | Seite' + page, '/invoices/page/' + page))
-              .then(() => app.templates.invoiceTimelineAvailabilityIndicator)
-              .then(element => app.elements.invoicesContainer.append(element));
-          } else {
-            app.listeners.removeInvoiceEvents();
-            app.templates.invoiceTimelineEnd
-              .then((element) => app.elements.invoicesContainer.appendChild(element));
-          }
-        }, 1000);
+        }
       });
     };
-    /*
-     app.templates.invoiceCardLegacy = function(invoice) {
-     let template = '<article class="invoice" id="' + invoice._id + '">' +
-     '<section class="invoice-image">' +
-     '<img src="/images/invoices/' + invoice.user._id + '/' + invoice._id + '.jpg" alt="Rechnung ' + invoice._id + '" onerror="app.events.imageError(this)">' +
-     '</section>' +
-     '<section class="invoice-data">' +
-     '<div class="invoice-id">' + invoice._id + '</div>' +
-     '<div class="invoice-owner">' +
-     '<div class="profile-picture">' +
-     '<img src="/images/users/' + invoice.user._id + '.jpg" alt>' +
-     '</div>' +
-     '<span class="owner-name">' + invoice.user.firstName + ' ' + invoice.user.lastName + '</span>' +
-     '</div>' +
-     '[[invoices:date]]: <span class="invoice-creation-date">' + invoice.creationDate + '</span><br>' +
-     '[[invoices:sum]]: <span class="invoice-sum">' + invoice.sum + '</span>€<br>' +
-     '<div class="tags-label">[[invoices:tags]]: </div>' +
-     '<div class="invoice-tags">';
 
-     if (invoice.tags.length && invoice.tags[ 0 ] !== null) {
-
-     app.debug('invoice has ' + invoice.tags.length + ' tags assigned');
-     for (var i = 0; i < invoice.tags.length; i++) {
-
-     app.debug(`processing tag ${invoice.tags[ i ].name}`);
-     template += `<div class="tag tag-${invoice.tags[ i ].color || 'blue'}" id="${invoice.tags[ i ]._id}"><span>${invoice.tags[ i ].name}</span></div>`;
-     }
-     } else {
-     template += '<span class="no-tags">[[invoices:no_tags]]</span>';
-     }
-
-     template += `</div></section><section class="invoice-actions"><a class="button" href="/invoices/${invoice._id}"><span class="fa fa-eye"></span> [[global:details]]</a>`;
-
-     if (invoice.ownInvoice) {
-     template += `<a class="button" href="/invoices/${invoice._id}/edit"><span class="fa fa-edit"></span> [[global:edit]]</a><a class="button danger" href="/invoices/${invoice._id}/delete"><span class="fa fa-trash-o"></span> [[global:delete]]</a>`;
-     }
-
-     template += '</section></article>';
-
-     return app.helpers.createTranslatedElement(template);
-     };
-     */
     app.templates.invoiceCard = function(invoice) {
-      let template = new Template(`<article class="invoice" id="{{_id}}">
-        <section class="invoice-image">
-          <img src="/images/invoices/{{user._id}}/{{_id}}.jpg" alt="Rechnung {{_id}}">
-        </section>
-        <section class="invoice-data">
-          <div class="invoice-id">{{_id}}</div>
-          <div class="invoice-owner">
-            <div class="profile-picture">
-              <img src="/images/users/{{user._id}}.jpg" alt>
-            </div>
-            <span class="owner-name">{{user.firstName}} {{user.lastName}}</span>
-          </div>
-          [[invoices:date]]: <span class="invoice-creation-date">{{creationDate}}</span><br>
-          [[invoices:sum]]: <span class="invoice-sum">{{sum}}</span>€<br>
-          <div class="tags-label">[[invoices:tags]]: </div>
-          <div class="invoice-tags">
-          {{#if tags}}
-            {{#each tags}}
-              <div class="tag tag-{{this.color}}" id="{{this._id}}"><span>{{this.name}}</span></div>
-            {{/each}}
-          {{else}}
-            <span class="no-tags">[[invoices:no_tags]]</span>
-          {{/if}}
-          </div>
-        </section>
-        <section class="invoice-actions">
-          <a class="button" href="/invoices/{{invoice._id}}"><span class="fa fa-eye"></span> [[global:details]]</a>
-          {{#if ownInvoice}}
-            <a class="button" href="/invoices/{{_id}}/edit"><span class="fa fa-edit"></span> [[global:edit]]</a><a class="button danger" href="/invoices/{{_id}}/delete"><span class="fa fa-trash-o"></span> [[global:delete]]</a>
-          {{/if}}
-        </section>
-      </article>`);
+      let template = new Template(`<article class="invoice{{#if ownInvoice}} own-invoice{{/if}}" id="{{_id}}">
+  <section class="invoice-image" style="background-image: url(/images/invoices/{{user._id}}/{{_id}}.jpg)">
+  </section>
+  <section class="invoice-data">
+    <div class="invoice-id">{{_id}}</div>
+    <div class="invoice-owner">
+      <div class="profile-picture">
+        <img src="/images/users/{{user._id}}.jpg" alt>
+      </div>
+      <span class="owner-name">{{user.firstName}} {{user.lastName}}</span>
+    </div>
+    [[invoices:date]]: <span class="invoice-creation-date">{{formattedCreationDate}}</span><br>
+    [[invoices:sum]]: {{#if sum}}<span
+    class="invoice-sum">{{sum}}</span>€{{else}}[[invoices:no_sum]]{{/if}}<br>
+    <div class="tags-label">[[invoices:tags]]:</div>
+    <div class="invoice-tags">
+      {{#if tags}}
+        <ul>
+        {{#each tags}}
+          <li class="tag tag-{{color}}" id="{{_id}}">
+            <span>{{name}}</span>
+          </li>
+        {{/each}}
+        </ul>
+      {{else}}
+        <span class="no-tags">[[invoices:no_tags]]</span>
+      {{/if}}
+    </div>
+  </section>
+  <section class="invoice-actions">
+    <a class="button" href="/invoices/{{_id}}"><span class="fa fa-eye"></span>
+      [[global:details]]</a>
+    {{#if ownInvoice}}
+      <a class="button" href="/invoices/{{_id}}/edit"><span class="fa fa-edit"></span>
+        [[global:edit]]</a><a class="button delete-invoice danger" href="/invoices/{{_id}}/delete"><span
+      class="fa fa-trash-o"></span>
+      [[global:delete]]</a>
+    {{/if}}
+  </section>
+</article>`);
 
       return template.render(invoice).then(rendered => app.helpers.createElement(rendered));
     };
@@ -290,9 +260,6 @@ const app  = require('./app'),
 
     app.templates.invoiceTimelineAvailabilityIndicator = () =>
       app.helpers.createElement('<div class="timeline-item timeline-data-available"></div>');
-
-    console.log('live reload working, 2');
-
 
     app.listeners.addInvoicesEvents();
     app.listeners.addDeleteInvoiceEvents();

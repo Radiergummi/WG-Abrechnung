@@ -1,125 +1,6 @@
 webpackJsonp([2],{
 
-/***/ 176:
-/***/ (function(module, exports) {
-
-
-/**
- * Expose `parse`.
- */
-
-module.exports = parse;
-
-/**
- * Tests for browser support.
- */
-
-var innerHTMLBug = false;
-var bugTestDiv;
-if (typeof document !== 'undefined') {
-  bugTestDiv = document.createElement('div');
-  // Setup
-  bugTestDiv.innerHTML = '  <link/><table></table><a href="/a">a</a><input type="checkbox"/>';
-  // Make sure that link elements get serialized correctly by innerHTML
-  // This requires a wrapper element in IE
-  innerHTMLBug = !bugTestDiv.getElementsByTagName('link').length;
-  bugTestDiv = undefined;
-}
-
-/**
- * Wrap map from jquery.
- */
-
-var map = {
-  legend: [1, '<fieldset>', '</fieldset>'],
-  tr: [2, '<table><tbody>', '</tbody></table>'],
-  col: [2, '<table><tbody></tbody><colgroup>', '</colgroup></table>'],
-  // for script/link/style tags to work in IE6-8, you have to wrap
-  // in a div with a non-whitespace character in front, ha!
-  _default: innerHTMLBug ? [1, 'X<div>', '</div>'] : [0, '', '']
-};
-
-map.td =
-map.th = [3, '<table><tbody><tr>', '</tr></tbody></table>'];
-
-map.option =
-map.optgroup = [1, '<select multiple="multiple">', '</select>'];
-
-map.thead =
-map.tbody =
-map.colgroup =
-map.caption =
-map.tfoot = [1, '<table>', '</table>'];
-
-map.polyline =
-map.ellipse =
-map.polygon =
-map.circle =
-map.text =
-map.line =
-map.path =
-map.rect =
-map.g = [1, '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">','</svg>'];
-
-/**
- * Parse `html` and return a DOM Node instance, which could be a TextNode,
- * HTML DOM Node of some kind (<div> for example), or a DocumentFragment
- * instance, depending on the contents of the `html` string.
- *
- * @param {String} html - HTML string to "domify"
- * @param {Document} doc - The `document` instance to create the Node for
- * @return {DOMNode} the TextNode, DOM Node, or DocumentFragment instance
- * @api private
- */
-
-function parse(html, doc) {
-  if ('string' != typeof html) throw new TypeError('String expected');
-
-  // default to the global `document` object
-  if (!doc) doc = document;
-
-  // tag name
-  var m = /<([\w:]+)/.exec(html);
-  if (!m) return doc.createTextNode(html);
-
-  html = html.replace(/^\s+|\s+$/g, ''); // Remove leading/trailing whitespace
-
-  var tag = m[1];
-
-  // body support
-  if (tag == 'body') {
-    var el = doc.createElement('html');
-    el.innerHTML = html;
-    return el.removeChild(el.lastChild);
-  }
-
-  // wrap map
-  var wrap = map[tag] || map._default;
-  var depth = wrap[0];
-  var prefix = wrap[1];
-  var suffix = wrap[2];
-  var el = doc.createElement('div');
-  el.innerHTML = prefix + html + suffix;
-  while (depth--) el = el.lastChild;
-
-  // one element
-  if (el.firstChild == el.lastChild) {
-    return el.removeChild(el.firstChild);
-  }
-
-  // several elements
-  var fragment = doc.createDocumentFragment();
-  while (el.firstChild) {
-    fragment.appendChild(el.removeChild(el.firstChild));
-  }
-
-  return fragment;
-}
-
-
-/***/ }),
-
-/***/ 191:
+/***/ 116:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -129,8 +10,8 @@ function parse(html, doc) {
  global module,
  require
  */
-const vex       = __webpack_require__(228),
-      vexDialog = __webpack_require__(227);
+const vex       = __webpack_require__(183),
+      vexDialog = __webpack_require__(182);
 
 // register the native dialog plugin
 vex.registerPlugin(vexDialog);
@@ -281,65 +162,7 @@ module.exports = modals.init;
 
 /***/ }),
 
-/***/ 194:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/*
- global module,
- require
- */
-const handlebars = __webpack_require__(213),
-      translator = __webpack_require__(190);
-
-/**
- * simple handlebars class abstraction
- *
- * @property {*} source
- */
-class Template {
-
-  /**
-   * creates a new handlebars template
-   *
-   * @param {string} text the handlebars template source
-   */
-  constructor (text) {
-    this.source = handlebars.compile(text);
-  }
-
-  /**
-   * renders a template with data
-   *
-   * @param   {object}           data the template variables
-   * @returns {Promise.<string>}      the promised output
-   */
-  render (data) {
-    return Promise.resolve(this.source(data))
-      .then(output => translator.translate(output));
-  }
-
-  /**
-   * compiles and renders a template in one step
-   *
-   * @static
-   * @param   {string}           text the template source
-   * @param   {object}           data the template variables
-   * @returns {Promise.<string>}      the promised output
-   */
-  static render (text, data) {
-    return (new Template(text)).render(data);
-  }
-}
-
-module.exports = Template;
-
-
-/***/ }),
-
-/***/ 200:
+/***/ 167:
 /***/ (function(module, exports) {
 
 /*
@@ -587,7 +410,7 @@ if ("document" in window.self) {
 
 /***/ }),
 
-/***/ 211:
+/***/ 174:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -641,7 +464,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 212:
+/***/ 177:
 /***/ (function(module, exports) {
 
 // get successful control from form and assemble into object
@@ -908,7 +731,638 @@ module.exports = serialize;
 
 /***/ }),
 
-/***/ 213:
+/***/ 182:
+/***/ (function(module, exports, __webpack_require__) {
+
+var domify = __webpack_require__(5)
+var serialize = __webpack_require__(177)
+
+// Build DOM elements for the structure of the dialog
+var buildDialogForm = function buildDialogForm (options) {
+  var form = document.createElement('form')
+  form.classList.add('vex-dialog-form')
+
+  var message = document.createElement('div')
+  message.classList.add('vex-dialog-message')
+  message.appendChild(options.message instanceof window.Node ? options.message : domify(options.message))
+
+  var input = document.createElement('div')
+  input.classList.add('vex-dialog-input')
+  input.appendChild(options.input instanceof window.Node ? options.input : domify(options.input))
+
+  form.appendChild(message)
+  form.appendChild(input)
+
+  return form
+}
+
+// Take an array of buttons (see the default buttons below) and turn them into DOM elements
+var buttonsToDOM = function buttonsToDOM (buttons) {
+  var domButtons = document.createElement('div')
+  domButtons.classList.add('vex-dialog-buttons')
+
+  for (var i = 0; i < buttons.length; i++) {
+    var button = buttons[i]
+    var domButton = document.createElement('button')
+    domButton.type = button.type
+    domButton.textContent = button.text
+    domButton.classList.add(button.className)
+    domButton.classList.add('vex-dialog-button')
+    if (i === 0) {
+      domButton.classList.add('vex-first')
+    } else if (i === buttons.length - 1) {
+      domButton.classList.add('vex-last')
+    }
+    // Attach click listener to button with closure
+    (function (button) {
+      domButton.addEventListener('click', function (e) {
+        if (button.click) {
+          button.click.call(this, e)
+        }
+      }.bind(this))
+    }.bind(this)(button))
+
+    domButtons.appendChild(domButton)
+  }
+
+  return domButtons
+}
+
+var plugin = function plugin (vex) {
+  // Define the API first
+  var dialog = {
+    // Plugin name
+    name: 'dialog',
+
+    // Open
+    open: function open (opts) {
+      var options = Object.assign({}, this.defaultOptions, opts)
+
+      // `message` is unsafe internally, so translate
+      // safe default: HTML-escape the message before passing it through
+      if (options.unsafeMessage && !options.message) {
+        options.message = options.unsafeMessage
+      } else if (options.message) {
+        options.message = vex._escapeHtml(options.message)
+      }
+
+      // Build the form from the options
+      var form = options.unsafeContent = buildDialogForm(options)
+
+      // Open the dialog
+      var dialogInstance = vex.open(options)
+
+      // Quick comment - these options and appending buttons and everything
+      // would preferably be done _before_ opening the dialog. However, since
+      // they rely on the context of the vex instance, we have to do them
+      // after. A potential future fix would be to differentiate between
+      // a "created" vex instance and an "opened" vex instance, so any actions
+      // that rely on the specific context of the instance can do their stuff
+      // before opening the dialog on the page.
+
+      // Override the before close callback to also pass the value of the form
+      var beforeClose = options.beforeClose && options.beforeClose.bind(dialogInstance)
+      dialogInstance.options.beforeClose = function dialogBeforeClose () {
+        // Only call the callback once - when the validation in beforeClose, if present, is true
+        var shouldClose = beforeClose ? beforeClose() : true
+        if (shouldClose) {
+          options.callback(this.value || false)
+        }
+        // Return the result of beforeClose() to vex
+        return shouldClose
+      }.bind(dialogInstance)
+
+      // Append buttons to form with correct context
+      form.appendChild(buttonsToDOM.call(dialogInstance, options.buttons))
+
+      // Attach form to instance
+      dialogInstance.form = form
+
+      // Add submit listener to form
+      form.addEventListener('submit', options.onSubmit.bind(dialogInstance))
+
+      // Optionally focus the first input in the form
+      if (options.focusFirstInput) {
+        var el = dialogInstance.contentEl.querySelector('button, input, textarea')
+        if (el) {
+          el.focus()
+        }
+      }
+
+      // For chaining
+      return dialogInstance
+    },
+
+    // Alert
+    alert: function (options) {
+      // Allow string as message
+      if (typeof options === 'string') {
+        options = {
+          message: options
+        }
+      }
+      options = Object.assign({}, this.defaultOptions, this.defaultAlertOptions, options)
+      return this.open(options)
+    },
+
+    // Confirm
+    confirm: function (options) {
+      if (typeof options !== 'object' || typeof options.callback !== 'function') {
+        throw new Error('dialog.confirm(options) requires options.callback.')
+      }
+      options = Object.assign({}, this.defaultOptions, this.defaultConfirmOptions, options)
+      return this.open(options)
+    },
+
+    // Prompt
+    prompt: function (options) {
+      if (typeof options !== 'object' || typeof options.callback !== 'function') {
+        throw new Error('dialog.prompt(options) requires options.callback.')
+      }
+      var defaults = Object.assign({}, this.defaultOptions, this.defaultPromptOptions)
+      var dynamicDefaults = {
+        unsafeMessage: '<label for="vex">' + vex._escapeHtml(options.label || defaults.label) + '</label>',
+        input: '<input name="vex" type="text" class="vex-dialog-prompt-input" placeholder="' + vex._escapeHtml(options.placeholder || defaults.placeholder) + '" value="' + vex._escapeHtml(options.value || defaults.value) + '" />'
+      }
+      options = Object.assign(defaults, dynamicDefaults, options)
+      // Pluck the value of the "vex" input field as the return value for prompt's callback
+      // More closely mimics "window.prompt" in that a single string is returned
+      var callback = options.callback
+      options.callback = function promptCallback (value) {
+        value = value[Object.keys(value)[0]]
+        callback(value)
+      }
+      return this.open(options)
+    }
+  }
+
+  // Now define any additional data that's not the direct dialog API
+  dialog.buttons = {
+    YES: {
+      text: 'OK',
+      type: 'submit',
+      className: 'vex-dialog-button-primary',
+      click: function yesClick () {
+        this.value = true
+      }
+    },
+
+    NO: {
+      text: 'Cancel',
+      type: 'button',
+      className: 'vex-dialog-button-secondary',
+      click: function noClick () {
+        this.value = false
+        this.close()
+      }
+    }
+  }
+
+  dialog.defaultOptions = {
+    callback: function () {},
+    afterOpen: function () {},
+    message: '',
+    input: '',
+    buttons: [
+      dialog.buttons.YES,
+      dialog.buttons.NO
+    ],
+    showCloseButton: false,
+    onSubmit: function onDialogSubmit (e) {
+      e.preventDefault()
+      if (this.options.input) {
+        this.value = serialize(this.form, { hash: true })
+      }
+      return this.close()
+    },
+    focusFirstInput: true
+  }
+
+  dialog.defaultAlertOptions = {
+    buttons: [
+      dialog.buttons.YES
+    ]
+  }
+
+  dialog.defaultPromptOptions = {
+    label: 'Prompt:',
+    placeholder: '',
+    value: ''
+  }
+
+  dialog.defaultConfirmOptions = {}
+
+  return dialog
+}
+
+module.exports = plugin
+
+
+/***/ }),
+
+/***/ 183:
+/***/ (function(module, exports, __webpack_require__) {
+
+// classList polyfill for old browsers
+__webpack_require__(167)
+// Object.assign polyfill
+__webpack_require__(174).polyfill()
+
+// String to DOM function
+var domify = __webpack_require__(5)
+
+// Use the DOM's HTML parsing to escape any dangerous strings
+var escapeHtml = function escapeHtml (str) {
+  if (typeof str !== 'undefined') {
+    var div = document.createElement('div')
+    div.appendChild(document.createTextNode(str))
+    return div.innerHTML
+  } else {
+    return ''
+  }
+}
+
+// Utility function to add space-delimited class strings to a DOM element's classList
+var addClasses = function addClasses (el, classStr) {
+  if (typeof classStr !== 'string' || classStr.length === 0) {
+    return
+  }
+  var classes = classStr.split(' ')
+  for (var i = 0; i < classes.length; i++) {
+    var className = classes[i]
+    if (className.length) {
+      el.classList.add(className)
+    }
+  }
+}
+
+// Detect CSS Animation End Support
+// https://github.com/limonte/sweetalert2/blob/99bd539f85e15ac170f69d35001d12e092ef0054/src/utils/dom.js#L194
+var animationEndEvent = (function detectAnimationEndEvent () {
+  var el = document.createElement('div')
+  var eventNames = {
+    'WebkitAnimation': 'webkitAnimationEnd',
+    'MozAnimation': 'animationend',
+    'OAnimation': 'oanimationend',
+    'msAnimation': 'MSAnimationEnd',
+    'animation': 'animationend'
+  }
+  for (var i in eventNames) {
+    if (el.style[i] !== undefined) {
+      return eventNames[i]
+    }
+  }
+  return false
+})()
+
+// vex base CSS classes
+var baseClassNames = {
+  vex: 'vex',
+  content: 'vex-content',
+  overlay: 'vex-overlay',
+  close: 'vex-close',
+  closing: 'vex-closing',
+  open: 'vex-open'
+}
+
+// Private lookup table of all open vex objects, keyed by id
+var vexes = {}
+var globalId = 1
+
+// Private boolean to assist the escapeButtonCloses option
+var isEscapeActive = false
+
+// vex itself is an object that exposes a simple API to open and close vex objects in various ways
+var vex = {
+  open: function open (opts) {
+    // Check for usage of deprecated options, and log a warning
+    var warnDeprecated = function warnDeprecated (prop) {
+      console.warn('The "' + prop + '" property is deprecated in vex 3. Use CSS classes and the appropriate "ClassName" options, instead.')
+      console.warn('See http://github.hubspot.com/vex/api/advanced/#options')
+    }
+    if (opts.css) {
+      warnDeprecated('css')
+    }
+    if (opts.overlayCSS) {
+      warnDeprecated('overlayCSS')
+    }
+    if (opts.contentCSS) {
+      warnDeprecated('contentCSS')
+    }
+    if (opts.closeCSS) {
+      warnDeprecated('closeCSS')
+    }
+
+    // The dialog instance
+    var vexInstance = {}
+
+    // Set id
+    vexInstance.id = globalId++
+
+    // Store internally
+    vexes[vexInstance.id] = vexInstance
+
+    // Set state
+    vexInstance.isOpen = true
+
+    // Close function on the vex instance
+    // This is how all API functions should close individual vexes
+    vexInstance.close = function instanceClose () {
+      // Check state
+      if (!this.isOpen) {
+        return true
+      }
+
+      var options = this.options
+
+      // escapeButtonCloses is checked first
+      if (isEscapeActive && !options.escapeButtonCloses) {
+        return false
+      }
+
+      // Allow the user to validate any info or abort the close with the beforeClose callback
+      var shouldClose = (function shouldClose () {
+        // Call before close callback
+        if (options.beforeClose) {
+          return options.beforeClose.call(this)
+        }
+        // Otherwise indicate that it's ok to continue with close
+        return true
+      }.bind(this)())
+
+      // If beforeClose() fails, abort the close
+      if (shouldClose === false) {
+        return false
+      }
+
+      // Update state
+      this.isOpen = false
+
+      // Detect if the content el has any CSS animations defined
+      var style = window.getComputedStyle(this.contentEl)
+      function hasAnimationPre (prefix) {
+        return style.getPropertyValue(prefix + 'animation-name') !== 'none' && style.getPropertyValue(prefix + 'animation-duration') !== '0s'
+      }
+      var hasAnimation = hasAnimationPre('') || hasAnimationPre('-webkit-') || hasAnimationPre('-moz-') || hasAnimationPre('-o-')
+
+      // Define the function that will actually close the instance
+      var close = function close () {
+        if (!this.rootEl.parentNode) {
+          return
+        }
+        // Run once
+        this.rootEl.removeEventListener(animationEndEvent, close)
+        // Remove from lookup table (prevent memory leaks)
+        delete vexes[this.id]
+        // Remove the dialog from the DOM
+        this.rootEl.parentNode.removeChild(this.rootEl)
+        // Call after close callback
+        if (options.afterClose) {
+          options.afterClose.call(this)
+        }
+        // Remove styling from the body, if no more vexes are open
+        if (Object.keys(vexes).length === 0) {
+          document.body.classList.remove(baseClassNames.open)
+        }
+      }.bind(this)
+
+      // Close the vex
+      if (animationEndEvent && hasAnimation) {
+        // Setup the end event listener, to remove the el from the DOM
+        this.rootEl.addEventListener(animationEndEvent, close)
+        // Add the closing class to the dialog, showing the close animation
+        this.rootEl.classList.add(baseClassNames.closing)
+      } else {
+        close()
+      }
+
+      return true
+    }
+
+    // Allow strings as content
+    if (typeof opts === 'string') {
+      opts = {
+        content: opts
+      }
+    }
+
+    // `content` is unsafe internally, so translate
+    // safe default: HTML-escape the content before passing it through
+    if (opts.unsafeContent && !opts.content) {
+      opts.content = opts.unsafeContent
+    } else if (opts.content) {
+      opts.content = escapeHtml(opts.content)
+    }
+
+    // Store options on instance for future reference
+    var options = vexInstance.options = Object.assign({}, vex.defaultOptions, opts)
+
+    // vex root
+    var rootEl = vexInstance.rootEl = document.createElement('div')
+    rootEl.classList.add(baseClassNames.vex)
+    addClasses(rootEl, options.className)
+
+    // Overlay
+    var overlayEl = vexInstance.overlayEl = document.createElement('div')
+    overlayEl.classList.add(baseClassNames.overlay)
+    addClasses(overlayEl, options.overlayClassName)
+    if (options.overlayClosesOnClick) {
+      overlayEl.addEventListener('click', function overlayClickListener (e) {
+        if (e.target === overlayEl) {
+          vexInstance.close()
+        }
+      })
+    }
+    rootEl.appendChild(overlayEl)
+
+    // Content
+    var contentEl = vexInstance.contentEl = document.createElement('div')
+    contentEl.classList.add(baseClassNames.content)
+    addClasses(contentEl, options.contentClassName)
+    contentEl.appendChild(options.content instanceof window.Node ? options.content : domify(options.content))
+    rootEl.appendChild(contentEl)
+
+    // Close button
+    if (options.showCloseButton) {
+      var closeEl = vexInstance.closeEl = document.createElement('div')
+      closeEl.classList.add(baseClassNames.close)
+      addClasses(closeEl, options.closeClassName)
+      closeEl.addEventListener('click', vexInstance.close.bind(vexInstance))
+      contentEl.appendChild(closeEl)
+    }
+
+    // Add to DOM
+    document.querySelector(options.appendLocation).appendChild(rootEl)
+
+    // Call after open callback
+    if (options.afterOpen) {
+      options.afterOpen.call(vexInstance)
+    }
+
+    // Apply styling to the body
+    document.body.classList.add(baseClassNames.open)
+
+    // Return the created vex instance
+    return vexInstance
+  },
+
+  // A top-level vex.close function to close dialogs by reference or id
+  close: function close (vexOrId) {
+    var id
+    if (vexOrId.id) {
+      id = vexOrId.id
+    } else if (typeof vexOrId === 'string') {
+      id = vexOrId
+    } else {
+      throw new TypeError('close requires a vex object or id string')
+    }
+    if (!vexes[id]) {
+      return false
+    }
+    return vexes[id].close()
+  },
+
+  // Close the most recently created/opened vex
+  closeTop: function closeTop () {
+    var ids = Object.keys(vexes)
+    if (!ids.length) {
+      return false
+    }
+    return vexes[ids[ids.length - 1]].close()
+  },
+
+  // Close every vex!
+  closeAll: function closeAll () {
+    for (var id in vexes) {
+      this.close(id)
+    }
+    return true
+  },
+
+  // A getter for the internal lookup table
+  getAll: function getAll () {
+    return vexes
+  },
+
+  // A getter for the internal lookup table
+  getById: function getById (id) {
+    return vexes[id]
+  }
+}
+
+// Close top vex on escape
+window.addEventListener('keyup', function vexKeyupListener (e) {
+  if (e.keyCode === 27) {
+    isEscapeActive = true
+    vex.closeTop()
+    isEscapeActive = false
+  }
+})
+
+// Close all vexes on history pop state (useful in single page apps)
+window.addEventListener('popstate', function () {
+  if (vex.defaultOptions.closeAllOnPopState) {
+    vex.closeAll()
+  }
+})
+
+vex.defaultOptions = {
+  content: '',
+  showCloseButton: true,
+  escapeButtonCloses: true,
+  overlayClosesOnClick: true,
+  appendLocation: 'body',
+  className: '',
+  overlayClassName: '',
+  contentClassName: '',
+  closeClassName: '',
+  closeAllOnPopState: true
+}
+
+// TODO Loading symbols?
+
+// Include escapeHtml function on the library object
+Object.defineProperty(vex, '_escapeHtml', {
+  configurable: false,
+  enumerable: false,
+  writable: false,
+  value: escapeHtml
+})
+
+// Plugin system!
+vex.registerPlugin = function registerPlugin (pluginFn, name) {
+  var plugin = pluginFn(vex)
+  var pluginName = name || plugin.name
+  if (vex[pluginName]) {
+    throw new Error('Plugin ' + name + ' is already registered.')
+  }
+  vex[pluginName] = plugin
+}
+
+module.exports = vex
+
+
+/***/ }),
+
+/***/ 200:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*
+ global module,
+ require
+ */
+const handlebars = __webpack_require__(216),
+      translator = __webpack_require__(198);
+
+/**
+ * simple handlebars class abstraction
+ *
+ * @property {*} source
+ */
+class Template {
+
+  /**
+   * creates a new handlebars template
+   *
+   * @param {string} text the handlebars template source
+   */
+  constructor (text) {
+    this.source = handlebars.compile(text);
+  }
+
+  /**
+   * renders a template with data
+   *
+   * @param   {object}           data the template variables
+   * @returns {Promise.<string>}      the promised output
+   */
+  render (data) {
+    return Promise.resolve(this.source(data))
+      .then(output => translator.translate(output));
+  }
+
+  /**
+   * compiles and renders a template in one step
+   *
+   * @static
+   * @param   {string}           text the template source
+   * @param   {object}           data the template variables
+   * @returns {Promise.<string>}      the promised output
+   */
+  static render (text, data) {
+    return (new Template(text)).render(data);
+  }
+}
+
+module.exports = Template;
+
+
+/***/ }),
+
+/***/ 216:
 /***/ (function(module, exports, __webpack_require__) {
 
 /**!
@@ -5627,593 +6081,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 
-/***/ 227:
-/***/ (function(module, exports, __webpack_require__) {
-
-var domify = __webpack_require__(176)
-var serialize = __webpack_require__(212)
-
-// Build DOM elements for the structure of the dialog
-var buildDialogForm = function buildDialogForm (options) {
-  var form = document.createElement('form')
-  form.classList.add('vex-dialog-form')
-
-  var message = document.createElement('div')
-  message.classList.add('vex-dialog-message')
-  message.appendChild(options.message instanceof window.Node ? options.message : domify(options.message))
-
-  var input = document.createElement('div')
-  input.classList.add('vex-dialog-input')
-  input.appendChild(options.input instanceof window.Node ? options.input : domify(options.input))
-
-  form.appendChild(message)
-  form.appendChild(input)
-
-  return form
-}
-
-// Take an array of buttons (see the default buttons below) and turn them into DOM elements
-var buttonsToDOM = function buttonsToDOM (buttons) {
-  var domButtons = document.createElement('div')
-  domButtons.classList.add('vex-dialog-buttons')
-
-  for (var i = 0; i < buttons.length; i++) {
-    var button = buttons[i]
-    var domButton = document.createElement('button')
-    domButton.type = button.type
-    domButton.textContent = button.text
-    domButton.classList.add(button.className)
-    domButton.classList.add('vex-dialog-button')
-    if (i === 0) {
-      domButton.classList.add('vex-first')
-    } else if (i === buttons.length - 1) {
-      domButton.classList.add('vex-last')
-    }
-    // Attach click listener to button with closure
-    (function (button) {
-      domButton.addEventListener('click', function (e) {
-        if (button.click) {
-          button.click.call(this, e)
-        }
-      }.bind(this))
-    }.bind(this)(button))
-
-    domButtons.appendChild(domButton)
-  }
-
-  return domButtons
-}
-
-var plugin = function plugin (vex) {
-  // Define the API first
-  var dialog = {
-    // Plugin name
-    name: 'dialog',
-
-    // Open
-    open: function open (opts) {
-      var options = Object.assign({}, this.defaultOptions, opts)
-
-      // `message` is unsafe internally, so translate
-      // safe default: HTML-escape the message before passing it through
-      if (options.unsafeMessage && !options.message) {
-        options.message = options.unsafeMessage
-      } else if (options.message) {
-        options.message = vex._escapeHtml(options.message)
-      }
-
-      // Build the form from the options
-      var form = options.unsafeContent = buildDialogForm(options)
-
-      // Open the dialog
-      var dialogInstance = vex.open(options)
-
-      // Quick comment - these options and appending buttons and everything
-      // would preferably be done _before_ opening the dialog. However, since
-      // they rely on the context of the vex instance, we have to do them
-      // after. A potential future fix would be to differentiate between
-      // a "created" vex instance and an "opened" vex instance, so any actions
-      // that rely on the specific context of the instance can do their stuff
-      // before opening the dialog on the page.
-
-      // Override the before close callback to also pass the value of the form
-      var beforeClose = options.beforeClose && options.beforeClose.bind(dialogInstance)
-      dialogInstance.options.beforeClose = function dialogBeforeClose () {
-        // Only call the callback once - when the validation in beforeClose, if present, is true
-        var shouldClose = beforeClose ? beforeClose() : true
-        if (shouldClose) {
-          options.callback(this.value || false)
-        }
-        // Return the result of beforeClose() to vex
-        return shouldClose
-      }.bind(dialogInstance)
-
-      // Append buttons to form with correct context
-      form.appendChild(buttonsToDOM.call(dialogInstance, options.buttons))
-
-      // Attach form to instance
-      dialogInstance.form = form
-
-      // Add submit listener to form
-      form.addEventListener('submit', options.onSubmit.bind(dialogInstance))
-
-      // Optionally focus the first input in the form
-      if (options.focusFirstInput) {
-        var el = dialogInstance.contentEl.querySelector('button, input, textarea')
-        if (el) {
-          el.focus()
-        }
-      }
-
-      // For chaining
-      return dialogInstance
-    },
-
-    // Alert
-    alert: function (options) {
-      // Allow string as message
-      if (typeof options === 'string') {
-        options = {
-          message: options
-        }
-      }
-      options = Object.assign({}, this.defaultOptions, this.defaultAlertOptions, options)
-      return this.open(options)
-    },
-
-    // Confirm
-    confirm: function (options) {
-      if (typeof options !== 'object' || typeof options.callback !== 'function') {
-        throw new Error('dialog.confirm(options) requires options.callback.')
-      }
-      options = Object.assign({}, this.defaultOptions, this.defaultConfirmOptions, options)
-      return this.open(options)
-    },
-
-    // Prompt
-    prompt: function (options) {
-      if (typeof options !== 'object' || typeof options.callback !== 'function') {
-        throw new Error('dialog.prompt(options) requires options.callback.')
-      }
-      var defaults = Object.assign({}, this.defaultOptions, this.defaultPromptOptions)
-      var dynamicDefaults = {
-        unsafeMessage: '<label for="vex">' + vex._escapeHtml(options.label || defaults.label) + '</label>',
-        input: '<input name="vex" type="text" class="vex-dialog-prompt-input" placeholder="' + vex._escapeHtml(options.placeholder || defaults.placeholder) + '" value="' + vex._escapeHtml(options.value || defaults.value) + '" />'
-      }
-      options = Object.assign(defaults, dynamicDefaults, options)
-      // Pluck the value of the "vex" input field as the return value for prompt's callback
-      // More closely mimics "window.prompt" in that a single string is returned
-      var callback = options.callback
-      options.callback = function promptCallback (value) {
-        value = value[Object.keys(value)[0]]
-        callback(value)
-      }
-      return this.open(options)
-    }
-  }
-
-  // Now define any additional data that's not the direct dialog API
-  dialog.buttons = {
-    YES: {
-      text: 'OK',
-      type: 'submit',
-      className: 'vex-dialog-button-primary',
-      click: function yesClick () {
-        this.value = true
-      }
-    },
-
-    NO: {
-      text: 'Cancel',
-      type: 'button',
-      className: 'vex-dialog-button-secondary',
-      click: function noClick () {
-        this.value = false
-        this.close()
-      }
-    }
-  }
-
-  dialog.defaultOptions = {
-    callback: function () {},
-    afterOpen: function () {},
-    message: '',
-    input: '',
-    buttons: [
-      dialog.buttons.YES,
-      dialog.buttons.NO
-    ],
-    showCloseButton: false,
-    onSubmit: function onDialogSubmit (e) {
-      e.preventDefault()
-      if (this.options.input) {
-        this.value = serialize(this.form, { hash: true })
-      }
-      return this.close()
-    },
-    focusFirstInput: true
-  }
-
-  dialog.defaultAlertOptions = {
-    buttons: [
-      dialog.buttons.YES
-    ]
-  }
-
-  dialog.defaultPromptOptions = {
-    label: 'Prompt:',
-    placeholder: '',
-    value: ''
-  }
-
-  dialog.defaultConfirmOptions = {}
-
-  return dialog
-}
-
-module.exports = plugin
-
-
-/***/ }),
-
-/***/ 228:
-/***/ (function(module, exports, __webpack_require__) {
-
-// classList polyfill for old browsers
-__webpack_require__(200)
-// Object.assign polyfill
-__webpack_require__(211).polyfill()
-
-// String to DOM function
-var domify = __webpack_require__(176)
-
-// Use the DOM's HTML parsing to escape any dangerous strings
-var escapeHtml = function escapeHtml (str) {
-  if (typeof str !== 'undefined') {
-    var div = document.createElement('div')
-    div.appendChild(document.createTextNode(str))
-    return div.innerHTML
-  } else {
-    return ''
-  }
-}
-
-// Utility function to add space-delimited class strings to a DOM element's classList
-var addClasses = function addClasses (el, classStr) {
-  if (typeof classStr !== 'string' || classStr.length === 0) {
-    return
-  }
-  var classes = classStr.split(' ')
-  for (var i = 0; i < classes.length; i++) {
-    var className = classes[i]
-    if (className.length) {
-      el.classList.add(className)
-    }
-  }
-}
-
-// Detect CSS Animation End Support
-// https://github.com/limonte/sweetalert2/blob/99bd539f85e15ac170f69d35001d12e092ef0054/src/utils/dom.js#L194
-var animationEndEvent = (function detectAnimationEndEvent () {
-  var el = document.createElement('div')
-  var eventNames = {
-    'WebkitAnimation': 'webkitAnimationEnd',
-    'MozAnimation': 'animationend',
-    'OAnimation': 'oanimationend',
-    'msAnimation': 'MSAnimationEnd',
-    'animation': 'animationend'
-  }
-  for (var i in eventNames) {
-    if (el.style[i] !== undefined) {
-      return eventNames[i]
-    }
-  }
-  return false
-})()
-
-// vex base CSS classes
-var baseClassNames = {
-  vex: 'vex',
-  content: 'vex-content',
-  overlay: 'vex-overlay',
-  close: 'vex-close',
-  closing: 'vex-closing',
-  open: 'vex-open'
-}
-
-// Private lookup table of all open vex objects, keyed by id
-var vexes = {}
-var globalId = 1
-
-// Private boolean to assist the escapeButtonCloses option
-var isEscapeActive = false
-
-// vex itself is an object that exposes a simple API to open and close vex objects in various ways
-var vex = {
-  open: function open (opts) {
-    // Check for usage of deprecated options, and log a warning
-    var warnDeprecated = function warnDeprecated (prop) {
-      console.warn('The "' + prop + '" property is deprecated in vex 3. Use CSS classes and the appropriate "ClassName" options, instead.')
-      console.warn('See http://github.hubspot.com/vex/api/advanced/#options')
-    }
-    if (opts.css) {
-      warnDeprecated('css')
-    }
-    if (opts.overlayCSS) {
-      warnDeprecated('overlayCSS')
-    }
-    if (opts.contentCSS) {
-      warnDeprecated('contentCSS')
-    }
-    if (opts.closeCSS) {
-      warnDeprecated('closeCSS')
-    }
-
-    // The dialog instance
-    var vexInstance = {}
-
-    // Set id
-    vexInstance.id = globalId++
-
-    // Store internally
-    vexes[vexInstance.id] = vexInstance
-
-    // Set state
-    vexInstance.isOpen = true
-
-    // Close function on the vex instance
-    // This is how all API functions should close individual vexes
-    vexInstance.close = function instanceClose () {
-      // Check state
-      if (!this.isOpen) {
-        return true
-      }
-
-      var options = this.options
-
-      // escapeButtonCloses is checked first
-      if (isEscapeActive && !options.escapeButtonCloses) {
-        return false
-      }
-
-      // Allow the user to validate any info or abort the close with the beforeClose callback
-      var shouldClose = (function shouldClose () {
-        // Call before close callback
-        if (options.beforeClose) {
-          return options.beforeClose.call(this)
-        }
-        // Otherwise indicate that it's ok to continue with close
-        return true
-      }.bind(this)())
-
-      // If beforeClose() fails, abort the close
-      if (shouldClose === false) {
-        return false
-      }
-
-      // Update state
-      this.isOpen = false
-
-      // Detect if the content el has any CSS animations defined
-      var style = window.getComputedStyle(this.contentEl)
-      function hasAnimationPre (prefix) {
-        return style.getPropertyValue(prefix + 'animation-name') !== 'none' && style.getPropertyValue(prefix + 'animation-duration') !== '0s'
-      }
-      var hasAnimation = hasAnimationPre('') || hasAnimationPre('-webkit-') || hasAnimationPre('-moz-') || hasAnimationPre('-o-')
-
-      // Define the function that will actually close the instance
-      var close = function close () {
-        if (!this.rootEl.parentNode) {
-          return
-        }
-        // Run once
-        this.rootEl.removeEventListener(animationEndEvent, close)
-        // Remove from lookup table (prevent memory leaks)
-        delete vexes[this.id]
-        // Remove the dialog from the DOM
-        this.rootEl.parentNode.removeChild(this.rootEl)
-        // Call after close callback
-        if (options.afterClose) {
-          options.afterClose.call(this)
-        }
-        // Remove styling from the body, if no more vexes are open
-        if (Object.keys(vexes).length === 0) {
-          document.body.classList.remove(baseClassNames.open)
-        }
-      }.bind(this)
-
-      // Close the vex
-      if (animationEndEvent && hasAnimation) {
-        // Setup the end event listener, to remove the el from the DOM
-        this.rootEl.addEventListener(animationEndEvent, close)
-        // Add the closing class to the dialog, showing the close animation
-        this.rootEl.classList.add(baseClassNames.closing)
-      } else {
-        close()
-      }
-
-      return true
-    }
-
-    // Allow strings as content
-    if (typeof opts === 'string') {
-      opts = {
-        content: opts
-      }
-    }
-
-    // `content` is unsafe internally, so translate
-    // safe default: HTML-escape the content before passing it through
-    if (opts.unsafeContent && !opts.content) {
-      opts.content = opts.unsafeContent
-    } else if (opts.content) {
-      opts.content = escapeHtml(opts.content)
-    }
-
-    // Store options on instance for future reference
-    var options = vexInstance.options = Object.assign({}, vex.defaultOptions, opts)
-
-    // vex root
-    var rootEl = vexInstance.rootEl = document.createElement('div')
-    rootEl.classList.add(baseClassNames.vex)
-    addClasses(rootEl, options.className)
-
-    // Overlay
-    var overlayEl = vexInstance.overlayEl = document.createElement('div')
-    overlayEl.classList.add(baseClassNames.overlay)
-    addClasses(overlayEl, options.overlayClassName)
-    if (options.overlayClosesOnClick) {
-      overlayEl.addEventListener('click', function overlayClickListener (e) {
-        if (e.target === overlayEl) {
-          vexInstance.close()
-        }
-      })
-    }
-    rootEl.appendChild(overlayEl)
-
-    // Content
-    var contentEl = vexInstance.contentEl = document.createElement('div')
-    contentEl.classList.add(baseClassNames.content)
-    addClasses(contentEl, options.contentClassName)
-    contentEl.appendChild(options.content instanceof window.Node ? options.content : domify(options.content))
-    rootEl.appendChild(contentEl)
-
-    // Close button
-    if (options.showCloseButton) {
-      var closeEl = vexInstance.closeEl = document.createElement('div')
-      closeEl.classList.add(baseClassNames.close)
-      addClasses(closeEl, options.closeClassName)
-      closeEl.addEventListener('click', vexInstance.close.bind(vexInstance))
-      contentEl.appendChild(closeEl)
-    }
-
-    // Add to DOM
-    document.querySelector(options.appendLocation).appendChild(rootEl)
-
-    // Call after open callback
-    if (options.afterOpen) {
-      options.afterOpen.call(vexInstance)
-    }
-
-    // Apply styling to the body
-    document.body.classList.add(baseClassNames.open)
-
-    // Return the created vex instance
-    return vexInstance
-  },
-
-  // A top-level vex.close function to close dialogs by reference or id
-  close: function close (vexOrId) {
-    var id
-    if (vexOrId.id) {
-      id = vexOrId.id
-    } else if (typeof vexOrId === 'string') {
-      id = vexOrId
-    } else {
-      throw new TypeError('close requires a vex object or id string')
-    }
-    if (!vexes[id]) {
-      return false
-    }
-    return vexes[id].close()
-  },
-
-  // Close the most recently created/opened vex
-  closeTop: function closeTop () {
-    var ids = Object.keys(vexes)
-    if (!ids.length) {
-      return false
-    }
-    return vexes[ids[ids.length - 1]].close()
-  },
-
-  // Close every vex!
-  closeAll: function closeAll () {
-    for (var id in vexes) {
-      this.close(id)
-    }
-    return true
-  },
-
-  // A getter for the internal lookup table
-  getAll: function getAll () {
-    return vexes
-  },
-
-  // A getter for the internal lookup table
-  getById: function getById (id) {
-    return vexes[id]
-  }
-}
-
-// Close top vex on escape
-window.addEventListener('keyup', function vexKeyupListener (e) {
-  if (e.keyCode === 27) {
-    isEscapeActive = true
-    vex.closeTop()
-    isEscapeActive = false
-  }
-})
-
-// Close all vexes on history pop state (useful in single page apps)
-window.addEventListener('popstate', function () {
-  if (vex.defaultOptions.closeAllOnPopState) {
-    vex.closeAll()
-  }
-})
-
-vex.defaultOptions = {
-  content: '',
-  showCloseButton: true,
-  escapeButtonCloses: true,
-  overlayClosesOnClick: true,
-  appendLocation: 'body',
-  className: '',
-  overlayClassName: '',
-  contentClassName: '',
-  closeClassName: '',
-  closeAllOnPopState: true
-}
-
-// TODO Loading symbols?
-
-// Include escapeHtml function on the library object
-Object.defineProperty(vex, '_escapeHtml', {
-  configurable: false,
-  enumerable: false,
-  writable: false,
-  value: escapeHtml
-})
-
-// Plugin system!
-vex.registerPlugin = function registerPlugin (pluginFn, name) {
-  var plugin = pluginFn(vex)
-  var pluginName = name || plugin.name
-  if (vex[pluginName]) {
-    throw new Error('Plugin ' + name + ' is already registered.')
-  }
-  vex[pluginName] = plugin
-}
-
-module.exports = vex
-
-
-/***/ }),
-
 /***/ 232:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const Template = __webpack_require__(194);
+const Template = __webpack_require__(200);
 
 const app  = __webpack_require__(1),
       main = __webpack_require__(2)(app);
 
 (function(app) {
   app.startup.push(function() {
-    app.modals = __webpack_require__(191)(app, {});
+    app.modals = __webpack_require__(116)(app, {});
 
     app.elements.invoicesContainer    = app.dom('.invoices');
     app.elements.invoices             = app.dom('.invoices .invoice');
@@ -6237,10 +6118,10 @@ const app  = __webpack_require__(1),
     };
 
     app.listeners.removeInvoiceEvents = function() {
-      app.off('DOMContentLoaded', app.events.lastInvoiceVisible);
-      app.off('load', app.events.lastInvoiceVisible);
-      app.off('scroll', app.events.lastInvoiceVisible);
-      app.off('resize', app.events.lastInvoiceVisible);
+      app.off('DOMContentLoaded', document);
+      app.off('load', document);
+      app.off('scroll', document);
+      app.off('resize', document);
     };
 
     app.events.lastInvoiceVisible = function(event) {
@@ -6361,7 +6242,7 @@ const app  = __webpack_require__(1),
       app.dom('.timeline-data-available').remove();
 
       // insert loading indicator
-      app.templates.invoiceTimelineLoading
+      app.templates.invoiceTimelineLoading()
         .then(element => app.elements.invoicesContainer.append(element));
 
       app.io.emit('invoices.getPaginated', {
@@ -6373,107 +6254,77 @@ const app  = __webpack_require__(1),
           return console.error(error);
         }
 
-        // wait a second
-        setTimeout(function() {
+        // remove the loading indicator
+        app.dom('.timeline-loading').remove();
 
-          // remove the loading indicator
-          app.dom('.timeline-loading').remove();
+        if (invoices.length > 0) {
+          const invoicePromises = invoices.reduce((current, invoice) => {
+            if (!current) {
+              return;
+            }
 
-          if (invoices.length > 0) {
-            const invoicePromises = invoices.map(invoice => {
-              app.templates.invoiceTimelineSeparator()
+            return current.then(
+              () => app.templates.invoiceTimelineSeparator()
                 .then(element => app.elements.invoicesContainer.append(element))
-                .then(app.templates.invoiceCard(invoice))
+                .then(() => app.templates.invoiceCard(invoice))
                 .then(element => app.elements.invoicesContainer.append(element))
+            )
+          }, Promise.resolve())
+            .then(() => history.pushState(null, 'Rechnungen | Seite' + page, '/invoices/page/' + page))
+            .then(() => app.templates.invoiceTimelineAvailabilityIndicator())
+            .then(element => app.elements.invoicesContainer.append(element));
+        } else {
+          app.listeners.removeInvoiceEvents();
+          app.templates.invoiceTimelineEnd()
+            .then(element => {
+              app.dom('.timeline-item.timeline-last').remove();
+              app.elements.invoicesContainer.append(element)
             });
-
-            Promise.all(invoicePromises)
-              .then(() => history.pushState(null, 'Rechnungen | Seite' + page, '/invoices/page/' + page))
-              .then(() => app.templates.invoiceTimelineAvailabilityIndicator)
-              .then(element => app.elements.invoicesContainer.append(element));
-          } else {
-            app.listeners.removeInvoiceEvents();
-            app.templates.invoiceTimelineEnd
-              .then((element) => app.elements.invoicesContainer.appendChild(element));
-          }
-        }, 1000);
+        }
       });
     };
-    /*
-     app.templates.invoiceCardLegacy = function(invoice) {
-     let template = '<article class="invoice" id="' + invoice._id + '">' +
-     '<section class="invoice-image">' +
-     '<img src="/images/invoices/' + invoice.user._id + '/' + invoice._id + '.jpg" alt="Rechnung ' + invoice._id + '" onerror="app.events.imageError(this)">' +
-     '</section>' +
-     '<section class="invoice-data">' +
-     '<div class="invoice-id">' + invoice._id + '</div>' +
-     '<div class="invoice-owner">' +
-     '<div class="profile-picture">' +
-     '<img src="/images/users/' + invoice.user._id + '.jpg" alt>' +
-     '</div>' +
-     '<span class="owner-name">' + invoice.user.firstName + ' ' + invoice.user.lastName + '</span>' +
-     '</div>' +
-     '[[invoices:date]]: <span class="invoice-creation-date">' + invoice.creationDate + '</span><br>' +
-     '[[invoices:sum]]: <span class="invoice-sum">' + invoice.sum + '</span>€<br>' +
-     '<div class="tags-label">[[invoices:tags]]: </div>' +
-     '<div class="invoice-tags">';
 
-     if (invoice.tags.length && invoice.tags[ 0 ] !== null) {
-
-     app.debug('invoice has ' + invoice.tags.length + ' tags assigned');
-     for (var i = 0; i < invoice.tags.length; i++) {
-
-     app.debug(`processing tag ${invoice.tags[ i ].name}`);
-     template += `<div class="tag tag-${invoice.tags[ i ].color || 'blue'}" id="${invoice.tags[ i ]._id}"><span>${invoice.tags[ i ].name}</span></div>`;
-     }
-     } else {
-     template += '<span class="no-tags">[[invoices:no_tags]]</span>';
-     }
-
-     template += `</div></section><section class="invoice-actions"><a class="button" href="/invoices/${invoice._id}"><span class="fa fa-eye"></span> [[global:details]]</a>`;
-
-     if (invoice.ownInvoice) {
-     template += `<a class="button" href="/invoices/${invoice._id}/edit"><span class="fa fa-edit"></span> [[global:edit]]</a><a class="button danger" href="/invoices/${invoice._id}/delete"><span class="fa fa-trash-o"></span> [[global:delete]]</a>`;
-     }
-
-     template += '</section></article>';
-
-     return app.helpers.createTranslatedElement(template);
-     };
-     */
     app.templates.invoiceCard = function(invoice) {
-      let template = new Template(`<article class="invoice" id="{{_id}}">
-        <section class="invoice-image">
-          <img src="/images/invoices/{{user._id}}/{{_id}}.jpg" alt="Rechnung {{_id}}">
-        </section>
-        <section class="invoice-data">
-          <div class="invoice-id">{{_id}}</div>
-          <div class="invoice-owner">
-            <div class="profile-picture">
-              <img src="/images/users/{{user._id}}.jpg" alt>
-            </div>
-            <span class="owner-name">{{user.firstName}} {{user.lastName}}</span>
-          </div>
-          [[invoices:date]]: <span class="invoice-creation-date">{{creationDate}}</span><br>
-          [[invoices:sum]]: <span class="invoice-sum">{{sum}}</span>€<br>
-          <div class="tags-label">[[invoices:tags]]: </div>
-          <div class="invoice-tags">
-          {{#if tags}}
-            {{#each tags}}
-              <div class="tag tag-{{this.color}}" id="{{this._id}}"><span>{{this.name}}</span></div>
-            {{/each}}
-          {{else}}
-            <span class="no-tags">[[invoices:no_tags]]</span>
-          {{/if}}
-          </div>
-        </section>
-        <section class="invoice-actions">
-          <a class="button" href="/invoices/{{invoice._id}}"><span class="fa fa-eye"></span> [[global:details]]</a>
-          {{#if ownInvoice}}
-            <a class="button" href="/invoices/{{_id}}/edit"><span class="fa fa-edit"></span> [[global:edit]]</a><a class="button danger" href="/invoices/{{_id}}/delete"><span class="fa fa-trash-o"></span> [[global:delete]]</a>
-          {{/if}}
-        </section>
-      </article>`);
+      let template = new Template(`<article class="invoice{{#if ownInvoice}} own-invoice{{/if}}" id="{{_id}}">
+  <section class="invoice-image" style="background-image: url(/images/invoices/{{user._id}}/{{_id}}.jpg)">
+  </section>
+  <section class="invoice-data">
+    <div class="invoice-id">{{_id}}</div>
+    <div class="invoice-owner">
+      <div class="profile-picture">
+        <img src="/images/users/{{user._id}}.jpg" alt>
+      </div>
+      <span class="owner-name">{{user.firstName}} {{user.lastName}}</span>
+    </div>
+    [[invoices:date]]: <span class="invoice-creation-date">{{formattedCreationDate}}</span><br>
+    [[invoices:sum]]: {{#if sum}}<span
+    class="invoice-sum">{{sum}}</span>€{{else}}[[invoices:no_sum]]{{/if}}<br>
+    <div class="tags-label">[[invoices:tags]]:</div>
+    <div class="invoice-tags">
+      {{#if tags}}
+        <ul>
+        {{#each tags}}
+          <li class="tag tag-{{color}}" id="{{_id}}">
+            <span>{{name}}</span>
+          </li>
+        {{/each}}
+        </ul>
+      {{else}}
+        <span class="no-tags">[[invoices:no_tags]]</span>
+      {{/if}}
+    </div>
+  </section>
+  <section class="invoice-actions">
+    <a class="button" href="/invoices/{{_id}}"><span class="fa fa-eye"></span>
+      [[global:details]]</a>
+    {{#if ownInvoice}}
+      <a class="button" href="/invoices/{{_id}}/edit"><span class="fa fa-edit"></span>
+        [[global:edit]]</a><a class="button delete-invoice danger" href="/invoices/{{_id}}/delete"><span
+      class="fa fa-trash-o"></span>
+      [[global:delete]]</a>
+    {{/if}}
+  </section>
+</article>`);
 
       return template.render(invoice).then(rendered => app.helpers.createElement(rendered));
     };
@@ -6497,13 +6348,129 @@ const app  = __webpack_require__(1),
     app.templates.invoiceTimelineAvailabilityIndicator = () =>
       app.helpers.createElement('<div class="timeline-item timeline-data-available"></div>');
 
-    console.log('live reload working, 2');
-
-
     app.listeners.addInvoicesEvents();
     app.listeners.addDeleteInvoiceEvents();
   });
 })(app);
+
+
+/***/ }),
+
+/***/ 5:
+/***/ (function(module, exports) {
+
+
+/**
+ * Expose `parse`.
+ */
+
+module.exports = parse;
+
+/**
+ * Tests for browser support.
+ */
+
+var innerHTMLBug = false;
+var bugTestDiv;
+if (typeof document !== 'undefined') {
+  bugTestDiv = document.createElement('div');
+  // Setup
+  bugTestDiv.innerHTML = '  <link/><table></table><a href="/a">a</a><input type="checkbox"/>';
+  // Make sure that link elements get serialized correctly by innerHTML
+  // This requires a wrapper element in IE
+  innerHTMLBug = !bugTestDiv.getElementsByTagName('link').length;
+  bugTestDiv = undefined;
+}
+
+/**
+ * Wrap map from jquery.
+ */
+
+var map = {
+  legend: [1, '<fieldset>', '</fieldset>'],
+  tr: [2, '<table><tbody>', '</tbody></table>'],
+  col: [2, '<table><tbody></tbody><colgroup>', '</colgroup></table>'],
+  // for script/link/style tags to work in IE6-8, you have to wrap
+  // in a div with a non-whitespace character in front, ha!
+  _default: innerHTMLBug ? [1, 'X<div>', '</div>'] : [0, '', '']
+};
+
+map.td =
+map.th = [3, '<table><tbody><tr>', '</tr></tbody></table>'];
+
+map.option =
+map.optgroup = [1, '<select multiple="multiple">', '</select>'];
+
+map.thead =
+map.tbody =
+map.colgroup =
+map.caption =
+map.tfoot = [1, '<table>', '</table>'];
+
+map.polyline =
+map.ellipse =
+map.polygon =
+map.circle =
+map.text =
+map.line =
+map.path =
+map.rect =
+map.g = [1, '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">','</svg>'];
+
+/**
+ * Parse `html` and return a DOM Node instance, which could be a TextNode,
+ * HTML DOM Node of some kind (<div> for example), or a DocumentFragment
+ * instance, depending on the contents of the `html` string.
+ *
+ * @param {String} html - HTML string to "domify"
+ * @param {Document} doc - The `document` instance to create the Node for
+ * @return {DOMNode} the TextNode, DOM Node, or DocumentFragment instance
+ * @api private
+ */
+
+function parse(html, doc) {
+  if ('string' != typeof html) throw new TypeError('String expected');
+
+  // default to the global `document` object
+  if (!doc) doc = document;
+
+  // tag name
+  var m = /<([\w:]+)/.exec(html);
+  if (!m) return doc.createTextNode(html);
+
+  html = html.replace(/^\s+|\s+$/g, ''); // Remove leading/trailing whitespace
+
+  var tag = m[1];
+
+  // body support
+  if (tag == 'body') {
+    var el = doc.createElement('html');
+    el.innerHTML = html;
+    return el.removeChild(el.lastChild);
+  }
+
+  // wrap map
+  var wrap = map[tag] || map._default;
+  var depth = wrap[0];
+  var prefix = wrap[1];
+  var suffix = wrap[2];
+  var el = doc.createElement('div');
+  el.innerHTML = prefix + html + suffix;
+  while (depth--) el = el.lastChild;
+
+  // one element
+  if (el.firstChild == el.lastChild) {
+    return el.removeChild(el.firstChild);
+  }
+
+  // several elements
+  var fragment = doc.createDocumentFragment();
+  while (el.firstChild) {
+    fragment.appendChild(el.removeChild(el.firstChild));
+  }
+
+  return fragment;
+}
 
 
 /***/ })

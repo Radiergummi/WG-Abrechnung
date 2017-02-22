@@ -8,23 +8,33 @@ module.exports = function(app) {
    *  If `immediate` is passed, trigger the function on the leading edge, instead of the trailing.
    *
    * @credit https://davidwalsh.name/javascript-debounce-function
-   * @param func
-   * @param wait
-   * @param immediate
-   * @returns {Function}
+   *
+   * @param   {function} func        the function to debounce
+   * @param   {number}   wait        the timeout duration
+   * @param   {boolean}  [immediate] the edge to trigger on
+   * @returns {function}             the debounced callback
    */
   app.debounce = function(func, wait, immediate) {
-    var timeout;
+    let timeout;
     return function() {
-      var context = this, args = arguments;
-      var later   = function() {
+      let context = this,
+          args    = arguments;
+
+      let later = function() {
         timeout = null;
-        if (!immediate) func.apply(context, args);
+
+        if (!immediate) {
+          func.apply(context, args);
+        }
       };
-      var callNow = immediate && !timeout;
+
+      let callNow = immediate && !timeout;
       clearTimeout(timeout);
       timeout = setTimeout(later, wait);
-      if (callNow) func.apply(context, args);
+
+      if (callNow) {
+        func.apply(context, args);
+      }
     };
   };
 
@@ -49,7 +59,7 @@ module.exports = function(app) {
     if (typeof targets === 'function') {
       options  = callback;
       callback = targets;
-      targets  = [ window ];
+      targets  = [ document ];
     } else {
 
       // create array from target
@@ -70,13 +80,29 @@ module.exports = function(app) {
       callback = app.debounce(callback, 250);
     }
 
+    function safeCallback (event) {
+      try {
+        if (options.preventDefault) {
+          event.preventDefault();
+        }
+
+        if (options.propagate) {
+          event.stopPropagation();
+        }
+
+        return callback(event);
+      } catch (error) {
+        return app.error(error);
+      }
+    }
+
     // split event names by space to allow assigning multiple events
     eventNames = eventNames.split(' ');
 
     // iterate over elements and events to attach all events to all elements
-    for (var t = 0; t < targets.length; t++) {
-      for (var e = 0; e < eventNames.length; e++) {
-        var eventName = eventNames[ e ],
+    for (let t = 0; t < targets.length; t++) {
+      for (let e = 0; e < eventNames.length; e++) {
+        let eventName = eventNames[ e ],
             target    = targets[ t ];
 
         // add the attached events registry to the target if not present
@@ -85,27 +111,13 @@ module.exports = function(app) {
         }
 
         // register the callback for easier removal
-        if (!target._attachedEvents[ eventName ] === callback) {
-          target._attachedEvents[ eventName ] = callback;
+        if (target._attachedEvents[ eventName ] !== safeCallback) {
+          target._attachedEvents[ eventName ] = safeCallback;
         }
 
         // add the event listener with the callback in a try-catch block
         // to forward any errors to the apps error handler
-        target.addEventListener(eventName, function(event) {
-          try {
-            if (options.preventDefault) {
-              event.preventDefault();
-            }
-
-            if (options.propagate) {
-              event.stopPropagation();
-            }
-
-            return callback(event);
-          } catch (error) {
-            return app.error(error);
-          }
-        }, options);
+        target.addEventListener(eventName, safeCallback, options);
       }
     }
   };
@@ -113,15 +125,16 @@ module.exports = function(app) {
   /**
    * removes an event listeners
    *
-   * @param {string|Array}               eventNames  the event(s) to remove listeners for
-   * @param {NodeList|Array|EventTarget} [targets]   the target(s) to remove listeners from. if none given,
-   *                                                 will use the window object
-   * @param {function}                   [callback]  the callback to remove. takes the callback stored in the
-   *                                                 target if none given
+   * @param {string|Array}                      eventNames  the event(s) to remove listeners for
+   * @param {NodeList|Array|EventTarget|Window} [targets]   the target(s) to remove listeners from. if none given,
+   *                                                        will use the window object
+   * @param {function}                          [callback]  the callback to remove. takes the callback stored in the
+   *                                                        target if none given
    */
   app.off = function(eventNames, targets, callback) {
     if (typeof targets === 'function') {
-      targets = window;
+      callback = targets;
+      targets  = document;
     }
 
     // create array from target
@@ -137,9 +150,9 @@ module.exports = function(app) {
     );
 
     // iterate over elements and events to remove all events from all elements
-    for (var t = 0; t < targets.length; t++) {
-      for (var e = 0; e < eventNames.length; e++) {
-        var eventName = eventNames[ e ],
+    for (let t = 0; t < targets.length; t++) {
+      for (let e = 0; e < eventNames.length; e++) {
+        let eventName = eventNames[ e ],
             target    = targets[ t ];
 
         // use the stored event callback if none specified
@@ -147,11 +160,15 @@ module.exports = function(app) {
           callback = target._attachedEvents[ eventName ];
         }
 
-        // remove the stored callback
-        delete target._attachedEvents[ eventName ];
+        if (!target._attachedEvents.hasOwnProperty(eventName)) {
+          continue;
+        }
 
         // remove the event listener
         target.removeEventListener(eventName, callback);
+
+        // remove the stored callback
+        delete target._attachedEvents[ eventName ];
       }
     }
   };
@@ -189,10 +206,10 @@ module.exports = function(app) {
     );
 
     // iterate over elements and events to attach all events to all elements
-    for (var t = 0; t < targets.length; t++) {
-      for (var e = 0; e < eventNames.length; e++) {
-        var eventName = eventNames[ e ],
-            target    = targets[ t ];
+    for (let t = 0; t < targets.length; t++) {
+      for (let e = 0; e < eventNames.length; e++) {
+        const eventName = eventNames[ e ],
+              target    = targets[ t ];
 
         target.dispatchEvent(new CustomEvent(eventName, data));
       }

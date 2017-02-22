@@ -1,14 +1,14 @@
-webpackJsonp([4],{
+webpackJsonp([5],{
 
-/***/ 114:
+/***/ 115:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const Flatpickr       = __webpack_require__(169),
+const Flatpickr       = __webpack_require__(175),
       language        = document.documentElement.lang.substring(0, 2),
-      locale          = __webpack_require__(170).de,
+      locale          = __webpack_require__(176).de,
       now             = new Date(),
       firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
@@ -58,13 +58,13 @@ module.exports = function(app, element, config) {
 
 /***/ }),
 
-/***/ 115:
+/***/ 117:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const Taggle = __webpack_require__(174);
+const Taggle = __webpack_require__(181);
 
 /**
  * creates a new tag input using taggle
@@ -131,7 +131,7 @@ module.exports = function(app, element, config) {
 
 /***/ }),
 
-/***/ 116:
+/***/ 118:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -236,7 +236,7 @@ module.exports = UnsavedChangesWatcher;
 
 /***/ }),
 
-/***/ 169:
+/***/ 175:
 /***/ (function(module, exports, __webpack_require__) {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -2050,7 +2050,7 @@ if (true) module.exports = Flatpickr;
 
 /***/ }),
 
-/***/ 170:
+/***/ 176:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* German locals for flatpickr */
@@ -2077,7 +2077,7 @@ if (true) {
 
 /***/ }),
 
-/***/ 174:
+/***/ 181:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* !
@@ -2989,9 +2989,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* !
 "use strict";
 
 
-const flatpickr             = __webpack_require__(114),
-      taggle                = __webpack_require__(115),
-      UnsavedChangesWatcher = __webpack_require__(116),
+const flatpickr             = __webpack_require__(115),
+      taggle                = __webpack_require__(117),
+      UnsavedChangesWatcher = __webpack_require__(118),
       app                   = __webpack_require__(1),
       main                  = __webpack_require__(2)(app);
 

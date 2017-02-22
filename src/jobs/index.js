@@ -6,12 +6,12 @@
  */
 
 (function(module) {
-  var Agenda  = require('agenda'),
-      colors  = require('colors'),
-      nconf   = require('nconf'),
-      winston = require('winston'),
+  const Agenda   = require('agenda'),
+        colors   = require('colors'),
+        nconf    = require('nconf'),
+        winston  = require('winston'),
 
-      db      = require('../database');
+        Database = require('../database.new');
 
   /**
    * list of names of job modules to load
@@ -36,7 +36,7 @@
     try {
 
       // try to connect to the jobs collection
-      this.db = db.nativeClient();
+      this.db = Database.nativeClient;
     }
     catch (error) {
       winston.error('[jobs]'.red + ' Could not retrieve mongoose collection "jobs":');
@@ -85,7 +85,7 @@
 
   /**
    * Error handler for logging database connection failures
-   * 
+   *
    * @param {Error} [error]  an optional error object
    */
   module.databaseConnectionError = function(error) {
@@ -100,7 +100,7 @@
   module.registerJobs = function(agenda) {
 
     // iterate over all available modules
-    for (var i = 0; i < this.jobs.length; i++) {
+    for (let i = 0; i < this.jobs.length; i++) {
 
       // require the module from the current directory, give it an agenda instance as an argument
       require('./' + this.jobs[ i ])(agenda);

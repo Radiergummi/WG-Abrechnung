@@ -41,7 +41,7 @@ module.exports = function(middleware) {
       }
 
       debug('creating base view variables');
-      var baseVariables                  = {};
+      const baseVariables                = {};
       baseVariables.loggedIn             = req.hasOwnProperty('user');
       baseVariables.template             = { name: template };
       baseVariables.template[ template ] = true;
@@ -86,7 +86,7 @@ module.exports = function(middleware) {
       deepExtend(variables, baseVariables);
       variables.pageTitle = (variables.pageTitle ? variables.pageTitle + ' | ' : '') + nconf.get('name');
 
-      debug('rendering view');
+      debug('rendering view ' + (variables.debug ? 'in debug mode' : ''));
       return render.call(self, template, variables, function(error, str) {
         if (error) {
 
@@ -97,11 +97,8 @@ module.exports = function(middleware) {
         debug('set template language to %s', baseVariables.language);
 
         debug('translating template');
-        Translator.translate(str, baseVariables.language).then((translatedStr) => {
-
-          debug('template translated. calling callback');
-          return callback(error, translatedStr);
-        });
+        return Translator.translate(str, baseVariables.language)
+          .then(translatedStr => callback(error, translatedStr));
       });
     };
 

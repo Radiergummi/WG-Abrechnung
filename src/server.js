@@ -23,9 +23,11 @@ var express     = require('express'),
     server;
 
 if (useSSL()) {
+  let key, cert;
+
   try {
-    var key  = fs.readFileSync(path.join(nconf.get('path'), 'ssl', 'private_key.pem'));
-    var cert = fs.readFileSync(path.join(nconf.get('path'), 'ssl', 'certificate.pem'));
+    key  = fs.readFileSync(path.join(nconf.get('path'), 'ssl', 'private_key.pem'));
+    cert = fs.readFileSync(path.join(nconf.get('path'), 'ssl', 'certificate.pem'));
   } catch (fsError) {
     winston.error('[webserver]'.white + ' SSL certificate files could not be loaded:');
     winston.error('[webserver]'.white + ' ' + fsError.message);
@@ -43,7 +45,6 @@ if (useSSL()) {
   server = require('http').createServer(app);
 }
 
-
 /**
  * Event listener for HTTP server "error" event.
  */
@@ -52,7 +53,7 @@ server.on('error', function(error) {
     throw error;
   }
 
-  var port = getPort(),
+  let port = getPort(),
       bind = typeof port === 'string'
         ? 'Pipe ' + port
         : 'Port ' + port;
@@ -80,10 +81,10 @@ server.on('error', function(error) {
  * Event listener for HTTP server "listening" event.
  */
 server.on('listening', function() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  let addr = server.address(),
+      bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
   winston.info('[webserver]'.white + ' listening on ' + bind);
 
 });
@@ -103,7 +104,7 @@ module.exports.listen = function(port) {
   // initialize the app
   initialize();
 
-  var /*port = getPort(),*/
+  let /*port = getPort(),*/
       bind = process.env.LISTEN_PID > 0 ? 'systemd' : port;
 
   // if the server is running on a port alternating from 80 or 443 or the trust proxy
@@ -142,8 +143,8 @@ function initialize () {
  * @returns {boolean}
  */
 function useSSL () {
-  var rawUrl    = nconf.get('url'),
-      parsedUrl = url.parse(rawUrl);
+  const rawUrl    = nconf.get('url'),
+        parsedUrl = url.parse(rawUrl);
 
   return nconf.get('ssl') || (parsedUrl.protocol === 'https:') || false;
 }
@@ -154,8 +155,8 @@ function useSSL () {
  * @returns {*|number}
  */
 function getPort () {
-  var rawUrl    = nconf.get('url'),
-      parsedUrl = url.parse(rawUrl);
+  const rawUrl    = nconf.get('url'),
+        parsedUrl = url.parse(rawUrl);
 
   return parseInt(nconf.get('port') || parsedUrl.port || 3000, 10);
 }

@@ -5,11 +5,9 @@
  require
  */
 
-var mongo = require('mongodb');
+const tagModel = require('./models/tag');
 
-var tagModel = require('./models/tag');
-
-var Tag = module.exports = {};
+const Tag = module.exports = {};
 
 Tag.colors = [
   'red',
@@ -45,7 +43,6 @@ Tag.getById = function(id, callback) {
   });
 };
 
-
 Tag.getByName = function(name, callback) {
   tagModel.findOne({ 'name': name }).exec(function(error, tag) {
     if (error) {
@@ -56,7 +53,6 @@ Tag.getByName = function(name, callback) {
   });
 };
 
-
 Tag.getAll = function(callback) {
   tagModel.find({}).exec(function(error, tag) {
     if (error) {
@@ -66,7 +62,6 @@ Tag.getAll = function(callback) {
     return callback(null, tag);
   });
 };
-
 
 Tag.createNew = function(data, callback) {
   this.getByName(data.tagName, function(error, tag) {
@@ -80,14 +75,13 @@ Tag.createNew = function(data, callback) {
     }
 
     // if not, create a new tag
-    var newTag = new tagModel(),
+    let newTag = new tagModel(),
         colors = Tag.colors;
 
     // choose a random color if none given
     data.tagColor = data.tagColor || colors[ Math.floor(Math.random() * colors.length) ];
 
-
-    newTag.name = data.tagName;
+    newTag.name  = data.tagName;
     newTag.color = data.tagColor;
 
     newTag.save(function(error) {
@@ -100,14 +94,13 @@ Tag.createNew = function(data, callback) {
   });
 };
 
-
 Tag.remove = function(id, callback) {
   this.getById(id, function(error, tag) {
     if (error) {
       return callback(error);
     }
 
-    var deletedTag = JSON.parse(JSON.stringify(tag));
+    let deletedTag = JSON.parse(JSON.stringify(tag));
     tag.remove();
 
     return callback(null, deletedTag);

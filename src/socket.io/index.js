@@ -21,7 +21,7 @@ var async            = require('async'),
     Namespaces = {},
     io;
 
-Sockets.initialize = function (server) {
+Sockets.initialize = function(server) {
   requireModules();
 
   io = new SocketIO();
@@ -48,8 +48,8 @@ Sockets.initialize = function (server) {
   winston.info('[socket.io]'.white + ' Socket.io emitted ready event');
 };
 
-function requireModules() {
-  var modules = [
+function requireModules () {
+  const modules = [
     'app',
     'user',
     'invoices',
@@ -59,38 +59,38 @@ function requireModules() {
     'tags'
   ];
 
-  modules.forEach(function (module) {
+  modules.forEach(function(module) {
     debug('loading %s sockets', module);
     Namespaces[ module ] = require('./' + module);
   });
 }
 
-function authorize(socket, callback) {
-  var handshake = socket.request;
+function authorize (socket, callback) {
+  const handshake = socket.request;
 
-  if (! handshake) {
+  if (!handshake) {
     debug('got non-authorized socket call');
     return callback(new Error('[[error:not-authorized]]'));
   }
 
   async.waterfall([
-    function (next) {
+    function(next) {
       // parse the handshake cookie
       cookieParser(handshake, {}, next);
     },
-    function (next) {
+    function(next) {
       // get the session database collection handle
-      var sessionStore = db.collection('sessions');
+      const sessionStore = db.collection('sessions');
 
       // try to find the session ID in the database
-      sessionStore.findOne({ '_id': handshake.signedCookies[ 'express.sid' ] }, function (error, data) {
-        if (error || ! data) {
+      sessionStore.findOne({ '_id': handshake.signedCookies[ 'express.sid' ] }, function(error, data) {
+        if (error || !data) {
           debug('Could not find session');
           return next(error);
         }
 
         // retrieve the server-side session data
-        var session = data.session;
+        const session = data.session;
 
         // check if there are any credentials stored along the session data
         if (session.passport && session.passport.user) {
@@ -111,31 +111,31 @@ function authorize(socket, callback) {
   ], callback);
 }
 
-function onConnection(socket) {
+function onConnection (socket) {
 
   // retrieve original IP address
   socket.ip = socket.request.headers[ 'x-forwarded-for' ] || socket.request.connection.remoteAddress;
 
   onConnect(socket);
 
-  socket.on('disconnect', function (data) {
+  socket.on('disconnect', function(data) {
     onDisconnect(socket, data);
   });
 
-  socket.on('*', function (payload) {
+  socket.on('*', function(payload) {
     onMessage(socket, payload);
   });
 }
 
-function onConnect(socket) {
+function onConnect (socket) {
   if (socket._id) {
     debug('got connection from %s (IP: %s)', socket._id, socket.ip);
 
     socket.join('_id_' + socket._id);
     socket.join('online_users');
 
-    User.getById(socket._id, function (error, user) {
-      if (error || ! user) {
+    User.getById(socket._id, function(error, user) {
+      if (error || !user) {
         return undefined;
       }
     });
@@ -144,11 +144,11 @@ function onConnect(socket) {
   }
 }
 
-function onDisconnect(socket) {
+function onDisconnect (socket) {
   if (socket._id) {
     debug('%s disconnected (IP: %s)', socket._id, socket.ip);
 
-    var socketCount = Sockets.getUserSocketCount(socket._id);
+    const socketCount = Sockets.getUserSocketCount(socket._id);
     if (socketCount <= 1) {
       socket.broadcast.emit('event:user_status_change', {
         _id:    socket._id,
@@ -158,22 +158,21 @@ function onDisconnect(socket) {
   }
 }
 
-function onMessage(socket, payload) {
-  if (! payload.data.length) {
+function onMessage (socket, payload) {
+  if (!payload.data.length) {
     return winston.warn('[socket.io] Empty payload');
   }
 
-
   socket.emit('hi');
 
-  var eventName = payload.data[ 0 ],
-      params    = payload.data[ 1 ],
-      callback  = typeof payload.data[ payload.data.length - 1 ] === 'function'
-        ? payload.data[ payload.data.length - 1 ]
-        : function () {
-      };
+  const eventName = payload.data[ 0 ],
+        params    = payload.data[ 1 ],
+        callback  = typeof payload.data[ payload.data.length - 1 ] === 'function'
+          ? payload.data[ payload.data.length - 1 ]
+          : function() {
+          };
 
-  if (! eventName) {
+  if (!eventName) {
     return winston.warn('[socket.io] Empty method name');
   }
 
@@ -181,9 +180,9 @@ function onMessage(socket, payload) {
 
   // split the message in controller and method:
   // each io message is expected to be named as "<controller>.<method>".
-  var parts        = eventName.toString().split('.'),
-      namespace    = parts[ 0 ];
-  var methodToCall = parts.reduce(function (namespaces, method) {
+  const parts        = eventName.toString().split('.'),
+        namespace    = parts[ 0 ];
+  const methodToCall = parts.reduce(function(namespaces, method) {
     if (namespaces !== null && namespaces[ method ]) {
       return namespaces[ method ];
     } else {
@@ -191,7 +190,7 @@ function onMessage(socket, payload) {
     }
   }, Namespaces);
 
-  if (! methodToCall) {
+  if (!methodToCall) {
     if (nconf.get('environment') === 'development') {
       winston.warn('[socket.io] Unrecognized message: ' + eventName);
     }
@@ -206,7 +205,7 @@ function onMessage(socket, payload) {
 
   // run any "before"-handlers before the actual method
   if (Namespaces[ namespace ].before) {
-    Namespaces[ namespace ].before(socket, eventName, params, function (err) {
+    Namespaces[ namespace ].before(socket, eventName, params, function(err) {
       if (err) {
         return callback({ message: err.message });
       }
@@ -218,36 +217,35 @@ function onMessage(socket, payload) {
   }
 }
 
-function callMethod(method, socket, params, callback) {
+function callMethod (method, socket, params, callback) {
   try {
-    method(socket, params, function (error, result) {
+    method(socket, params, function(error, result) {
       callback(error ? { message: error.message } : null, result);
     });
   } catch (error) {
-    debug('socket method %s threw error "%s":', params[0], error.message, error.stack);
+    debug('socket method %s threw error "%s":', params[ 0 ], error.message, error.stack);
     callback((typeof error === 'object' ? error : new Error(error)));
   }
 }
 
-Sockets.in = function (room) {
+Sockets.in = function(room) {
   return io.in(room);
 };
 
-Sockets.getSocketCount = function () {
-  if (! io) {
+Sockets.getSocketCount = function() {
+  if (!io) {
     return 0;
   }
 
   return Object.keys(io.sockets.sockets).length;
 };
 
-
-Sockets.getConnectedClients = function () {
-  var sockets = io.sockets.sockets,
+Sockets.getConnectedClients = function() {
+  let sockets = io.sockets.sockets,
       clients = [],
       i;
 
-  if (! io) {
+  if (!io) {
     return {};
   }
 
@@ -260,41 +258,43 @@ Sockets.getConnectedClients = function () {
   return clients;
 };
 
-
-Sockets.getUserSocketCount = function (_id) {
-  if (! io) {
+Sockets.getUserSocketCount = function(_id) {
+  if (!io) {
     return 0;
   }
-  var room = io.sockets.adapter.rooms[ '_id_' + _id ];
+
+  const room = io.sockets.adapter.rooms[ '_id_' + _id ];
   return room ? room.length : 0;
 };
 
-Sockets.getOnlineUserCount = function () {
-  if (! io) {
+Sockets.getOnlineUserCount = function() {
+  if (!io) {
     return 0;
   }
-  var room = io.sockets.adapter.rooms.online_users;
+
+  const room = io.sockets.adapter.rooms.online_users;
   return room ? room.length : 0;
 };
 
-Sockets.getOnlineAnonCount = function () {
-  if (! io) {
+Sockets.getOnlineAnonCount = function() {
+  if (!io) {
     return 0;
   }
-  var room = io.sockets.adapter.rooms.online_guests;
+
+  const room = io.sockets.adapter.rooms.online_guests;
   return room ? room.length : 0;
 };
 
-Sockets.reqFromSocket = function (socket) {
-  var headers  = socket.request.headers,
-      host     = headers.host,
-      referrer = headers.referrer || '';
+Sockets.reqFromSocket = function(socket) {
+  const headers  = socket.request.headers,
+        host     = headers.host,
+        referrer = headers.referrer || '';
 
   return {
     ip:       headers[ 'x-forwarded-for' ] || socket.ip,
     host:     host,
     protocol: socket.request.connection.encrypted ? 'https' : 'http',
-    secure:   ! ! socket.request.connection.encrypted,
+    secure:   !!socket.request.connection.encrypted,
     url:      referrer,
     path:     referrer.substr(referrer.indexOf(host) + host.length),
     headers:  headers

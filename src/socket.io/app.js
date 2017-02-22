@@ -5,13 +5,13 @@
  require
  */
 
-var templates = require('templates.js'),
-    nconf     = require('nconf');
+const handlebars = require('handlebars'),
+      nconf      = require('nconf');
 
-var file = require('../meta/file'),
-    User = require('../user');
+const file = require('../meta/file'),
+      User = require('../user');
 
-var appSockets = module.exports = {};
+const appSockets = module.exports = {};
 
 /**
  * retrieves the app config
@@ -21,7 +21,7 @@ var appSockets = module.exports = {};
  * @returns {null|error|object}
  */
 appSockets.getConfig = function(socket, callback) {
-  var config = {
+  let config = {
     debug: (nconf.get('environment') === 'development')
   };
 
@@ -36,7 +36,7 @@ appSockets.getConfig = function(socket, callback) {
     if (error) {
       return callback(error);
     }
-    
+
     config.language               = data.language || nconf.get('language');
     config.user                   = JSON.parse(JSON.stringify(data));
     config.user.hasProfilePicture = file.existsSync('public/images/users/' + socket._id + '.jpg');
@@ -64,8 +64,10 @@ appSockets.getTemplate = function(socket, data, callback) {
       return callback(error);
     }
 
+    let template = handlebars.compile(content);
+
     if (!data.skipParse) {
-      return templates.parse(content, data.templateVariables);
+      return template.render(data.templateVariables);
     }
 
     return content;

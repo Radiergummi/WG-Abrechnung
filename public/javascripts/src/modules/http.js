@@ -1,5 +1,14 @@
 'use strict';
 
+/*
+ global window,
+ document,
+ File,
+ Headers,
+ Request,
+ fetch
+ */
+
 module.exports = function(app) {
   app.http = {};
 
@@ -18,9 +27,10 @@ module.exports = function(app) {
     method = method.toUpperCase();
     data   = data || undefined;
 
-    var complete = function() {
+    let complete = function() {
     };
 
+    // shift callbacks
     if (typeof success === 'function' && typeof failure !== 'function') {
       complete = success;
       events   = failure || {};
@@ -35,13 +45,9 @@ module.exports = function(app) {
         };
       events  = events || {};
     }
-    /*
-     if (data && typeof data !== 'string') {
-     data = JSON.stringify(data);
-     }
-     */
+
     if (window[ 'fetch' ]) {
-      var request,
+      let request,
           headers,
           response;
 
@@ -106,7 +112,7 @@ module.exports = function(app) {
           return error;
         });
     } else {
-      var XHR = new XMLHttpRequest();
+      let XHR = new XMLHttpRequest();
 
       XHR.open(method, url, true);
 
@@ -117,7 +123,7 @@ module.exports = function(app) {
           /**
            * check if any formData entry is a file and adjust the content type
            */
-          for (var pair of data.entries()) {
+          for (let pair of data.entries()) {
             if (pair[ 1 ] instanceof File) {
               XHR.setRequestHeader('Content-Type', '');
             }
@@ -132,7 +138,7 @@ module.exports = function(app) {
         // when the data is available, fire the callback
         if (XHR.readyState === 4) {
           if (XHR.responseType === 'json') {
-            XHR.responseText = JSON.parse(XHR.responseText);
+            XHR.responseJSON = JSON.parse(XHR.responseText);
           }
 
           if (XHR.status === 200 || XHR.status === 204) {
@@ -148,7 +154,7 @@ module.exports = function(app) {
         }
       };
 
-      for (var event in events) {
+      for (let event in events) {
         if (events.hasOwnProperty('on' + event)) {
           XHR[ 'on' + event ] = events[ event ];
         }
@@ -162,7 +168,7 @@ module.exports = function(app) {
   app.http.get = function(url, data, success, failure, events) {
     if (data) {
       if (typeof data === 'string') {
-        var parsedData = {};
+        const parsedData = {};
         data           = data.split('&');
         data.forEach(function(pair) {
           pair                    = pair.split('=');
@@ -175,9 +181,9 @@ module.exports = function(app) {
       if (typeof data === 'object') {
         url = url + '?';
 
-        var parameters = [];
+        const parameters = [];
 
-        for (var i in data) {
+        for (let i in data) {
           if (data.hasOwnProperty(i)) {
             parameters.push(i + '=' + data[ i ]);
           }
@@ -201,9 +207,9 @@ module.exports = function(app) {
     }
 
     if (!data instanceof FormData) {
-      var formData = new FormData();
+      const formData = new FormData();
 
-      for (var key in data) {
+      for (let key in data) {
         if (!data.hasOwnProperty(key)) {
           continue;
         }

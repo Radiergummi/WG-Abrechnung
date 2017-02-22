@@ -67,4 +67,8 @@ invoiceSchema.methods.getFormattedDate = function() {
   return moment(this.creationDate).format('Do MMMM YYYY');
 };
 
+invoiceSchema.methods.belongsTo = function(userId) {
+  return (String(this.user._id) === String(userId));
+};
+
 module.exports = mongoose.model('invoice', invoiceSchema);

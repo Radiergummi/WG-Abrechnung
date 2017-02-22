@@ -1816,7 +1816,7 @@ function loadLocale(name) {
             module && module.exports) {
         try {
             oldLocale = globalLocale._abbr;
-            __webpack_require__(171)("./" + name);
+            __webpack_require__(178)("./" + name);
             // because defineLocale currently also sets the global locale, we
             // want to undo that for lazy loaded locales
             getSetGlobalLocale(oldLocale);
@@ -4304,14 +4304,15 @@ return hooks;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(120)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(122)(module)))
 
 /***/ }),
 /* 1 */,
 /* 2 */,
 /* 3 */,
 /* 4 */,
-/* 5 */
+/* 5 */,
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -4389,7 +4390,7 @@ return af;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -4453,7 +4454,7 @@ return arDz;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -4584,7 +4585,7 @@ return arLy;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -4649,7 +4650,7 @@ return arMa;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -4759,7 +4760,7 @@ return arSa;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -4823,7 +4824,7 @@ return arTn;
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -4970,7 +4971,7 @@ return ar;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -5080,7 +5081,7 @@ return az;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -5219,7 +5220,7 @@ return be;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -5314,7 +5315,7 @@ return bg;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -5438,7 +5439,7 @@ return bn;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -5562,7 +5563,7 @@ return bo;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -5675,7 +5676,7 @@ return br;
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -5823,7 +5824,7 @@ return bs;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -5909,7 +5910,7 @@ return ca;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6086,7 +6087,7 @@ return cs;
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6154,7 +6155,7 @@ return cv;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6240,7 +6241,7 @@ return cy;
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6305,7 +6306,7 @@ return da;
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6389,7 +6390,7 @@ return deAt;
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6472,7 +6473,7 @@ return de;
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6577,7 +6578,7 @@ return dv;
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6680,7 +6681,7 @@ return el;
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6752,7 +6753,7 @@ return enAu;
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6820,7 +6821,7 @@ return enCa;
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6892,7 +6893,7 @@ return enGb;
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -6964,7 +6965,7 @@ return enIe;
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7036,7 +7037,7 @@ return enNz;
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7114,7 +7115,7 @@ return eo;
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7199,7 +7200,7 @@ return esDo;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7285,7 +7286,7 @@ return es;
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7370,7 +7371,7 @@ return et;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7441,7 +7442,7 @@ return eu;
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7553,7 +7554,7 @@ return fa;
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7665,7 +7666,7 @@ return fi;
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7730,7 +7731,7 @@ return fo;
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7795,7 +7796,7 @@ return frCa;
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7864,7 +7865,7 @@ return frCh;
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -7933,7 +7934,7 @@ return fr;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8011,7 +8012,7 @@ return fy;
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8092,7 +8093,7 @@ return gd;
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8174,7 +8175,7 @@ return gl;
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8278,7 +8279,7 @@ return he;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8407,7 +8408,7 @@ return hi;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8557,7 +8558,7 @@ return hr;
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8671,7 +8672,7 @@ return hu;
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8771,7 +8772,7 @@ return hyAm;
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8859,7 +8860,7 @@ return id;
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -8991,7 +8992,7 @@ return is;
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9066,7 +9067,7 @@ return it;
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9147,7 +9148,7 @@ return ja;
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9235,7 +9236,7 @@ return jv;
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9329,7 +9330,7 @@ return ka;
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9421,7 +9422,7 @@ return kk;
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9484,7 +9485,7 @@ return km;
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9554,7 +9555,7 @@ return ko;
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9647,7 +9648,7 @@ return ky;
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9789,7 +9790,7 @@ return lb;
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9864,7 +9865,7 @@ return lo;
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -9986,7 +9987,7 @@ return lt;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10088,7 +10089,7 @@ return lv;
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10204,7 +10205,7 @@ return me;
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10273,7 +10274,7 @@ return mi;
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10368,7 +10369,7 @@ return mk;
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10454,7 +10455,7 @@ return ml;
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10618,7 +10619,7 @@ return mr;
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10706,7 +10707,7 @@ return msMy;
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10793,7 +10794,7 @@ return ms;
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10894,7 +10895,7 @@ return my;
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -10962,7 +10963,7 @@ return nb;
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11090,7 +11091,7 @@ return ne;
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11181,7 +11182,7 @@ return nlBe;
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11272,7 +11273,7 @@ return nl;
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11337,7 +11338,7 @@ return nn;
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11466,7 +11467,7 @@ return paIn;
 
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11576,7 +11577,7 @@ return pl;
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11642,7 +11643,7 @@ return ptBr;
 
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11712,7 +11713,7 @@ return pt;
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11792,7 +11793,7 @@ return ro;
 
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -11980,7 +11981,7 @@ return ru;
 
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12046,7 +12047,7 @@ return se;
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12122,7 +12123,7 @@ return si;
 
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12277,7 +12278,7 @@ return sk;
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12444,7 +12445,7 @@ return sl;
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12519,7 +12520,7 @@ return sq;
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12634,7 +12635,7 @@ return srCyrl;
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12749,7 +12750,7 @@ return sr;
 
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12843,7 +12844,7 @@ return ss;
 
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12917,7 +12918,7 @@ return sv;
 
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -12981,7 +12982,7 @@ return sw;
 
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13116,7 +13117,7 @@ return ta;
 
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13210,7 +13211,7 @@ return te;
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13283,7 +13284,7 @@ return tet;
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13355,7 +13356,7 @@ return th;
 
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13422,7 +13423,7 @@ return tlPh;
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13547,7 +13548,7 @@ return tlh;
 
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13642,7 +13643,7 @@ return tr;
 
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13738,7 +13739,7 @@ return tzl;
 
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13801,7 +13802,7 @@ return tzmLatn;
 
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -13864,7 +13865,7 @@ return tzm;
 
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14015,7 +14016,7 @@ return uk;
 
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14078,7 +14079,7 @@ return uz;
 
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14162,7 +14163,7 @@ return vi;
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14235,7 +14236,7 @@ return xPseudo;
 
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14300,7 +14301,7 @@ return yo;
 
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14432,7 +14433,7 @@ return zhCn;
 
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14542,7 +14543,7 @@ return zhHk;
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -14651,14 +14652,14 @@ return zhTw;
 
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 module.exports = function(app) {
-  var Charts = __webpack_require__(121);
+  var Charts = __webpack_require__(123);
 
   Charts.defaults.global.spanGaps                            = false;
   Charts.defaults.global.defaultFontFamily                   = "'Brandon Grotesque', 'Roboto', 'Lucida Grande', 'Verdana', sans-serif";
@@ -14730,72 +14731,73 @@ module.exports = function(app) {
 
 
 /***/ }),
-/* 114 */,
 /* 115 */,
 /* 116 */,
 /* 117 */,
 /* 118 */,
 /* 119 */,
 /* 120 */,
-/* 121 */
+/* 121 */,
+/* 122 */,
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * @namespace Chart
  */
-var Chart = __webpack_require__(142)();
+var Chart = __webpack_require__(144)();
 
-__webpack_require__(140)(Chart);
-__webpack_require__(248)(Chart);
-__webpack_require__(136)(Chart);
-__webpack_require__(145)(Chart);
-__webpack_require__(139)(Chart);
-__webpack_require__(135)(Chart);
-__webpack_require__(137)(Chart);
+__webpack_require__(142)(Chart);
+__webpack_require__(158)(Chart);
 __webpack_require__(138)(Chart);
-__webpack_require__(143)(Chart);
 __webpack_require__(147)(Chart);
-__webpack_require__(148)(Chart);
-__webpack_require__(146)(Chart);
-__webpack_require__(149)(Chart);
-__webpack_require__(144)(Chart);
 __webpack_require__(141)(Chart);
+__webpack_require__(137)(Chart);
+__webpack_require__(139)(Chart);
+__webpack_require__(140)(Chart);
+__webpack_require__(145)(Chart);
+__webpack_require__(149)(Chart);
 __webpack_require__(150)(Chart);
-
+__webpack_require__(148)(Chart);
 __webpack_require__(151)(Chart);
+__webpack_require__(146)(Chart);
+__webpack_require__(143)(Chart);
 __webpack_require__(152)(Chart);
+
 __webpack_require__(153)(Chart);
 __webpack_require__(154)(Chart);
-
-__webpack_require__(157)(Chart);
 __webpack_require__(155)(Chart);
 __webpack_require__(156)(Chart);
-__webpack_require__(158)(Chart);
+
+__webpack_require__(161)(Chart);
 __webpack_require__(159)(Chart);
 __webpack_require__(160)(Chart);
+__webpack_require__(162)(Chart);
+__webpack_require__(163)(Chart);
+__webpack_require__(164)(Chart);
 
 // Controllers must be loaded after elements
 // See Chart.core.datasetController.dataElementType
-__webpack_require__(129)(Chart);
-__webpack_require__(130)(Chart);
 __webpack_require__(131)(Chart);
 __webpack_require__(132)(Chart);
 __webpack_require__(133)(Chart);
 __webpack_require__(134)(Chart);
+__webpack_require__(135)(Chart);
+__webpack_require__(136)(Chart);
 
-__webpack_require__(122)(Chart);
-__webpack_require__(123)(Chart);
 __webpack_require__(124)(Chart);
 __webpack_require__(125)(Chart);
 __webpack_require__(126)(Chart);
 __webpack_require__(127)(Chart);
 __webpack_require__(128)(Chart);
+__webpack_require__(129)(Chart);
+__webpack_require__(130)(Chart);
 
 window.Chart = module.exports = Chart;
 
 
 /***/ }),
-/* 122 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14813,7 +14815,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 123 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14830,7 +14832,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 124 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14848,7 +14850,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 125 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14866,7 +14868,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 126 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14884,7 +14886,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 127 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14902,7 +14904,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 128 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14956,7 +14958,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 129 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15503,7 +15505,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 130 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15632,7 +15634,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 131 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15942,7 +15944,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 132 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16288,7 +16290,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 133 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16510,7 +16512,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 134 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16698,7 +16700,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 135 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16844,7 +16846,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 136 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16975,7 +16977,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 137 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17734,7 +17736,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 138 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18050,7 +18052,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 139 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18153,7 +18155,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 140 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18161,7 +18163,7 @@ module.exports = function(Chart) {
 /* global document: false */
 
 
-var color = __webpack_require__(162);
+var color = __webpack_require__(166);
 
 module.exports = function(Chart) {
 	// Global Chart helpers object for utility methods and classes
@@ -19129,7 +19131,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 141 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19448,7 +19450,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 142 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19511,7 +19513,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 143 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19887,7 +19889,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 144 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20430,7 +20432,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 145 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20762,7 +20764,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 146 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21528,7 +21530,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 147 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21575,7 +21577,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 148 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21790,7 +21792,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 149 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22017,7 +22019,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 150 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22904,7 +22906,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 151 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23015,7 +23017,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 152 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23206,7 +23208,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 153 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23313,7 +23315,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 154 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23528,7 +23530,367 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 155 */
+/* 157 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// Chart.Platform implementation for targeting a web browser
+module.exports = function(Chart) {
+	var helpers = Chart.helpers;
+
+	// DOM event types -> Chart.js event types.
+	// Note: only events with different types are mapped.
+	// https://developer.mozilla.org/en-US/docs/Web/Events
+	var eventTypeMap = {
+		// Touch events
+		touchstart: 'mousedown',
+		touchmove: 'mousemove',
+		touchend: 'mouseup',
+
+		// Pointer events
+		pointerenter: 'mouseenter',
+		pointerdown: 'mousedown',
+		pointermove: 'mousemove',
+		pointerup: 'mouseup',
+		pointerleave: 'mouseout',
+		pointerout: 'mouseout'
+	};
+
+	/**
+	 * The "used" size is the final value of a dimension property after all calculations have
+	 * been performed. This method uses the computed style of `element` but returns undefined
+	 * if the computed style is not expressed in pixels. That can happen in some cases where
+	 * `element` has a size relative to its parent and this last one is not yet displayed,
+	 * for example because of `display: none` on a parent node.
+	 * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
+	 * @returns {Number} Size in pixels or undefined if unknown.
+	 */
+	function readUsedSize(element, property) {
+		var value = helpers.getStyle(element, property);
+		var matches = value && value.match(/(\d+)px/);
+		return matches? Number(matches[1]) : undefined;
+	}
+
+	/**
+	 * Initializes the canvas style and render size without modifying the canvas display size,
+	 * since responsiveness is handled by the controller.resize() method. The config is used
+	 * to determine the aspect ratio to apply in case no explicit height has been specified.
+	 */
+	function initCanvas(canvas, config) {
+		var style = canvas.style;
+
+		// NOTE(SB) canvas.getAttribute('width') !== canvas.width: in the first case it
+		// returns null or '' if no explicit value has been set to the canvas attribute.
+		var renderHeight = canvas.getAttribute('height');
+		var renderWidth = canvas.getAttribute('width');
+
+		// Chart.js modifies some canvas values that we want to restore on destroy
+		canvas._chartjs = {
+			initial: {
+				height: renderHeight,
+				width: renderWidth,
+				style: {
+					display: style.display,
+					height: style.height,
+					width: style.width
+				}
+			}
+		};
+
+		// Force canvas to display as block to avoid extra space caused by inline
+		// elements, which would interfere with the responsive resize process.
+		// https://github.com/chartjs/Chart.js/issues/2538
+		style.display = style.display || 'block';
+
+		if (renderWidth === null || renderWidth === '') {
+			var displayWidth = readUsedSize(canvas, 'width');
+			if (displayWidth !== undefined) {
+				canvas.width = displayWidth;
+			}
+		}
+
+		if (renderHeight === null || renderHeight === '') {
+			if (canvas.style.height === '') {
+				// If no explicit render height and style height, let's apply the aspect ratio,
+				// which one can be specified by the user but also by charts as default option
+				// (i.e. options.aspectRatio). If not specified, use canvas aspect ratio of 2.
+				canvas.height = canvas.width / (config.options.aspectRatio || 2);
+			} else {
+				var displayHeight = readUsedSize(canvas, 'height');
+				if (displayWidth !== undefined) {
+					canvas.height = displayHeight;
+				}
+			}
+		}
+
+		return canvas;
+	}
+
+	function createEvent(type, chart, x, y, native) {
+		return {
+			type: type,
+			chart: chart,
+			native: native || null,
+			x: x !== undefined? x : null,
+			y: y !== undefined? y : null,
+		};
+	}
+
+	function fromNativeEvent(event, chart) {
+		var type = eventTypeMap[event.type] || event.type;
+		var pos = helpers.getRelativePosition(event, chart);
+		return createEvent(type, chart, pos.x, pos.y, event);
+	}
+
+	function createResizer(handler) {
+		var iframe = document.createElement('iframe');
+		iframe.className = 'chartjs-hidden-iframe';
+		iframe.style.cssText =
+			'display:block;'+
+			'overflow:hidden;'+
+			'border:0;'+
+			'margin:0;'+
+			'top:0;'+
+			'left:0;'+
+			'bottom:0;'+
+			'right:0;'+
+			'height:100%;'+
+			'width:100%;'+
+			'position:absolute;'+
+			'pointer-events:none;'+
+			'z-index:-1;';
+
+		// Prevent the iframe to gain focus on tab.
+		// https://github.com/chartjs/Chart.js/issues/3090
+		iframe.tabIndex = -1;
+
+		// If the iframe is re-attached to the DOM, the resize listener is removed because the
+		// content is reloaded, so make sure to install the handler after the iframe is loaded.
+		// https://github.com/chartjs/Chart.js/issues/3521
+		helpers.addEvent(iframe, 'load', function() {
+			helpers.addEvent(iframe.contentWindow || iframe, 'resize', handler);
+
+			// The iframe size might have changed while loading, which can also
+			// happen if the size has been changed while detached from the DOM.
+			handler();
+		});
+
+		return iframe;
+	}
+
+	function addResizeListener(node, listener, chart) {
+		var stub = node._chartjs = {
+			ticking: false
+		};
+
+		// Throttle the callback notification until the next animation frame.
+		var notify = function() {
+			if (!stub.ticking) {
+				stub.ticking = true;
+				helpers.requestAnimFrame.call(window, function() {
+					if (stub.resizer) {
+						stub.ticking = false;
+						return listener(createEvent('resize', chart));
+					}
+				});
+			}
+		};
+
+		// Let's keep track of this added iframe and thus avoid DOM query when removing it.
+		stub.resizer = createResizer(notify);
+
+		node.insertBefore(stub.resizer, node.firstChild);
+	}
+
+	function removeResizeListener(node) {
+		if (!node || !node._chartjs) {
+			return;
+		}
+
+		var resizer = node._chartjs.resizer;
+		if (resizer) {
+			resizer.parentNode.removeChild(resizer);
+			node._chartjs.resizer = null;
+		}
+
+		delete node._chartjs;
+	}
+
+	return {
+		acquireContext: function(item, config) {
+			if (typeof item === 'string') {
+				item = document.getElementById(item);
+			} else if (item.length) {
+				// Support for array based queries (such as jQuery)
+				item = item[0];
+			}
+
+			if (item && item.canvas) {
+				// Support for any object associated to a canvas (including a context2d)
+				item = item.canvas;
+			}
+
+			if (item instanceof HTMLCanvasElement) {
+				// To prevent canvas fingerprinting, some add-ons undefine the getContext
+				// method, for example: https://github.com/kkapsner/CanvasBlocker
+				// https://github.com/chartjs/Chart.js/issues/2807
+				var context = item.getContext && item.getContext('2d');
+				if (context instanceof CanvasRenderingContext2D) {
+					initCanvas(item, config);
+					return context;
+				}
+			}
+
+			return null;
+		},
+
+		releaseContext: function(context) {
+			var canvas = context.canvas;
+			if (!canvas._chartjs) {
+				return;
+			}
+
+			var initial = canvas._chartjs.initial;
+			['height', 'width'].forEach(function(prop) {
+				var value = initial[prop];
+				if (value === undefined || value === null) {
+					canvas.removeAttribute(prop);
+				} else {
+					canvas.setAttribute(prop, value);
+				}
+			});
+
+			helpers.each(initial.style || {}, function(value, key) {
+				canvas.style[key] = value;
+			});
+
+			// The canvas render size might have been changed (and thus the state stack discarded),
+			// we can't use save() and restore() to restore the initial state. So make sure that at
+			// least the canvas context is reset to the default state by setting the canvas width.
+			// https://www.w3.org/TR/2011/WD-html5-20110525/the-canvas-element.html
+			canvas.width = canvas.width;
+
+			delete canvas._chartjs;
+		},
+
+		addEventListener: function(chart, type, listener) {
+			var canvas = chart.chart.canvas;
+			if (type === 'resize') {
+				// Note: the resize event is not supported on all browsers.
+				addResizeListener(canvas.parentNode, listener, chart.chart);
+				return;
+			}
+
+			var stub = listener._chartjs || (listener._chartjs = {});
+			var proxies = stub.proxies || (stub.proxies = {});
+			var proxy = proxies[chart.id + '_' + type] = function(event) {
+				listener(fromNativeEvent(event, chart.chart));
+			};
+
+			helpers.addEvent(canvas, type, proxy);
+		},
+
+		removeEventListener: function(chart, type, listener) {
+			var canvas = chart.chart.canvas;
+			if (type === 'resize') {
+				// Note: the resize event is not supported on all browsers.
+				removeResizeListener(canvas.parentNode, listener);
+				return;
+			}
+
+			var stub = listener._chartjs || {};
+			var proxies = stub.proxies || {};
+			var proxy = proxies[chart.id + '_' + type];
+			if (!proxy) {
+				return;
+			}
+
+			helpers.removeEvent(canvas, type, proxy);
+		}
+	};
+};
+
+
+/***/ }),
+/* 158 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// By default, select the browser (DOM) platform.
+// @TODO Make possible to select another platform at build time.
+var implementation = __webpack_require__(157);
+
+module.exports = function(Chart) {
+	/**
+	 * @namespace Chart.platform
+	 * @see https://chartjs.gitbooks.io/proposals/content/Platform.html
+	 * @since 2.4.0
+	 */
+	Chart.platform = {
+		/**
+		 * Called at chart construction time, returns a context2d instance implementing
+		 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
+		 * @param {*} item - The native item from which to acquire context (platform specific)
+		 * @param {Object} options - The chart options
+		 * @returns {CanvasRenderingContext2D} context2d instance
+		 */
+		acquireContext: function() {},
+
+		/**
+		 * Called at chart destruction time, releases any resources associated to the context
+		 * previously returned by the acquireContext() method.
+		 * @param {CanvasRenderingContext2D} context - The context2d instance
+		 * @returns {Boolean} true if the method succeeded, else false
+		 */
+		releaseContext: function() {},
+
+		/**
+		 * Registers the specified listener on the given chart.
+		 * @param {Chart} chart - Chart from which to listen for event
+		 * @param {String} type - The ({@link IEvent}) type to listen for
+		 * @param {Function} listener - Receives a notification (an object that implements
+		 * the {@link IEvent} interface) when an event of the specified type occurs.
+		 */
+		addEventListener: function() {},
+
+		/**
+		 * Removes the specified listener previously registered with addEventListener.
+		 * @param {Chart} chart -Chart from which to remove the listener
+		 * @param {String} type - The ({@link IEvent}) type to remove
+		 * @param {Function} listener - The listener function to remove from the event target.
+		 */
+		removeEventListener: function() {}
+	};
+
+	/**
+	 * @interface IPlatform
+	 * Allows abstracting platform dependencies away from the chart
+	 * @borrows Chart.platform.acquireContext as acquireContext
+	 * @borrows Chart.platform.releaseContext as releaseContext
+	 * @borrows Chart.platform.addEventListener as addEventListener
+	 * @borrows Chart.platform.removeEventListener as removeEventListener
+	 */
+
+	/**
+	 * @interface IEvent
+	 * @prop {String} type - The event type name, possible values are:
+	 * 'contextmenu', 'mouseenter', 'mousedown', 'mousemove', 'mouseup', 'mouseout',
+	 * 'click', 'dblclick', 'keydown', 'keypress', 'keyup' and 'resize'
+	 * @prop {*} native - The original native event (null for emulated events, e.g. 'resize')
+	 * @prop {Number} x - The mouse x position, relative to the canvas (null for incompatible events)
+	 * @prop {Number} y - The mouse y position, relative to the canvas (null for incompatible events)
+	 */
+
+	Chart.helpers.extend(Chart.platform, implementation(Chart));
+};
+
+
+/***/ }),
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23660,7 +24022,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 156 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23851,7 +24213,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 157 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23956,7 +24318,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 158 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24207,7 +24569,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 159 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24727,7 +25089,7 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 160 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25190,11 +25552,11 @@ module.exports = function(Chart) {
 
 
 /***/ }),
-/* 161 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var colorNames = __webpack_require__(165);
+var colorNames = __webpack_require__(170);
 
 module.exports = {
    getRgba: getRgba,
@@ -25417,12 +25779,12 @@ for (var name in colorNames) {
 
 
 /***/ }),
-/* 162 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var convert = __webpack_require__(164);
-var string = __webpack_require__(161);
+var convert = __webpack_require__(169);
+var string = __webpack_require__(165);
 
 var Color = function (obj) {
 	if (obj instanceof Color) {
@@ -25908,7 +26270,8 @@ module.exports = Color;
 
 
 /***/ }),
-/* 163 */
+/* 167 */,
+/* 168 */
 /***/ (function(module, exports) {
 
 /* MIT license */
@@ -26612,10 +26975,10 @@ for (var key in cssKeywords) {
 
 
 /***/ }),
-/* 164 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(163);
+var conversions = __webpack_require__(168);
 
 var convert = function() {
    return new Converter();
@@ -26709,7 +27072,7 @@ Converter.prototype.getValues = function(space) {
 module.exports = convert;
 
 /***/ }),
-/* 165 */
+/* 170 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -26864,231 +27227,233 @@ module.exports = {
 };
 
 /***/ }),
-/* 166 */,
-/* 167 */,
-/* 168 */,
-/* 169 */,
-/* 170 */,
-/* 171 */
+/* 171 */,
+/* 172 */,
+/* 173 */,
+/* 174 */,
+/* 175 */,
+/* 176 */,
+/* 177 */,
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./af": 5,
-	"./af.js": 5,
-	"./ar": 11,
-	"./ar-dz": 6,
-	"./ar-dz.js": 6,
-	"./ar-ly": 7,
-	"./ar-ly.js": 7,
-	"./ar-ma": 8,
-	"./ar-ma.js": 8,
-	"./ar-sa": 9,
-	"./ar-sa.js": 9,
-	"./ar-tn": 10,
-	"./ar-tn.js": 10,
-	"./ar.js": 11,
-	"./az": 12,
-	"./az.js": 12,
-	"./be": 13,
-	"./be.js": 13,
-	"./bg": 14,
-	"./bg.js": 14,
-	"./bn": 15,
-	"./bn.js": 15,
-	"./bo": 16,
-	"./bo.js": 16,
-	"./br": 17,
-	"./br.js": 17,
-	"./bs": 18,
-	"./bs.js": 18,
-	"./ca": 19,
-	"./ca.js": 19,
-	"./cs": 20,
-	"./cs.js": 20,
-	"./cv": 21,
-	"./cv.js": 21,
-	"./cy": 22,
-	"./cy.js": 22,
-	"./da": 23,
-	"./da.js": 23,
-	"./de": 25,
-	"./de-at": 24,
-	"./de-at.js": 24,
-	"./de.js": 25,
-	"./dv": 26,
-	"./dv.js": 26,
-	"./el": 27,
-	"./el.js": 27,
-	"./en-au": 28,
-	"./en-au.js": 28,
-	"./en-ca": 29,
-	"./en-ca.js": 29,
-	"./en-gb": 30,
-	"./en-gb.js": 30,
-	"./en-ie": 31,
-	"./en-ie.js": 31,
-	"./en-nz": 32,
-	"./en-nz.js": 32,
-	"./eo": 33,
-	"./eo.js": 33,
-	"./es": 35,
-	"./es-do": 34,
-	"./es-do.js": 34,
-	"./es.js": 35,
-	"./et": 36,
-	"./et.js": 36,
-	"./eu": 37,
-	"./eu.js": 37,
-	"./fa": 38,
-	"./fa.js": 38,
-	"./fi": 39,
-	"./fi.js": 39,
-	"./fo": 40,
-	"./fo.js": 40,
-	"./fr": 43,
-	"./fr-ca": 41,
-	"./fr-ca.js": 41,
-	"./fr-ch": 42,
-	"./fr-ch.js": 42,
-	"./fr.js": 43,
-	"./fy": 44,
-	"./fy.js": 44,
-	"./gd": 45,
-	"./gd.js": 45,
-	"./gl": 46,
-	"./gl.js": 46,
-	"./he": 47,
-	"./he.js": 47,
-	"./hi": 48,
-	"./hi.js": 48,
-	"./hr": 49,
-	"./hr.js": 49,
-	"./hu": 50,
-	"./hu.js": 50,
-	"./hy-am": 51,
-	"./hy-am.js": 51,
-	"./id": 52,
-	"./id.js": 52,
-	"./is": 53,
-	"./is.js": 53,
-	"./it": 54,
-	"./it.js": 54,
-	"./ja": 55,
-	"./ja.js": 55,
-	"./jv": 56,
-	"./jv.js": 56,
-	"./ka": 57,
-	"./ka.js": 57,
-	"./kk": 58,
-	"./kk.js": 58,
-	"./km": 59,
-	"./km.js": 59,
-	"./ko": 60,
-	"./ko.js": 60,
-	"./ky": 61,
-	"./ky.js": 61,
-	"./lb": 62,
-	"./lb.js": 62,
-	"./lo": 63,
-	"./lo.js": 63,
-	"./lt": 64,
-	"./lt.js": 64,
-	"./lv": 65,
-	"./lv.js": 65,
-	"./me": 66,
-	"./me.js": 66,
-	"./mi": 67,
-	"./mi.js": 67,
-	"./mk": 68,
-	"./mk.js": 68,
-	"./ml": 69,
-	"./ml.js": 69,
-	"./mr": 70,
-	"./mr.js": 70,
-	"./ms": 72,
-	"./ms-my": 71,
-	"./ms-my.js": 71,
-	"./ms.js": 72,
-	"./my": 73,
-	"./my.js": 73,
-	"./nb": 74,
-	"./nb.js": 74,
-	"./ne": 75,
-	"./ne.js": 75,
-	"./nl": 77,
-	"./nl-be": 76,
-	"./nl-be.js": 76,
-	"./nl.js": 77,
-	"./nn": 78,
-	"./nn.js": 78,
-	"./pa-in": 79,
-	"./pa-in.js": 79,
-	"./pl": 80,
-	"./pl.js": 80,
-	"./pt": 82,
-	"./pt-br": 81,
-	"./pt-br.js": 81,
-	"./pt.js": 82,
-	"./ro": 83,
-	"./ro.js": 83,
-	"./ru": 84,
-	"./ru.js": 84,
-	"./se": 85,
-	"./se.js": 85,
-	"./si": 86,
-	"./si.js": 86,
-	"./sk": 87,
-	"./sk.js": 87,
-	"./sl": 88,
-	"./sl.js": 88,
-	"./sq": 89,
-	"./sq.js": 89,
-	"./sr": 91,
-	"./sr-cyrl": 90,
-	"./sr-cyrl.js": 90,
-	"./sr.js": 91,
-	"./ss": 92,
-	"./ss.js": 92,
-	"./sv": 93,
-	"./sv.js": 93,
-	"./sw": 94,
-	"./sw.js": 94,
-	"./ta": 95,
-	"./ta.js": 95,
-	"./te": 96,
-	"./te.js": 96,
-	"./tet": 97,
-	"./tet.js": 97,
-	"./th": 98,
-	"./th.js": 98,
-	"./tl-ph": 99,
-	"./tl-ph.js": 99,
-	"./tlh": 100,
-	"./tlh.js": 100,
-	"./tr": 101,
-	"./tr.js": 101,
-	"./tzl": 102,
-	"./tzl.js": 102,
-	"./tzm": 104,
-	"./tzm-latn": 103,
-	"./tzm-latn.js": 103,
-	"./tzm.js": 104,
-	"./uk": 105,
-	"./uk.js": 105,
-	"./uz": 106,
-	"./uz.js": 106,
-	"./vi": 107,
-	"./vi.js": 107,
-	"./x-pseudo": 108,
-	"./x-pseudo.js": 108,
-	"./yo": 109,
-	"./yo.js": 109,
-	"./zh-cn": 110,
-	"./zh-cn.js": 110,
-	"./zh-hk": 111,
-	"./zh-hk.js": 111,
-	"./zh-tw": 112,
-	"./zh-tw.js": 112
+	"./af": 6,
+	"./af.js": 6,
+	"./ar": 12,
+	"./ar-dz": 7,
+	"./ar-dz.js": 7,
+	"./ar-ly": 8,
+	"./ar-ly.js": 8,
+	"./ar-ma": 9,
+	"./ar-ma.js": 9,
+	"./ar-sa": 10,
+	"./ar-sa.js": 10,
+	"./ar-tn": 11,
+	"./ar-tn.js": 11,
+	"./ar.js": 12,
+	"./az": 13,
+	"./az.js": 13,
+	"./be": 14,
+	"./be.js": 14,
+	"./bg": 15,
+	"./bg.js": 15,
+	"./bn": 16,
+	"./bn.js": 16,
+	"./bo": 17,
+	"./bo.js": 17,
+	"./br": 18,
+	"./br.js": 18,
+	"./bs": 19,
+	"./bs.js": 19,
+	"./ca": 20,
+	"./ca.js": 20,
+	"./cs": 21,
+	"./cs.js": 21,
+	"./cv": 22,
+	"./cv.js": 22,
+	"./cy": 23,
+	"./cy.js": 23,
+	"./da": 24,
+	"./da.js": 24,
+	"./de": 26,
+	"./de-at": 25,
+	"./de-at.js": 25,
+	"./de.js": 26,
+	"./dv": 27,
+	"./dv.js": 27,
+	"./el": 28,
+	"./el.js": 28,
+	"./en-au": 29,
+	"./en-au.js": 29,
+	"./en-ca": 30,
+	"./en-ca.js": 30,
+	"./en-gb": 31,
+	"./en-gb.js": 31,
+	"./en-ie": 32,
+	"./en-ie.js": 32,
+	"./en-nz": 33,
+	"./en-nz.js": 33,
+	"./eo": 34,
+	"./eo.js": 34,
+	"./es": 36,
+	"./es-do": 35,
+	"./es-do.js": 35,
+	"./es.js": 36,
+	"./et": 37,
+	"./et.js": 37,
+	"./eu": 38,
+	"./eu.js": 38,
+	"./fa": 39,
+	"./fa.js": 39,
+	"./fi": 40,
+	"./fi.js": 40,
+	"./fo": 41,
+	"./fo.js": 41,
+	"./fr": 44,
+	"./fr-ca": 42,
+	"./fr-ca.js": 42,
+	"./fr-ch": 43,
+	"./fr-ch.js": 43,
+	"./fr.js": 44,
+	"./fy": 45,
+	"./fy.js": 45,
+	"./gd": 46,
+	"./gd.js": 46,
+	"./gl": 47,
+	"./gl.js": 47,
+	"./he": 48,
+	"./he.js": 48,
+	"./hi": 49,
+	"./hi.js": 49,
+	"./hr": 50,
+	"./hr.js": 50,
+	"./hu": 51,
+	"./hu.js": 51,
+	"./hy-am": 52,
+	"./hy-am.js": 52,
+	"./id": 53,
+	"./id.js": 53,
+	"./is": 54,
+	"./is.js": 54,
+	"./it": 55,
+	"./it.js": 55,
+	"./ja": 56,
+	"./ja.js": 56,
+	"./jv": 57,
+	"./jv.js": 57,
+	"./ka": 58,
+	"./ka.js": 58,
+	"./kk": 59,
+	"./kk.js": 59,
+	"./km": 60,
+	"./km.js": 60,
+	"./ko": 61,
+	"./ko.js": 61,
+	"./ky": 62,
+	"./ky.js": 62,
+	"./lb": 63,
+	"./lb.js": 63,
+	"./lo": 64,
+	"./lo.js": 64,
+	"./lt": 65,
+	"./lt.js": 65,
+	"./lv": 66,
+	"./lv.js": 66,
+	"./me": 67,
+	"./me.js": 67,
+	"./mi": 68,
+	"./mi.js": 68,
+	"./mk": 69,
+	"./mk.js": 69,
+	"./ml": 70,
+	"./ml.js": 70,
+	"./mr": 71,
+	"./mr.js": 71,
+	"./ms": 73,
+	"./ms-my": 72,
+	"./ms-my.js": 72,
+	"./ms.js": 73,
+	"./my": 74,
+	"./my.js": 74,
+	"./nb": 75,
+	"./nb.js": 75,
+	"./ne": 76,
+	"./ne.js": 76,
+	"./nl": 78,
+	"./nl-be": 77,
+	"./nl-be.js": 77,
+	"./nl.js": 78,
+	"./nn": 79,
+	"./nn.js": 79,
+	"./pa-in": 80,
+	"./pa-in.js": 80,
+	"./pl": 81,
+	"./pl.js": 81,
+	"./pt": 83,
+	"./pt-br": 82,
+	"./pt-br.js": 82,
+	"./pt.js": 83,
+	"./ro": 84,
+	"./ro.js": 84,
+	"./ru": 85,
+	"./ru.js": 85,
+	"./se": 86,
+	"./se.js": 86,
+	"./si": 87,
+	"./si.js": 87,
+	"./sk": 88,
+	"./sk.js": 88,
+	"./sl": 89,
+	"./sl.js": 89,
+	"./sq": 90,
+	"./sq.js": 90,
+	"./sr": 92,
+	"./sr-cyrl": 91,
+	"./sr-cyrl.js": 91,
+	"./sr.js": 92,
+	"./ss": 93,
+	"./ss.js": 93,
+	"./sv": 94,
+	"./sv.js": 94,
+	"./sw": 95,
+	"./sw.js": 95,
+	"./ta": 96,
+	"./ta.js": 96,
+	"./te": 97,
+	"./te.js": 97,
+	"./tet": 98,
+	"./tet.js": 98,
+	"./th": 99,
+	"./th.js": 99,
+	"./tl-ph": 100,
+	"./tl-ph.js": 100,
+	"./tlh": 101,
+	"./tlh.js": 101,
+	"./tr": 102,
+	"./tr.js": 102,
+	"./tzl": 103,
+	"./tzl.js": 103,
+	"./tzm": 105,
+	"./tzm-latn": 104,
+	"./tzm-latn.js": 104,
+	"./tzm.js": 105,
+	"./uk": 106,
+	"./uk.js": 106,
+	"./uz": 107,
+	"./uz.js": 107,
+	"./vi": 108,
+	"./vi.js": 108,
+	"./x-pseudo": 109,
+	"./x-pseudo.js": 109,
+	"./yo": 110,
+	"./yo.js": 110,
+	"./zh-cn": 111,
+	"./zh-cn.js": 111,
+	"./zh-hk": 112,
+	"./zh-hk.js": 112,
+	"./zh-tw": 113,
+	"./zh-tw.js": 113
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -27104,17 +27469,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 171;
+webpackContext.id = 178;
 
 
 /***/ }),
-/* 172 */,
-/* 173 */,
-/* 174 */,
-/* 175 */,
-/* 176 */,
-/* 177 */,
-/* 178 */,
 /* 179 */,
 /* 180 */,
 /* 181 */,
@@ -27190,7 +27548,7 @@ webpackContext.id = 171;
 var app  = __webpack_require__(1),
     main = __webpack_require__(2)(app);
 
-__webpack_require__(113)(app);
+__webpack_require__(114)(app);
 
 (function(app) {
   app.startup.push(function() {
@@ -27228,367 +27586,6 @@ __webpack_require__(113)(app);
     app.listeners.addLoadStatistics();
   });
 })(app);
-
-
-/***/ }),
-/* 246 */,
-/* 247 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// Chart.Platform implementation for targeting a web browser
-module.exports = function(Chart) {
-	var helpers = Chart.helpers;
-
-	// DOM event types -> Chart.js event types.
-	// Note: only events with different types are mapped.
-	// https://developer.mozilla.org/en-US/docs/Web/Events
-	var eventTypeMap = {
-		// Touch events
-		touchstart: 'mousedown',
-		touchmove: 'mousemove',
-		touchend: 'mouseup',
-
-		// Pointer events
-		pointerenter: 'mouseenter',
-		pointerdown: 'mousedown',
-		pointermove: 'mousemove',
-		pointerup: 'mouseup',
-		pointerleave: 'mouseout',
-		pointerout: 'mouseout'
-	};
-
-	/**
-	 * The "used" size is the final value of a dimension property after all calculations have
-	 * been performed. This method uses the computed style of `element` but returns undefined
-	 * if the computed style is not expressed in pixels. That can happen in some cases where
-	 * `element` has a size relative to its parent and this last one is not yet displayed,
-	 * for example because of `display: none` on a parent node.
-	 * @see https://developer.mozilla.org/en-US/docs/Web/CSS/used_value
-	 * @returns {Number} Size in pixels or undefined if unknown.
-	 */
-	function readUsedSize(element, property) {
-		var value = helpers.getStyle(element, property);
-		var matches = value && value.match(/(\d+)px/);
-		return matches? Number(matches[1]) : undefined;
-	}
-
-	/**
-	 * Initializes the canvas style and render size without modifying the canvas display size,
-	 * since responsiveness is handled by the controller.resize() method. The config is used
-	 * to determine the aspect ratio to apply in case no explicit height has been specified.
-	 */
-	function initCanvas(canvas, config) {
-		var style = canvas.style;
-
-		// NOTE(SB) canvas.getAttribute('width') !== canvas.width: in the first case it
-		// returns null or '' if no explicit value has been set to the canvas attribute.
-		var renderHeight = canvas.getAttribute('height');
-		var renderWidth = canvas.getAttribute('width');
-
-		// Chart.js modifies some canvas values that we want to restore on destroy
-		canvas._chartjs = {
-			initial: {
-				height: renderHeight,
-				width: renderWidth,
-				style: {
-					display: style.display,
-					height: style.height,
-					width: style.width
-				}
-			}
-		};
-
-		// Force canvas to display as block to avoid extra space caused by inline
-		// elements, which would interfere with the responsive resize process.
-		// https://github.com/chartjs/Chart.js/issues/2538
-		style.display = style.display || 'block';
-
-		if (renderWidth === null || renderWidth === '') {
-			var displayWidth = readUsedSize(canvas, 'width');
-			if (displayWidth !== undefined) {
-				canvas.width = displayWidth;
-			}
-		}
-
-		if (renderHeight === null || renderHeight === '') {
-			if (canvas.style.height === '') {
-				// If no explicit render height and style height, let's apply the aspect ratio,
-				// which one can be specified by the user but also by charts as default option
-				// (i.e. options.aspectRatio). If not specified, use canvas aspect ratio of 2.
-				canvas.height = canvas.width / (config.options.aspectRatio || 2);
-			} else {
-				var displayHeight = readUsedSize(canvas, 'height');
-				if (displayWidth !== undefined) {
-					canvas.height = displayHeight;
-				}
-			}
-		}
-
-		return canvas;
-	}
-
-	function createEvent(type, chart, x, y, native) {
-		return {
-			type: type,
-			chart: chart,
-			native: native || null,
-			x: x !== undefined? x : null,
-			y: y !== undefined? y : null,
-		};
-	}
-
-	function fromNativeEvent(event, chart) {
-		var type = eventTypeMap[event.type] || event.type;
-		var pos = helpers.getRelativePosition(event, chart);
-		return createEvent(type, chart, pos.x, pos.y, event);
-	}
-
-	function createResizer(handler) {
-		var iframe = document.createElement('iframe');
-		iframe.className = 'chartjs-hidden-iframe';
-		iframe.style.cssText =
-			'display:block;'+
-			'overflow:hidden;'+
-			'border:0;'+
-			'margin:0;'+
-			'top:0;'+
-			'left:0;'+
-			'bottom:0;'+
-			'right:0;'+
-			'height:100%;'+
-			'width:100%;'+
-			'position:absolute;'+
-			'pointer-events:none;'+
-			'z-index:-1;';
-
-		// Prevent the iframe to gain focus on tab.
-		// https://github.com/chartjs/Chart.js/issues/3090
-		iframe.tabIndex = -1;
-
-		// If the iframe is re-attached to the DOM, the resize listener is removed because the
-		// content is reloaded, so make sure to install the handler after the iframe is loaded.
-		// https://github.com/chartjs/Chart.js/issues/3521
-		helpers.addEvent(iframe, 'load', function() {
-			helpers.addEvent(iframe.contentWindow || iframe, 'resize', handler);
-
-			// The iframe size might have changed while loading, which can also
-			// happen if the size has been changed while detached from the DOM.
-			handler();
-		});
-
-		return iframe;
-	}
-
-	function addResizeListener(node, listener, chart) {
-		var stub = node._chartjs = {
-			ticking: false
-		};
-
-		// Throttle the callback notification until the next animation frame.
-		var notify = function() {
-			if (!stub.ticking) {
-				stub.ticking = true;
-				helpers.requestAnimFrame.call(window, function() {
-					if (stub.resizer) {
-						stub.ticking = false;
-						return listener(createEvent('resize', chart));
-					}
-				});
-			}
-		};
-
-		// Let's keep track of this added iframe and thus avoid DOM query when removing it.
-		stub.resizer = createResizer(notify);
-
-		node.insertBefore(stub.resizer, node.firstChild);
-	}
-
-	function removeResizeListener(node) {
-		if (!node || !node._chartjs) {
-			return;
-		}
-
-		var resizer = node._chartjs.resizer;
-		if (resizer) {
-			resizer.parentNode.removeChild(resizer);
-			node._chartjs.resizer = null;
-		}
-
-		delete node._chartjs;
-	}
-
-	return {
-		acquireContext: function(item, config) {
-			if (typeof item === 'string') {
-				item = document.getElementById(item);
-			} else if (item.length) {
-				// Support for array based queries (such as jQuery)
-				item = item[0];
-			}
-
-			if (item && item.canvas) {
-				// Support for any object associated to a canvas (including a context2d)
-				item = item.canvas;
-			}
-
-			if (item instanceof HTMLCanvasElement) {
-				// To prevent canvas fingerprinting, some add-ons undefine the getContext
-				// method, for example: https://github.com/kkapsner/CanvasBlocker
-				// https://github.com/chartjs/Chart.js/issues/2807
-				var context = item.getContext && item.getContext('2d');
-				if (context instanceof CanvasRenderingContext2D) {
-					initCanvas(item, config);
-					return context;
-				}
-			}
-
-			return null;
-		},
-
-		releaseContext: function(context) {
-			var canvas = context.canvas;
-			if (!canvas._chartjs) {
-				return;
-			}
-
-			var initial = canvas._chartjs.initial;
-			['height', 'width'].forEach(function(prop) {
-				var value = initial[prop];
-				if (value === undefined || value === null) {
-					canvas.removeAttribute(prop);
-				} else {
-					canvas.setAttribute(prop, value);
-				}
-			});
-
-			helpers.each(initial.style || {}, function(value, key) {
-				canvas.style[key] = value;
-			});
-
-			// The canvas render size might have been changed (and thus the state stack discarded),
-			// we can't use save() and restore() to restore the initial state. So make sure that at
-			// least the canvas context is reset to the default state by setting the canvas width.
-			// https://www.w3.org/TR/2011/WD-html5-20110525/the-canvas-element.html
-			canvas.width = canvas.width;
-
-			delete canvas._chartjs;
-		},
-
-		addEventListener: function(chart, type, listener) {
-			var canvas = chart.chart.canvas;
-			if (type === 'resize') {
-				// Note: the resize event is not supported on all browsers.
-				addResizeListener(canvas.parentNode, listener, chart.chart);
-				return;
-			}
-
-			var stub = listener._chartjs || (listener._chartjs = {});
-			var proxies = stub.proxies || (stub.proxies = {});
-			var proxy = proxies[chart.id + '_' + type] = function(event) {
-				listener(fromNativeEvent(event, chart.chart));
-			};
-
-			helpers.addEvent(canvas, type, proxy);
-		},
-
-		removeEventListener: function(chart, type, listener) {
-			var canvas = chart.chart.canvas;
-			if (type === 'resize') {
-				// Note: the resize event is not supported on all browsers.
-				removeResizeListener(canvas.parentNode, listener);
-				return;
-			}
-
-			var stub = listener._chartjs || {};
-			var proxies = stub.proxies || {};
-			var proxy = proxies[chart.id + '_' + type];
-			if (!proxy) {
-				return;
-			}
-
-			helpers.removeEvent(canvas, type, proxy);
-		}
-	};
-};
-
-
-/***/ }),
-/* 248 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// By default, select the browser (DOM) platform.
-// @TODO Make possible to select another platform at build time.
-var implementation = __webpack_require__(247);
-
-module.exports = function(Chart) {
-	/**
-	 * @namespace Chart.platform
-	 * @see https://chartjs.gitbooks.io/proposals/content/Platform.html
-	 * @since 2.4.0
-	 */
-	Chart.platform = {
-		/**
-		 * Called at chart construction time, returns a context2d instance implementing
-		 * the [W3C Canvas 2D Context API standard]{@link https://www.w3.org/TR/2dcontext/}.
-		 * @param {*} item - The native item from which to acquire context (platform specific)
-		 * @param {Object} options - The chart options
-		 * @returns {CanvasRenderingContext2D} context2d instance
-		 */
-		acquireContext: function() {},
-
-		/**
-		 * Called at chart destruction time, releases any resources associated to the context
-		 * previously returned by the acquireContext() method.
-		 * @param {CanvasRenderingContext2D} context - The context2d instance
-		 * @returns {Boolean} true if the method succeeded, else false
-		 */
-		releaseContext: function() {},
-
-		/**
-		 * Registers the specified listener on the given chart.
-		 * @param {Chart} chart - Chart from which to listen for event
-		 * @param {String} type - The ({@link IEvent}) type to listen for
-		 * @param {Function} listener - Receives a notification (an object that implements
-		 * the {@link IEvent} interface) when an event of the specified type occurs.
-		 */
-		addEventListener: function() {},
-
-		/**
-		 * Removes the specified listener previously registered with addEventListener.
-		 * @param {Chart} chart -Chart from which to remove the listener
-		 * @param {String} type - The ({@link IEvent}) type to remove
-		 * @param {Function} listener - The listener function to remove from the event target.
-		 */
-		removeEventListener: function() {}
-	};
-
-	/**
-	 * @interface IPlatform
-	 * Allows abstracting platform dependencies away from the chart
-	 * @borrows Chart.platform.acquireContext as acquireContext
-	 * @borrows Chart.platform.releaseContext as releaseContext
-	 * @borrows Chart.platform.addEventListener as addEventListener
-	 * @borrows Chart.platform.removeEventListener as removeEventListener
-	 */
-
-	/**
-	 * @interface IEvent
-	 * @prop {String} type - The event type name, possible values are:
-	 * 'contextmenu', 'mouseenter', 'mousedown', 'mousemove', 'mouseup', 'mouseout',
-	 * 'click', 'dblclick', 'keydown', 'keypress', 'keyup' and 'resize'
-	 * @prop {*} native - The original native event (null for emulated events, e.g. 'resize')
-	 * @prop {Number} x - The mouse x position, relative to the canvas (null for incompatible events)
-	 * @prop {Number} y - The mouse y position, relative to the canvas (null for incompatible events)
-	 */
-
-	Chart.helpers.extend(Chart.platform, implementation(Chart));
-};
 
 
 /***/ })

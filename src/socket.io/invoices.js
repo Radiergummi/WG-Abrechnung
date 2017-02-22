@@ -19,21 +19,23 @@ var invoiceSockets = module.exports = {};
  * @param {number} data.pageSize
  * @param {function} callback
  */
-invoiceSockets.getPaginated = function (socket, data, callback) {
-  var skip  = (data.pageNumber > 0 ? (data.pageNumber) * data.pageSize : 0),
-      limit = data.pageSize;
+invoiceSockets.getPaginated = function(socket, data, callback) {
+  const skip  = (data.pageNumber > 0 ? (data.pageNumber) * data.pageSize : 0),
+        limit = data.pageSize;
 
-  Invoice.getPaginated(skip, limit, function (error, invoices) {
+  Invoice.getPaginated(skip, limit, function(error, invoices) {
     if (error) {
       return callback(error);
     }
 
-    var invoiceSet = invoices;
+    const invoiceSet = invoices.map(invoice => {
+      let invoiceData = invoice.toObject();
 
-    for (var i = 0; i < invoices.length; i ++) {
-      invoiceSet[ i ].creationDate = invoices[ i ].getFormattedDate();
-      invoiceSet[ i ].ownInvoice   = (invoices[ i ].user._id == socket._id);
-    }
+      invoiceData.formattedCreationDate = invoice.getFormattedDate();
+      invoiceData.ownInvoice            = invoice.belongsTo(socket._id);
+
+      return invoiceData;
+    });
 
     return callback(null, invoiceSet);
   });
@@ -48,11 +50,11 @@ invoiceSockets.getPaginated = function (socket, data, callback) {
  * @param {number} data.pageSize
  * @param {function} callback
  */
-invoiceSockets.getOwnPaginated = function (socket, data, callback) {
+invoiceSockets.getOwnPaginated = function(socket, data, callback) {
   var skip  = (data.pageNumber > 0 ? (data.pageNumber) * data.pageSize : 0),
       limit = skip + data.pageSize;
 
-  Invoice.getOwnPaginated(socket._id, skip, limit, function (error, invoices) {
+  Invoice.getOwnPaginated(socket._id, skip, limit, function(error, invoices) {
     if (error) {
       return callback(error);
     }
@@ -61,20 +63,20 @@ invoiceSockets.getOwnPaginated = function (socket, data, callback) {
   });
 };
 
-invoiceSockets.search = function (socket, data, callback) {
-  Invoice.find(data, function (error, invoices) {
+invoiceSockets.search = function(socket, data, callback) {
+  Invoice.find(data, function(error, invoices) {
     if (error) {
       return callback(error);
     }
-    
+
     return callback(null, {
-      results: invoices.map(function(current, index) {
+      results:      invoices.map(function(current, index) {
         current.creationDate = invoices[ index ].getFormattedDate();
         current.ownInvoice   = (invoices[ index ].user._id == socket._id.toString());
         return current;
       }),
       singleResult: (invoices.length === 1),
-      query: (data.query ? data.query : null)
+      query:        (data.query ? data.query : null)
     });
   });
 };

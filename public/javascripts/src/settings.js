@@ -5,7 +5,7 @@ var app  = require('./app'),
 
 (function(app) {
   app.startup.push(function() {
-    require('./libraries/vanilla-modal')(app);
+    require('./libraries/modals')(app);
 
     app.elements.userList               = document.getElementsByClassName('users')[ 0 ];
     app.elements.sendInvitationButton   = app.dom('.send-invite');

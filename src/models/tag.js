@@ -1,5 +1,10 @@
 'use strict';
 
+/*
+ global module,
+ require
+ */
+
 const mongoose = require('mongoose');
 
 const tagSchema = mongoose.Schema({
