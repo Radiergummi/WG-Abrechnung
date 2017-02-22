@@ -1,0 +1,15 @@
+# ignore logs
+logs/*
+
+# ignore public
+public/javascripts/*.js
+public/stylesheets/style.css
+public/templates/**/*
+public/images/invoices/**/*
+public/images/users/**/*
+
+# ignore IDE files
+.idea/**/*
+
+# ignore node_modules
+node_modules/**/*
