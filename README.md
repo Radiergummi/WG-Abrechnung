@@ -8,6 +8,9 @@ This is a project intended to ease the way me and the people I'm sharing a flat 
 
 ![screenshot](http://i.imgur.com/e8HV481.png)
 
+## Powered by<img src="http://9dev.de/browserstack.svg" width="200px" height="30px" alt="BrowserStack" title="BrowserStack">
+The kind folks of [Browserstack](https://www.browserstack.com) have provided me with a free account to test flatm8! This will help greatly to create the best possible user experience accross devices. This offer is valid for all open source projects. You can learn more [here](https://www.browserstack.com/accounts/subscriptions).
+
 ## Installation
 
     # Clone the repository
