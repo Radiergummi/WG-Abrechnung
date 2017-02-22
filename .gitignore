@@ -8,6 +8,7 @@ public/stylesheets/style.css
 public/templates/**/*
 public/images/invoices/**/*
 public/images/users/**/*
+public/fonts/brandon*
 
 # ignore IDE files
 .idea/**/*
