@@ -3,6 +3,7 @@ logs/*
 
 # ignore public
 public/javascripts/*.js
+public/javascripts/*.map
 public/stylesheets/style.css
 public/templates/**/*
 public/images/invoices/**/*
