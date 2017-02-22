@@ -13,3 +13,6 @@ public/images/users/**/*
 
 # ignore node_modules
 node_modules/**/*
+
+# ignore PID file
+pidfile
