@@ -1,4 +1,5 @@
-# Flatm8 [![Dependencies](https://david-dm.org/Radiergummi/WG-Abrechnung.svg)](https://david-dm.org/Radiergummi/WG-Abrechnung)
+# Flatm8 [![Dependencies](https://david-dm.org/Radiergummi/WG-Abrechnung.svg)](https://david-dm.org/Radiergummi/WG-Abrechnung) ![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=<badge_key>)
+
 Personal project to organize monthly grocery spending with my flatmates.  
 This is just a simple web app that allows you to upload grocery receipts, assign them tags and a sum, and create a split bill at the end of the month.  
 That way, everyone pays the same amount and you get some neat stats about your monthly spending.
@@ -7,6 +8,9 @@ That way, everyone pays the same amount and you get some neat stats about your m
 This is a project intended to ease the way me and the people I'm sharing a flat with calculate their share in our monthly grocery shopping calculation. Up until now, we just went through all the receipts at the end of the month, while those having spent less than the others paid their difference. Obviously, this is a time consuming activity, so we thought *how could we possibly nerd the hell out of this?*
 
 ![screenshot](http://i.imgur.com/e8HV481.png)
+
+## Powered by<img src="http://9dev.de/browserstack.svg" width="200px" height="30px" alt="BrowserStack" title="BrowserStack">
+The kind folks of [Browserstack](https://www.browserstack.com) have provided me with a free account to test flatm8! This will help greatly to create the best possible user experience accross devices. This offer is valid for all open source projects. You can learn more [here](https://www.browserstack.com/accounts/subscriptions).
 
 ## Installation
 
