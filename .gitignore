@@ -17,3 +17,5 @@ node_modules/**/*
 
 # ignore PID file
 pidfile
+
+**/.DS_Store
