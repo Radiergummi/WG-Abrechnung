@@ -55,6 +55,8 @@ Next on the list is a revamp of the way modals or dialogs are created, since I c
 Apart from this, I also upgraded to Webpack v2, which enables the usage of ES6 imports throughout the client source and speeds compilation up significantly. I'll check the other packages too, maybe there'll be more to update.
 I don't plan to implement the same for the server side source, since it would require huge changes to the way flatm8 works, which just isn't worth the development convenience.
 
+*Update 2017/02/22:* In addition to the above, now the default browser will open once the app is started in debug mode and automatically reloaded once the assets change. Besides, the project finally has a license: I choose the Apache license. Basically, that enables anyone to use, modify and integrate flatm8 or parts of it, as long as they keep referring to the original project. I also contacted BrowserStack for an open source license, so as soon as the app works stable enough, I'll publish my tests, add more tests and integrate Travis and BrowserStack Automate. That way, the whole app will be tested client *and* server side thoroughly.
+
 Once the current way of handling receipts works, I'm planning to integrate OCR (using tesseract, maybe) somehow, so the receipts get parsed automatically. That would eliminate the need to enter the sum manually and allow to create detailed product statistics. As far as I've seen, though, that is a non-trivial task which'd require some serious engineering.  
 
 ### Secure plaintext password retrieval concept
